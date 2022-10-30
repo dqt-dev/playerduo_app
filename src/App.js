@@ -1,24 +1,59 @@
-import logo from './logo.svg';
+import './styles/header.css';
 import './App.css';
+import Header from './components/Header';
+import SiderBar from './components/SiderBar';
+import Content from './components/Content';
+import Footer from './components/Footer';
+import React, { useState, useEffect } from 'react'
+import CategoryService from "./services/CategoryService";
+import SkillService from './services/SkillService';
 
 function App() {
+  const [categories, setCategories] = useState([])
+
+  const [skill, setSkill] = useState([])
+
+  const [requestSkill, setRequestSkill] = useState({})
+
+  // chỉ thực thi khi render lần đầu tiên
+  useEffect(() => {
+    retrieveCategories();
+    retrieveSkills();
+  }, []);
+  // truy vấn đến database, gọi hàm get all đế lấy ra tất cả các record 
+  const retrieveCategories = () => {
+    CategoryService.getAll()
+      .then(response => {
+        setCategories(response.data);
+        //console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  // gọi tới api create
+  const retrieveSkills = () => {
+    SkillService.getAll(requestSkill)
+      .then(response => { // get các field được nhập vào 
+        setRequestSkill({
+        })
+        
+        setSkill(response.data)
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header/>
+      <div className='main'>
+        <SiderBar/>
+        <Content categories = {categories} skill = {skill}/>
+      </div>
+      <Footer/>
+    </>
   );
 }
 

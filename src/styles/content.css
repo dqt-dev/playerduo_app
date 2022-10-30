@@ -1,0 +1,15 @@
+.main-content{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 820px;
+    border: solid 1px;
+}
+.main-item
+{    
+    height: 100px;
+    width: 800px;
+    background-color: brown;
+    margin-top : 20px;
+}
