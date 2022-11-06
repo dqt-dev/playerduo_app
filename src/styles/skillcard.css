@@ -1,0 +1,49 @@
+
+.container-card {
+    position: relative;
+    width: 100%;
+}
+
+.div-online-1 {
+    position: absolute;
+    top: 8%;
+    left: 5%;
+
+}
+.card-skill{
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+    border-radius: 5%;
+}
+.card-skill img {
+    width: 100%;
+    transition: 0.1s all ease-in-out;
+    border-radius: 5%;
+}
+
+.card-skill:hover img {
+    transform: scale(1.08);
+}
+.card-skill:hover{
+    border-radius: 5%; /*1*/
+    border: 2px solid transparent; /*2*/
+    background: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%) border-box; /*3*/
+}
+.sound-icon
+{
+    position: absolute;
+    bottom: -7%;
+    right: 2%;
+}
+.category-title:hover
+{
+    cursor: pointer;
+    background: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+}
+.slick-list> div {
+    margin-left:0;
+    }
