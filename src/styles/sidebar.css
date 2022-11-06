@@ -1,16 +1,42 @@
-.sidebar
-{
+.sidebar {
     width: 300px;
     height: 820px;
     background-color: #fff;
     overflow-y: auto;
 }
-li{
+
+li {
     list-style: none;
     margin-left: 20px;
     margin-bottom: 10px;
 }
-.category-item{
+
+.category-item {
     display: flex;
     margin: auto;
+}
+
+.vertical {
+    margin-top: 50%;
+}
+
+.card-category img {
+    width: 100%;
+    transition: 0.05s all ease-in-out;
+    border-radius: 5%;
+}
+
+.card-category:hover img {
+    transform: scale(1.1);
+}
+
+.card-category:hover p {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.row-category:hover {
+    border-radius: 5%;
+    border: 2px solid transparent;
+    background: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%) border-box;
 }
