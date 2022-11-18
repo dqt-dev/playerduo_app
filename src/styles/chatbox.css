@@ -1,0 +1,25 @@
+.btn-back:hover {
+    transform: scale(1.2);
+}
+
+.bg-#F4F4F4 {
+    background-color: red;
+}
+
+.content-chat {
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.chat-box-content {
+    height: 825px;
+    overflow-y: scroll;
+}
+
+.btn-send {
+    color: blue;
+}
+
+.btn-send:hover {
+    transform: scale(1.1);
+}

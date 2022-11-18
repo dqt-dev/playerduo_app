@@ -1,0 +1,53 @@
+.box-chat
+{
+    z-index: 1;
+    background-color: #fff;
+    box-shadow: 0 0 7px rgba(33,33,33,.3); 
+    animation-name: fadeInRight;
+    animation-duration: 1s;
+}
+.text-12px
+{
+    font-size: 12px;
+    color: rgb(58, 58, 58);
+}   
+.text-message
+{
+    font-size: 14px;
+    color: rgb(58, 58, 58);
+}
+.text-18px
+{
+    font-size: 18px;
+}
+.text-24px
+{
+    font-size: 24px;
+    color:#160C35 ;
+}
+.button-close:hover
+{
+    transform: scale(1.08);
+}
+.chat-element:hover
+{
+    background-color: rgba(153,153,153, 0.1);
+}
+
+.chat-element img:hover
+{
+    transform: scale(1.08);
+}
+
+@keyframes fadeInRight {
+    0% {
+      opacity: 0;
+      transform: translate3d(100%, 0, 0);
+    }
+  }
+  
+  @keyframes hide {
+    100% {
+      opacity: 1;
+    }
+}

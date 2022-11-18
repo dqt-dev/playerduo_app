@@ -2,7 +2,7 @@ import http from "../http-common";
 const getAll = () => {
   return http.get("category");
 };
-const TCategoryService = {
+const CategoryService = {
   getAll
 };
-export default TCategoryService;
+export default CategoryService;

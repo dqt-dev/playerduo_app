@@ -77,3 +77,34 @@ button:hover{
 .rounded-50{
     border-radius: 50%;
 }
+.category-name-div
+{
+    position: absolute;
+    top: 2px;
+    color:#ffffff;
+}
+
+.fs-10px
+{
+    font-size: 14px;
+}
+.w-24px
+{
+    width: 24px;
+}
+.h-24px{
+    height: 24px;
+}
+.skill-index:hover
+{
+    cursor: pointer;
+    transform: scale(1.08);
+}
+.text-16px
+{
+    font-size: 16px;
+}
+.text-24px
+{
+    font-size: 24px;
+}
