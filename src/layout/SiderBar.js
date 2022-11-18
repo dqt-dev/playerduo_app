@@ -20,7 +20,7 @@ function SiderBar() {
   };
 
   return (
-    <div className='sidebar'>
+    <div className='sidebar pt-3'>
       <h3 className="ms-3">Tất các các game</h3>
       {categories &&
         categories.map((category, index) => (

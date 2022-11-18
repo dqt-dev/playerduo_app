@@ -7,6 +7,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@remotion/media-utils": "^3.2.42",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -21,6 +22,8 @@
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
     "react-slick": "^0.29.0",
+    "react-textarea-autosize": "^8.4.0",
+    "react-toastify": "^9.1.1",
     "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },

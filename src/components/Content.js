@@ -9,7 +9,7 @@ export default function Content({ categories, skill }) {
   const [isPlay, setIsPlay] = useState(0)
 
   return (
-    <main className='main-content'>
+    <main className='main-content pt-3'>
       <CategoryCard categories={categories} />
 
       {

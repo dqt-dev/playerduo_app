@@ -1,0 +1,15 @@
+.navbar-custom {
+    width: 300px;
+    height: 900px;
+    background-color: #fff;
+}
+.navbar-custom a
+{
+    color: black;       
+}
+
+.navbar-item-custom div:hover
+{
+    color: blue;      
+    box-shadow: 0 0 7px rgba(33,33,33,.3); 
+}

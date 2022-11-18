@@ -1,0 +1,27 @@
+.order-container
+{
+    width: 960px;
+    height: 900px;
+}
+.order-item
+{
+    background-color: #fff;
+    border-radius: 12px;
+}
+.text-gray{
+    color: rgba(153,153,153, 0.9)
+}
+.fw-500
+{
+    font-weight: 500;
+}
+.h-20{
+    height: 22px;
+}
+.list-order
+{
+    height: 800px;
+}  
+.cursor-pointer{
+    cursor: pointer;
+}
