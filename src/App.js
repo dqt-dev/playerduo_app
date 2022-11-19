@@ -6,6 +6,7 @@ import Test from "./components/Test";
 import LoginPage from "./components/LoginPage";
 import UserDetail from "./components/UserDetail";
 import UserInfo from "./components/UserInfo";
+import SkillUser from "./components/SkillUser";
 import React, { useEffect } from "react";
 import UserService from "./services/UserSerice";
 import { USER_TOKEN } from "./common/SystemConstant";
@@ -15,8 +16,13 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 const url = [
   {
     url: '/user/orders',
-    component: <UserInfo />,
+    component: <UserInfo type ={3}/>,
     id: 1
+  },
+  {
+    url: '/user/skills',
+    component: <UserInfo type ={4}/>,
+    id: 2
   }
 ]
 function App() {
@@ -40,7 +46,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Dashboard />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/user/:userId" search element={<UserDetail />} />
+      <Route path="/user/:userId" search element={<UserDetail/>} />
       <Route path="/test" element={<Test />} />
       {url.map(item => {
         return   <Route
