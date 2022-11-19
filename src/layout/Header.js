@@ -3,17 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/header.css';
 
 import { BsChatLeftQuote } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
 import { BASE_URL } from '../common/SystemConstant';
+import { useSelector, useDispatch } from 'react-redux';
+import { getMyInfo } from '../redux/UserInfo/action';
 
 function Header() {
   const userInfo = useSelector(state => state.userInfoReducer.userInfo)
-
-
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSignOut = () => {
-    localStorage.removeItem("user-token");
+    localStorage.clear()
+    dispatch(getMyInfo(null));
     navigate('/')
   }
 

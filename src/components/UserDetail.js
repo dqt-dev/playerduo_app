@@ -206,7 +206,7 @@ function UserDetail() {
                             </div>
                             <div className="col-md-8 mt-2">
                                 <div className="text-body">
-                                    <p className="card-text text-start mt-2 mb-1 fw-bold">{user.nickName}</p>
+                                    <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
                                     <p className="card-text text-start fw-bold ">ID: 2153860</p>
                                 </div>
                             </div>
@@ -221,7 +221,7 @@ function UserDetail() {
                         <div>
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">Lý lịch</p>
-                                <p className="card-text text-start fw-bold">{user.description}</p>
+                                <p className="card-text text-start fw-bold">{user?.description}</p>
                             </div>
                         </div>
                     </div>
