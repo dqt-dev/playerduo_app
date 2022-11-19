@@ -10,6 +10,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { useNavigate } from 'react-router-dom';
 
 import '../styles/chatbox.css';
+import { BASE_URL } from '../common/SystemConstant';
 
 function ChatBoxComponent({ userCurrent, userChatInfo, getChat }) {
 
@@ -24,7 +25,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getChat }) {
                     <div type="button" class="btn btn-back text-reset mt-1" data-bs-dismiss="offcanvas" aria-label="Close"><MdArrowBackIos size={20} /></div>
                     <div className='d-flex'>
                         <div className='position-relative'>
-                            <img className="rounded-50 mt-1" src={"https://localhost:7207" + userChatInfo.avatarUrl} style={{ height: "40px" }} />
+                            <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "40px" }} />
                             {userChatInfo.status ? <div className="position-absolute bottom-0 end-0" style={{ background: "green", width: "10px", height: "10px", borderRadius: "50%" }}></div> :
                                 <div className="position-absolute bottom-0 end-0" style={{ background: "red", width: "10px", height: "10px", borderRadius: "50%" }}></div>}
                         </div>
@@ -45,7 +46,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getChat }) {
                                 </div> :
                                 <div className='d-flex justify-content-start ms-2' >
                                     <div className='d-flex'>
-                                        <img className="rounded-50 mt-1" src={"https://localhost:7207" + userChatInfo.avatarUrl} style={{ height: "36px" }} />
+                                        <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "36px" }} />
                                         <div className='pt-2 pb-1 ps-3 pe-3 ms-1 mb-3' style={{ backgroundColor: '#F4F4F4', borderRadius: "16px" }}>
                                             {chat.content}
                                         </div>
@@ -59,7 +60,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getChat }) {
             <hr className='text-gray' style={{ width: "96%", marginLeft: "2%" }} />
             <div className='align-self-start ps-3'>
                 <div className='d-flex'>
-                    <img className="rounded-50 me-2 align-self-center" src={"https://localhost:7207" + userCurrent.avatarUrl} style={{ height: "36px" }} />
+                    <img className="rounded-50 me-2 align-self-center" src={BASE_URL + userCurrent.avatarUrl} style={{ height: "36px" }} />
                     <div className="ps-2" >
                         <TextareaAutosize maxRows='3' style={{ width: "270px" }} className="ps-2 pe-2" />
                     </div>

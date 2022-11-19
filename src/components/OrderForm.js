@@ -1,6 +1,7 @@
 import React from 'react'
 
 import coin from '../coin.png'
+import { BASE_URL } from '../common/SystemConstant'
 
 function OrderForm({user, currentSkill, quality, setQuality, handleOrder}) {
     return (
@@ -10,7 +11,7 @@ function OrderForm({user, currentSkill, quality, setQuality, handleOrder}) {
                     <div className='text-center text-24px pt-3 fw-bold pb-2'>Xác nhận đơn hàng</div>
                     <div className="d-flex justify-content-center">
                         <div className='me-2'>
-                            <img className="w-44px h-44px rounded-50 mt-1" src={"https://localhost:7207" + user.avatarUrl} style={{ height: "44px" }} />
+                            <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + user.avatarUrl} style={{ height: "44px" }} />
                         </div>
                         <div className="fw-bold text-20px mt-2"> {user.nickName}</div>
                     </div>

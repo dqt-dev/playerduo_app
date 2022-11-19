@@ -9,6 +9,7 @@ import star from '../star.png'
 import coin from '../coin.png'
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineInbox } from 'react-icons/ai';
+import { BASE_URL } from '../common/SystemConstant';
 
 function SampleNextArrow(props) {
     const { className, onClick } = props;
@@ -83,10 +84,10 @@ function SkillCard(props) {
                                 <div key={index} className="card-skill-main">
                                     <div className="card card-skill" style={{ width: "190px", height: "300px" }}>
                                         <div className="container-card">
-                                            <img onClick={() => goToUserPage(item.userId, item.skillId)} src={"https://localhost:7207" + item.avatarUrl} className="card-img-top avatar" alt="..." style={{ width: "189px" }} />
+                                            <img onClick={() => goToUserPage(item.userId, item.skillId)} src={BASE_URL + item.avatarUrl} className="card-img-top avatar" alt="..." style={{ width: "189px" }} />
                                             {item.status ? <div className="div-online-1" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> : <></>}
                                             {isPlay !== item.skillId ? <img src="https://data.lita.cool/cdn-web/www/assets/player_audio_play_normal.eeb1a285.png" className="sound-icon" style={{ width: "30px" }}
-                                                onClick={() => soundPlay("https://localhost:7207" + item.audioUrl, item.skillId)} /> :
+                                                onClick={() => soundPlay(BASE_URL + item.audioUrl, item.skillId)} /> :
                                                 <img src="https://data.lita.cool/cdn-web/www/assets/player_audio_play.f3bcd3a1.gif" className="sound-icon" style={{ width: "30px" }}
                                                     onClick={() => stopSound()} />}
                                         </div>

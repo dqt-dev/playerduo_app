@@ -4,6 +4,7 @@ import '../styles/header.css';
 
 import { BsChatLeftQuote } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+import { BASE_URL } from '../common/SystemConstant';
 
 function Header() {
   const userInfo = useSelector(state => state.userInfoReducer.userInfo)
@@ -32,13 +33,13 @@ function Header() {
           {userInfo !== null ?
             <div className="dropdown text-end me-4">
               <a href="#" className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src={"https://localhost:7207" + userInfo.avatarUrl} alt="mdo" width="32" height="32" className="rounded-circle" />
+                <img src={BASE_URL + userInfo.avatarUrl} alt="mdo" width="32" height="32" className="rounded-circle" />
               </a>
 
               <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1" style={{width: "260px"}}>
                 <div className="d-flex ">
                   <div className="ps-4 pe-3">
-                    <img src={"https://localhost:7207" + userInfo.avatarUrl} style={{ width: "45px", borderRadius: "50%" }} className="mt-2" alt="..." />
+                    <img src={BASE_URL + userInfo.avatarUrl} style={{ width: "45px", borderRadius: "50%" }} className="mt-2" alt="..." />
                   </div>
                   <div className="">
                     <div className="text-body">

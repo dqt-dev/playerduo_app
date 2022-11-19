@@ -5,6 +5,7 @@ import '../styles/userinfo.css';
 import coin from '../coin.png';
 import { toast, ToastContainer } from 'react-toastify';
 import OrderService from './../services/OrderService';
+import { BASE_URL } from '../common/SystemConstant';
 
 function UserInfo() {
     const [orderType, setOrderType] = useState(true); // true is myOder , false is orderMe
@@ -138,7 +139,7 @@ function UserInfo() {
                                     <div className="d-flex items-center justify-content-between mt-3">
                                         <div className="text-20px font-bold text-#333333 ms-3">
                                             <div className="d-flex">
-                                                <img className="w-44px h-44px rounded-50 mt-1" src={"https://localhost:7207" + item.avatarPlayerUrl} style={{ height: "64px" }} />
+                                                <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarPlayerUrl} style={{ height: "64px" }} />
                                                 <div className='flex ms-3'>
                                                     <div className="h-14px text-18px fw-bold text-#333333"> {item.playerName}</div>
                                                     <div className="d-flex">
@@ -187,7 +188,7 @@ function UserInfo() {
                                     <div className="d-flex items-center justify-content-between mt-3">
                                         <div className="text-20px font-bold text-#333333 ms-3">
                                             <div className="d-flex">
-                                                <img className="w-44px h-44px rounded-50 mt-1" src={"https://localhost:7207" + item.avatarUserUrl} style={{ height: "64px" }} />
+                                                <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUserUrl} style={{ height: "64px" }} />
                                                 <div className='flex ms-3'>
                                                     <div className="h-14px text-18px fw-bold text-#333333"> {item.orderedUserName}</div>
                                                     <div className="d-flex">

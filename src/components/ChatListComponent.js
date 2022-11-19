@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import ChatBoxComponent from './ChatBoxComponent';
 import { useSelector } from 'react-redux';
 import MessageService from '../services/MessageService';
+import { BASE_URL } from '../common/SystemConstant';
 
 function Chat({ isShowChat, setIsShowChat }) {
   const userInfo = {
@@ -102,7 +103,7 @@ function Chat({ isShowChat, setIsShowChat }) {
                     <div onClick={() => setUserId(item.userId)} key={index} class="d-flex items-center justify-content-between pb-2 pt-1 chat-element " data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                       <div class="text-18px font-bold text-#333333 ms-3">
                         <div className="d-flex">
-                          <img class="w-44px h-44px rounded-50 mt-1" src={"https://localhost:7207" + item.avatarUrl} style={{ height: "44px" }} />
+                          <img class="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUrl} style={{ height: "44px" }} />
                           <div className='flex ms-2'>
                             <div className="d-flex items-center justify-content-between" style={{ width: "340px" }}>
                               <div class="text-18px user-select-none">{item.nickName}</div>
