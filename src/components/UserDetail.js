@@ -199,13 +199,13 @@ function UserDetail() {
                     <div className="mb-3" style={{ width: "280px", height: "70px" }}>
                         <div className="row g-0 ms-4 ">
                             <div className="col-md-4 mx-auto item-center">
-                                <img src={"https://localhost:7207" + user.avatarUrl} style={{ width: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
-                                {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
+                                <img src={"https://localhost:7207" + user?.avatarUrl} style={{ width: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
+                                {user?.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
                                     <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
                             </div>
                             <div className="col-md-8 mt-2">
                                 <div className="text-body">
-                                    <p className="card-text text-start mt-2 mb-1 fw-bold">{user.nickName}</p>
+                                    <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
                                     <p className="card-text text-start fw-bold ">ID: 2153860</p>
                                 </div>
                             </div>
@@ -215,12 +215,12 @@ function UserDetail() {
                 <div className="d-flex bd-highlight mt-3">
                     <div className='card' style={{ height: "800px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }}>
                         <div className="flex" style={{ width: "324px" }}>
-                            <img src={"https://localhost:7207" + user.avatarUrl} style={{ width: "324px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }} className="" alt="..." />
+                            <img src={"https://localhost:7207" + user?.avatarUrl} style={{ width: "324px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }} className="" alt="..." />
                         </div>
                         <div>
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">Lý lịch</p>
-                                <p className="card-text text-start fw-bold">{user.description}</p>
+                                <p className="card-text text-start fw-bold">{user?.description}</p>
                             </div>
                         </div>
                     </div>
