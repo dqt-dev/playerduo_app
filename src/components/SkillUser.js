@@ -8,6 +8,7 @@ import ModalSkill from './ModalSkill';
 
 import star from '../star.png'
 import coin from '../coin.png'
+import Loading from './Loading'
 
 function SkillUser() {
 
@@ -26,19 +27,23 @@ function SkillUser() {
 
   const [skillDetail, setSkillDetail] = useState(initSkill);
 
+  const [loaded, setLoaded] = useState(false);
+
   const getSkills = userId => {
+    
+    setLoaded(true);
     SkillService.getAll(
       {
         userId: userId,
       }
     )
       .then(response => {
-        console.log("Okee:", response);
         setSkills(response.data);
-
+        setLoaded(false);
       })
       .catch(e => {
         console.log(e);
+        setLoaded(false);
       });
   };
 
@@ -53,9 +58,13 @@ function SkillUser() {
 
   return (
     <div className='container'>
+      <Loading loading={loaded} />
       <div className='pt-3 fw-bold container-fluid'>
         <div className=' mb-2'>
           Skill
+        </div>
+        <div>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModalSkill" onClick={() => setSkillDetail(initSkill)}>Add New</button>
         </div>
         <hr className='mt-1 mb-0' />
         <div className='list-order overflow-auto '>
@@ -71,7 +80,7 @@ function SkillUser() {
             )
           })}
         </div>
-        < ModalSkill skillDetail={skillDetail}/>
+        < ModalSkill skillDetail={skillDetail} setSkillDetail={setSkillDetail} title={"Update Skill"}/>
       </div>
     </div>
   )
