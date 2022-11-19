@@ -3,12 +3,11 @@ import Header from '../layout/Header'
 import NavBar from '../layout/NavBar'
 import '../styles/userinfo.css';
 import coin from '../coin.png';
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import OrderService from './../services/OrderService';
+import { BASE_URL } from '../common/SystemConstant';
 
 function UserInfo() {
-    const navigate = useNavigate();
     const [orderType, setOrderType] = useState(true); // true is myOder , false is orderMe
 
     const getStatusName = (status) => {
@@ -23,20 +22,9 @@ function UserInfo() {
     const [manageOrder, setManageOrder] = useState([]);
 
     const handleGetMyOrder = () => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.get("https://localhost:7207/api/Orders/me", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.getNewOrder()
             .then(response => {
-
                 setMyOrder(response.data.resultObj)
-                console.log(response.data.resultObj)
-
             })
             .catch(error => {
                 console.log(error)
@@ -44,18 +32,9 @@ function UserInfo() {
     }
 
     const handleManageMyOrder = () => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.get("https://localhost:7207/api/Orders/manage", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.getOrdersManage()
             .then(response => {
                 setManageOrder(response.data.resultObj)
-                console.log(response.data.resultObj)
 
             })
             .catch(error => {
@@ -66,15 +45,7 @@ function UserInfo() {
     }
 
     const handleConfirmOrder = (orderId) => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.put("https://localhost:7207/api/Orders/" + orderId + "/confirm", orderId, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.putConfirmOrder(orderId, orderId)
             .then(response => {
                 handleManageMyOrder();
                 toast.success(response.data, {
@@ -90,15 +61,7 @@ function UserInfo() {
     }
 
     const handleCancelOrder = (orderId) => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.put("https://localhost:7207/api/Orders/" + orderId + "/cancel", orderId, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.putCancelOrder(orderId, orderId)
             .then(response => {
                 handleManageMyOrder();
                 toast.success(response.data.resultObj, {
@@ -176,7 +139,7 @@ function UserInfo() {
                                     <div className="d-flex items-center justify-content-between mt-3">
                                         <div className="text-20px font-bold text-#333333 ms-3">
                                             <div className="d-flex">
-                                                <img className="w-44px h-44px rounded-50 mt-1" src={"https://localhost:7207" + item.avatarPlayerUrl} style={{ height: "64px" }} />
+                                                <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarPlayerUrl} style={{ height: "64px" }} />
                                                 <div className='flex ms-3'>
                                                     <div className="h-14px text-18px fw-bold text-#333333"> {item.playerName}</div>
                                                     <div className="d-flex">
@@ -225,7 +188,7 @@ function UserInfo() {
                                     <div className="d-flex items-center justify-content-between mt-3">
                                         <div className="text-20px font-bold text-#333333 ms-3">
                                             <div className="d-flex">
-                                                <img className="w-44px h-44px rounded-50 mt-1" src={"https://localhost:7207" + item.avatarUserUrl} style={{ height: "64px" }} />
+                                                <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUserUrl} style={{ height: "64px" }} />
                                                 <div className='flex ms-3'>
                                                     <div className="h-14px text-18px fw-bold text-#333333"> {item.orderedUserName}</div>
                                                     <div className="d-flex">

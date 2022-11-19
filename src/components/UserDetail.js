@@ -26,6 +26,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { toast, ToastContainer } from 'react-toastify';
 import OrderForm from './OrderForm';
+import { BASE_URL } from '../common/SystemConstant';
 
 function UserDetail() {
 
@@ -88,12 +89,12 @@ function UserDetail() {
 
     }
 
-    const myFunction = (data) => getAudioDurationInSeconds("https://localhost:7207" + data.audioUrl).then((duration) => {
+    const myFunction = (data) => getAudioDurationInSeconds(BASE_URL + data.audioUrl).then((duration) => {
         setDuration(duration)
     });
 
 
-    const handleChat = () => 
+    const handleChat = () =>
     {
         const token = localStorage.getItem('user-token');
         if(!token) {
@@ -123,21 +124,16 @@ function UserDetail() {
             'skillId': skillId,
             'quality': quality
         }
-        axios.post("https://localhost:7207/api/Orders/me", requestCreateOrder, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.createNewOrder(requestCreateOrder)
             .then(response => {
                 toast.success(response.data, {
                     position: toast.POSITION.TOP_RIGHT
-                  });
+                    });
             })
             .catch(error => {
-                // console.log(error.response.data)
                 toast.error(error.response.data, {
                     position: toast.POSITION.TOP_RIGHT
-                  });
+                });
             });
     }
 
@@ -204,13 +200,13 @@ function UserDetail() {
                     <div className="mb-3" style={{ width: "280px", height: "70px" }}>
                         <div className="row g-0 ms-4 ">
                             <div className="col-md-4 mx-auto item-center">
-                                <img src={"https://localhost:7207" + user.avatarUrl} style={{ width: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
+                                <img src={BASE_URL + user.avatarUrl} style={{ width: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
                                 {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
                                     <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
                             </div>
                             <div className="col-md-8 mt-2">
                                 <div className="text-body">
-                                    <p className="card-text text-start mt-2 mb-1 fw-bold">{user.nickName}</p>
+                                    <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
                                     <p className="card-text text-start fw-bold ">ID: 2153860</p>
                                 </div>
                             </div>
@@ -220,12 +216,12 @@ function UserDetail() {
                 <div className="d-flex bd-highlight mt-3">
                     <div className='card' style={{ height: "800px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }}>
                         <div className="flex" style={{ width: "324px" }}>
-                            <img src={"https://localhost:7207" + user.avatarUrl} style={{ width: "324px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }} className="" alt="..." />
+                            <img src={BASE_URL + user.avatarUrl} style={{ width: "324px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }} className="" alt="..." />
                         </div>
                         <div>
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">Lý lịch</p>
-                                <p className="card-text text-start fw-bold">{user.description}</p>
+                                <p className="card-text text-start fw-bold">{user?.description}</p>
                             </div>
                         </div>
                     </div>
@@ -236,14 +232,14 @@ function UserDetail() {
                                     return (
                                         <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 skill-index" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
                                             <div style={{ border: "solid #1890ff", width: "130px", borderRadius: "10px" }}>
-                                                <img src={"https://localhost:7207" + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
+                                                <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
                                                 <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
                                             </div>
                                         </div>
                                     )
                                 return (
                                     <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 mt-1 skill-index" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
-                                        <img src={"https://localhost:7207" + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
+                                        <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
                                         <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
                                     </div>
                                 )
@@ -266,11 +262,11 @@ function UserDetail() {
                                 <p className="align-items-center mb-1 card-text fs-5" >{currentSkill.description}</p>
                                 <div className="d-flex flex-row items-center px-4px border rounded-2" style={{ height: "24px", width: "60px" }}>
                                     {isPlay === currentSkill.skillId ? <img src={stop} alt="stop" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => stopSound()} /> :
-                                        <img src={play} alt="play" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => soundPlay("https://localhost:7207" + currentSkill.audioUrl, currentSkill.skillId)} />}
+                                        <img src={play} alt="play" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => soundPlay(BASE_URL + currentSkill.audioUrl, currentSkill.skillId)} />}
                                     <div>{Math.ceil(duration)}'</div>
                                 </div>
                                 <div>
-                                    <img className="mt-3" src={"https://localhost:7207" + currentSkill.imageDetailUrl} style={{ height: "190px", width: "338px" }} />
+                                    <img className="mt-3" src={BASE_URL + currentSkill.imageDetailUrl} style={{ height: "190px", width: "338px" }} />
                                 </div>
                             </div>
                             <div>
@@ -287,7 +283,7 @@ function UserDetail() {
                                         <div key={index} className="d-flex items-center justify-content-between mt-3">
                                             <div className="text-20px font-bold text-#333333 ms-3">
                                                 <div className="d-flex">
-                                                    <img className="w-44px h-44px rounded-50 mt-1" src={"https://localhost:7207" + review.avatarUrl} style={{ height: "44px" }} />
+                                                    <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + review.avatarUrl} style={{ height: "44px" }} />
                                                     <div className='flex ms-2'>
                                                         <div className="d-flex items-center justify-content-between" style={{ width: "870px" }}>
                                                             <div className=""> {review.nickName}</div>

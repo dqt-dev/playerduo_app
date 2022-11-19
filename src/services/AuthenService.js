@@ -1,4 +1,4 @@
-import http from "../http-common";
+import http from "./http-common";
 const Login = (loginRequest) => {
     return http.post("Authen/login", loginRequest);
   };

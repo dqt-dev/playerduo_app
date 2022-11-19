@@ -4,6 +4,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 
 import "slick-carousel/slick/slick-theme.css";
+import { BASE_URL } from '../common/SystemConstant';
 
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
@@ -50,7 +51,7 @@ function CategoryCard({ categories }) {
                         return (
                             <div key={index} className="col-sm-2">
                                 <div className="card card-category-small">
-                                    <img src={"https://localhost:7207" + item.imageUrl} className="card-img-top" alt="..." style={{ width: "189px" }} />
+                                    <img src={BASE_URL + item.imageUrl} className="card-img-top" alt="..." style={{ width: "189px" }} />
                                     <div className="card-body" style={{ height: "70px" }}>
                                         <p className="card-text text-center" >{item.categoryName}</p>
                                     </div>
