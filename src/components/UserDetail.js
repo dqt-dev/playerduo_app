@@ -93,7 +93,7 @@ function UserDetail() {
     });
 
 
-    const handleChat = () => 
+    const handleChat = () =>
     {
         const token = localStorage.getItem('user-token');
         if(!token) {
@@ -123,21 +123,16 @@ function UserDetail() {
             'skillId': skillId,
             'quality': quality
         }
-        axios.post("https://localhost:7207/api/Orders/me", requestCreateOrder, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.createNewOrder(requestCreateOrder)
             .then(response => {
                 toast.success(response.data, {
                     position: toast.POSITION.TOP_RIGHT
-                  });
+                    });
             })
             .catch(error => {
-                // console.log(error.response.data)
                 toast.error(error.response.data, {
                     position: toast.POSITION.TOP_RIGHT
-                  });
+                });
             });
     }
 

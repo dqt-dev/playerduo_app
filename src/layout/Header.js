@@ -1,38 +1,13 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/header.css';
 
 import { BsChatLeftQuote } from 'react-icons/bs';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 function Header() {
+  const userInfo = useSelector(state => state.userInfoReducer.userInfo)
 
-  const handleGetUserInfo = () => {
-    const token = localStorage.getItem('user-token');
-    if (!token) {
-      return;
-    }
-    axios.get("https://localhost:7207/api/Users/me", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        setUserInfo(response.data)
-      })
-      .catch(error => {
-        console.log(error);
-        // toast.error(error.response.data, {
-        //   position: toast.POSITION.TOP_RIGHT
-        // });
-      });
-  }
-
-  useEffect(() => {
-    handleGetUserInfo();
-  }, []);
 
 
   const navigate = useNavigate();
@@ -40,8 +15,6 @@ function Header() {
     localStorage.removeItem("user-token");
     navigate('/')
   }
-
-  const [userInfo, setUserInfo] = useState(null);
 
   const goToOrder = () => {
     navigate('/user/orders')
@@ -52,8 +25,8 @@ function Header() {
       <div className="">
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
           <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="/" className="nav-link px-2 link-secondary">ICON HOME</a></li>
-            <li><a href="/" className="nav-link px-2 link-dark">HOME</a></li>
+            <li><Link to={"/"} className="nav-link px-2 link-secondary">ICON HOME</Link></li>
+            <li><Link to={"/"} className="nav-link px-2 link-dark">HOME</Link></li>
           </ul>
           <BsChatLeftQuote size={28} className="me-4" />
           {userInfo !== null ?

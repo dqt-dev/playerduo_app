@@ -3,12 +3,10 @@ import Header from '../layout/Header'
 import NavBar from '../layout/NavBar'
 import '../styles/userinfo.css';
 import coin from '../coin.png';
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import OrderService from './../services/OrderService';
 
 function UserInfo() {
-    const navigate = useNavigate();
     const [orderType, setOrderType] = useState(true); // true is myOder , false is orderMe
 
     const getStatusName = (status) => {
@@ -23,20 +21,9 @@ function UserInfo() {
     const [manageOrder, setManageOrder] = useState([]);
 
     const handleGetMyOrder = () => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.get("https://localhost:7207/api/Orders/me", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.getNewOrder()
             .then(response => {
-
                 setMyOrder(response.data.resultObj)
-                console.log(response.data.resultObj)
-
             })
             .catch(error => {
                 console.log(error)
@@ -44,18 +31,9 @@ function UserInfo() {
     }
 
     const handleManageMyOrder = () => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.get("https://localhost:7207/api/Orders/manage", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.getOrdersManage()
             .then(response => {
                 setManageOrder(response.data.resultObj)
-                console.log(response.data.resultObj)
 
             })
             .catch(error => {
@@ -66,15 +44,7 @@ function UserInfo() {
     }
 
     const handleConfirmOrder = (orderId) => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.put("https://localhost:7207/api/Orders/" + orderId + "/confirm", orderId, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.putConfirmOrder(orderId, orderId)
             .then(response => {
                 handleManageMyOrder();
                 toast.success(response.data, {
@@ -90,15 +60,7 @@ function UserInfo() {
     }
 
     const handleCancelOrder = (orderId) => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
-        axios.put("https://localhost:7207/api/Orders/" + orderId + "/cancel", orderId, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        OrderService.putCancelOrder(orderId, orderId)
             .then(response => {
                 handleManageMyOrder();
                 toast.success(response.data.resultObj, {
