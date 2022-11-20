@@ -5,6 +5,8 @@ import Dashboard from './components/Dashboard';
 import Test from './components/Test';
 import LoginPage from './components/LoginPage';
 import UserDetail from './components/UserDetail';
+import ListUser from './components/ListUser';
+
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
       <Route path="/" element={<Dashboard/>} />
       <Route path="/login" element={<LoginPage/>} />
       <Route path="/user/:userId" search element={<UserDetail/>} />
+      <Route path="/listUser" search element={<ListUser/>} />
+
       {/* <Route path="/test" element={<Test/>} /> */}
     </Routes>
   );
