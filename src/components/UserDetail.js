@@ -27,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import OrderForm from './OrderForm';
 import { BASE_URL } from '../common/SystemConstant';
+import { dateTimeToString } from '../common/ultil';
 
 function UserDetail() {
 
@@ -192,7 +193,7 @@ function UserDetail() {
 
     return (
         <>
-            <Header />
+            <Header handleChat={handleChat} />
             <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
             <div className='container mt-3' style={{ position: "relative" }}>
 
@@ -251,7 +252,7 @@ function UserDetail() {
                                 <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
                                 <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill.rating}  |  Đã phục vụ: {currentSkill.total}</p>
                                 <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Đặt đơn</button>
-                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3"><img src={icon} />Chat</button>
+                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><img src={icon} />Chat</button>
 
                                 <OrderForm user= {user} currentSkill= {currentSkill} quality = {quality} setQuality= {setQuality} handleOrder= {handleOrder}/>
                             </div>
@@ -291,7 +292,7 @@ function UserDetail() {
                                                                 {starArray.map(i => <img key={i} src={star} alt="eva" className=""></img>)}
                                                             </div>
                                                         </div>
-                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt}</div>
+                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt && dateTimeToString(review.createdAt)}</div>
                                                         <div className="text-16px text-#333333">{review.comment}</div>
                                                     </div>
                                                 </div>

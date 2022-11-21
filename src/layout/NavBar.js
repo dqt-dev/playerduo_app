@@ -12,13 +12,8 @@ import UserDetail from "../components/UserDetail";
 function NavBar() {
     const navigate = useNavigate();
 
-    const goToOrder = () => {
-        navigate('/user/orders')
-    }
-
-
-    const goToSkill = () => {
-        navigate('/user/skills')
+    const goToPage = (link) => {
+        navigate(`/user/${link}`)
     }
     return (
         <div className='navbar-custom pt-3'>
@@ -29,15 +24,15 @@ function NavBar() {
                     <AiOutlineUser size={25} />
                     <a className="card-text text-start ms-3 text-decoration-none cursor-pointer">Thông tin cá nhân</a>
                 </div>
-                <div className="card-body">
+                <div className="card-body" onClick={() => goToPage('wallet')}>
                     <IoWalletOutline size={25} />
                     <a className="card-text text-start ms-3 text-decoration-none cursor-pointer">Ví</a>
                 </div>
-                <div className="card-body" onClick={goToOrder}>
+                <div className="card-body" onClick={() => goToPage('orders')}>
                     <AiOutlineShoppingCart size={25} />
                     <a className="card-text text-start ms-3 text-decoration-none cursor-pointer">Đơn hàng</a>
                 </div>
-                <div className="card-body" onClick={goToSkill}>
+                <div className="card-body" onClick={() => goToPage('skills')}>
                     <AiOutlineUser size={25} />
                     <a className="card-text text-start ms-3 text-decoration-none cursor-pointer" >Trở thành Staff</a>
                 </div>

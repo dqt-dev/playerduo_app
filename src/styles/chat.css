@@ -1,6 +1,6 @@
 .box-chat
 {
-    z-index: 1;
+    z-index: 2;
     background-color: #fff;
     box-shadow: 0 0 7px rgba(33,33,33,.3); 
     animation-name: fadeInRight;

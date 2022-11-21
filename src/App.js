@@ -13,6 +13,8 @@ import { USER_TOKEN } from "./common/SystemConstant";
 import { useDispatch } from "react-redux";
 import { getMyInfo } from "./redux/UserInfo/action";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import Checkout from "./components/Checkout";
 const url = [
   {
     url: '/user/orders',
@@ -23,6 +25,11 @@ const url = [
     url: '/user/skills',
     component: <UserInfo type ={4}/>,
     id: 2
+  },
+  {
+    url: '/user/wallet',
+    component: <UserInfo type ={2}/>,
+    id: 3
   }
 ]
 function App() {
@@ -43,11 +50,13 @@ function App() {
   })();
 
   return (
-    <Routes>
+    <PayPalScriptProvider options={{"client-id" : "AZ4c0ODM7QpQJAjznnMsFrIY9yEDnPTJuOGJgq0_YgFyYXJ2tcYn8Won2gjJ6GxiBVe0Vf0r--5AGst0"}}>
+      <Routes>
       <Route path="/" element={<Dashboard />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/user/:userId" search element={<UserDetail/>} />
       <Route path="/test" element={<Test />} />
+      <Route path="/checkout" element={<Checkout />} />
       {url.map(item => {
         return   <Route
         path={item.url}
@@ -61,6 +70,7 @@ function App() {
       })}
 
     </Routes>
+    </PayPalScriptProvider>
   );
 }
 
