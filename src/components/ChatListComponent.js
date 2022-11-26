@@ -76,7 +76,7 @@ function Chat({ isShowChat, setIsShowChat }) {
                 <div className='text-24px fw-bold ms-2'>
                   Chat
                 </div>
-                <div onClick={() => setIsShowChat(false)} className='text-24px me-2 user-select-none button-close'>
+                <div onClick={() => setIsShowChat(false)} className='text-24px me-2 cursor-pointer button-close'>
                   X
                 </div>
               </div>
@@ -86,15 +86,15 @@ function Chat({ isShowChat, setIsShowChat }) {
                     <div onClick={() => setUserId(item.userId)} key={index} class="d-flex items-center justify-content-between pb-2 pt-1 chat-element " data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                       <div class="text-18px font-bold text-#333333 ms-3">
                         <div className="d-flex">
-                          <img class="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUrl} style={{ height: "44px" }} />
+                          <img class="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUrl} style={{ height: "44px", width: "44px" }} />
                           <div className='flex ms-2'>
                             <div className="d-flex items-center justify-content-between" style={{ width: "340px" }}>
-                              <div class="text-18px user-select-none">{item.nickName}</div>
-                              <div className=' flex justify-content-end text-12px user-select-none'>
+                              <div class="text-18px cursor-pointer">{item.nickName}</div>
+                              <div className=' flex justify-content-end text-12px cursor-pointer'>
                                 {dateTimeToString(item.lastestTime)}
                               </div>
                             </div>
-                            <div class="mt-5px text-16px text-#999999 text-message user-select-none">{item.lastestMessage}</div>
+                            <div class="mt-5px text-16px text-#999999 text-message cursor-pointer">{item.lastestMessage}</div>
                           </div>
                         </div>
                       </div>

@@ -8,6 +8,7 @@ import { BASE_URL } from '../common/SystemConstant';
 import CategoryService from '../services/CategoryService';
 import { Howl, Howler } from 'howler';
 import { AiOutlineInbox } from 'react-icons/ai';
+import Loading from './Loading';
 
 function UsersByCategory() {
 
@@ -31,6 +32,8 @@ function UsersByCategory() {
     const [isPlay, setIsPlay] = useState(0);
 
     const [sound, setSound] = useState(null);
+
+    const [loaded, setLoaded] = useState(false);
 
     const stopSound = () => {
         setIsPlay(0);
@@ -56,11 +59,14 @@ function UsersByCategory() {
 
     // find skill from category
     const getSkill = categoryId => {
+        setLoaded(true);
         CategoryService.getAll()
             .then(response => {
+                setLoaded(false);
                 setSkill(response.data[categoryId - 1])
             })
             .catch(e => {
+                setLoaded(false);
                 console.log(e);
             });
     };
@@ -92,6 +98,7 @@ function UsersByCategory() {
 
     return (
         <>
+        <Loading loading={loaded} />
             <Header />
             <div>
                 <div className='gameName'>
@@ -126,7 +133,7 @@ function UsersByCategory() {
                         </select>
                     </div>
 
-                    <div onClick={handleReset} className='ms-4 user-select-none btn-reset ' style={{ fontSize: "20px", color: "#6B39FF" }}>Reset</div>
+                    <div onClick={handleReset} className='ms-4 cursor-pointer btn-reset ' style={{ fontSize: "20px", color: "#6B39FF" }}>Reset</div>
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", marginTop: "18px", paddingLeft: "40px", paddingRight: "40px" }}>
                     {listUser.length > 0 ? listUser.map((skill, index) => {

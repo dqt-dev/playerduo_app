@@ -34,7 +34,7 @@ function WalletPage() {
         <div className='ms-4 mt-3' style={{ width: "900px" }}>
             <div className='border rounded text-20px fw-bold d-flex pt-2 pb-2' style={{ backgroundColor: "#ffff" }}>
                 <div className='ms-3'>Số dư tài khoản:</div>
-                <div className=' fw-bold ps-1 user-select-none text-20px user-select-none ms-2 me-1'>300</div>
+                <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer ms-2 me-1'>300</div>
                 <img src={coin} style={{ height: "30px" }} />
             </div>
 
@@ -48,11 +48,11 @@ function WalletPage() {
                             <div onClick={() => handleLog(item)} className='rounded border wallet-item mt-3'>
                                 <div className='d-flex justify-content-center pt-2'>
                                     <img src={coin} />
-                                    <div className=' fw-bold ps-1 user-select-none text-20px user-select-none'>{item.coin}</div>
+                                    <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer'>{item.coin}</div>
                                 </div>
                                 <hr className='mt-2 mb-0' />
                                 <div className='d-flex justify-content-center pt-2'>
-                                    <div className=' fw-bold ps-1 user-select-none'>{item.money}$</div>
+                                    <div className=' fw-bold ps-1 cursor-pointer'>{item.money}$</div>
                                 </div>
                             </div>
                         )

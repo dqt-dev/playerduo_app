@@ -1,18 +1,18 @@
 
 
-import React from 'react';
+import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
-import ChatBoxComponent from './ChatBoxComponent';
-import RecordView from './RecordView';
-
 
 function Test() {
+  const notify = () => toast.success("ákfjsakfj", {
+    position: toast.POSITION.TOP_CENTER
+    });
 
   return (
-    <>
-      <RecordView/>
-    </>
+    <div> jshkashfk
+      <button onClick={notify}>Notify !</button>
+      <ToastContainer />
+    </div>
   );
 }
 

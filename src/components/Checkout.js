@@ -14,11 +14,11 @@ const Checkout = () => {
         <div className='rounded border wallet-item mt-3'>
           <div className='d-flex justify-content-center pt-2'>
             <img src={coin} />
-            <div className=' fw-bold ps-1 user-select-none text-20px user-select-none'>{paymentRequestInfo.coin}</div>
+            <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer'>{paymentRequestInfo.coin}</div>
           </div>
           <hr className='mt-2 mb-0' />
           <div className='d-flex justify-content-center pt-2'>
-            <div className=' fw-bold ps-1 user-select-none'>{paymentRequestInfo.money}$</div>
+            <div className=' fw-bold ps-1 cursor-pointer'>{paymentRequestInfo.money}$</div>
           </div>
         </div>
       </div>
