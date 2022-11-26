@@ -60,11 +60,11 @@ function Header({ handleChat }) {
                   </div>
                 </div>
                 <hr className="dropdown-divider" />
-                <li><a onClick={() => goToPage('me')} className="dropdown-item">Trang cá nhân</a></li>
-                <li><a onClick={() => goToPage('wallet')} className="dropdown-item">Ví</a></li>
-                <li><a onClick={() => goToPage('orders')} className="dropdown-item">Đơn hàng</a></li>
+                <li><a onClick={() => goToPage('me')} className="dropdown-item cursor-pointer">Trang cá nhân</a></li>
+                <li><a onClick={() => goToPage('wallet')} className="dropdown-item cursor-pointer ">Ví</a></li>
+                <li><a onClick={() => goToPage('orders')} className="dropdown-item cursor-pointer">Đơn hàng</a></li>
                 <li><hr className="dropdown-divider" /></li>
-                <li><a onClick={handleSignOut} className="dropdown-item">Sign out</a></li>
+                <li><a onClick={handleSignOut} className="dropdown-item cursor-pointer">Sign out</a></li>
               </ul>
 
             </div> :

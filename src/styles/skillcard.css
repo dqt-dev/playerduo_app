@@ -23,18 +23,12 @@
     border-radius: 5%;
 }
 
-.avatar:hover {
-    height: 189px;
+.card-skill:hover .avatar{
     transform: scale(1.08);
 }
 
-.card-skill:hover {
-    /* border-radius: 5%; */
-    /*1*/
-    /* border: 2px solid transparent; */
-    /*2*/
-    /* background: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%) border-box; */
-    /*3*/
+.card-skill:hover
+{
     box-shadow: 0 0 7px rgba(33,33,33,.3); 
 }
 

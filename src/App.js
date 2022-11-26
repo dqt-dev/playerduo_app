@@ -6,8 +6,7 @@ import Test from "./components/Test";
 import LoginPage from "./components/LoginPage";
 import UserDetail from "./components/UserDetail";
 import UserComponent from "./components/UserComponent";
-import SkillUser from "./components/SkillUser";
-import React, { useEffect } from "react";
+import React from "react";
 import UserService from "./services/UserSerice";
 import { USER_TOKEN } from "./common/SystemConstant";
 import { useDispatch } from "react-redux";
@@ -16,26 +15,27 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Checkout from "./components/Checkout";
 import UsersByCategory from "./components/UsersByCategory";
-import UserInfo from "./components/UserInfo";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css';
 const url = [
   {
     url: '/user/orders',
-    component: <UserComponent type ={3}/>,
+    component: <UserComponent type={3} />,
     id: 1
   },
   {
     url: '/user/skills',
-    component: <UserComponent type ={4}/>,
+    component: <UserComponent type={4} />,
     id: 3
   },
   {
     url: '/user/wallet',
-    component: <UserComponent type ={2}/>,
+    component: <UserComponent type={2} />,
     id: 2
   },
   {
     url: '/user/me',
-    component: <UserComponent type ={1}/>,
+    component: <UserComponent type={1} />,
     id: 1
   },
 ]
@@ -57,27 +57,28 @@ function App() {
   })();
 
   return (
-    <PayPalScriptProvider options={{"client-id" : "AZ4c0ODM7QpQJAjznnMsFrIY9yEDnPTJuOGJgq0_YgFyYXJ2tcYn8Won2gjJ6GxiBVe0Vf0r--5AGst0"}}>
+    <PayPalScriptProvider options={{ "client-id": "AZ4c0ODM7QpQJAjznnMsFrIY9yEDnPTJuOGJgq0_YgFyYXJ2tcYn8Won2gjJ6GxiBVe0Vf0r--5AGst0" }}>
+      <ToastContainer/>
       <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/user/:userId" search element={<UserDetail/>} />
-      <Route path="/test" element={<Test />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/skill/:categoryId" search element={<UsersByCategory/>} />
-      {url.map(item => {
-        return   <Route
-        path={item.url}
-        key={item.id}
-        element={
-          <PrivateRoute>
-            {item.component}
-          </PrivateRoute>
-        }
-      />
-      })}
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/user/:userId" search element={<UserDetail />} />
+        <Route path="/test" element={<Test />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/skill/:categoryId" search element={<UsersByCategory />} />
+        {url.map(item => {
+          return <Route
+            path={item.url}
+            key={item.id}
+            element={
+              <PrivateRoute>
+                {item.component}
+              </PrivateRoute>
+            }
+          />
+        })}
 
-    </Routes>
+      </Routes>
     </PayPalScriptProvider>
   );
 }

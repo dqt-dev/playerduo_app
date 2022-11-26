@@ -17,7 +17,7 @@ export default function Content({ categories, skill }) {
           let temp = skill.filter(s => s.categoryName === item.categoryName)
           return (
             <div key={index}>
-              <SkillCard data={temp} isPlay = {isPlay} setIsPlay = {setIsPlay} categoryName={item.categoryName} />
+              <SkillCard data={temp} isPlay = {isPlay} setIsPlay = {setIsPlay} categoryName={item.categoryName} categoryId = {item.categoryId}/>
             </div>
           )
         }
