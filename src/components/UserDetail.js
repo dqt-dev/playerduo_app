@@ -27,6 +27,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import OrderForm from './OrderForm';
 import { BASE_URL } from '../common/SystemConstant';
+import { dateTimeToString } from '../common/ultil';
+import Loading from './Loading';
 
 function UserDetail() {
 
@@ -54,10 +56,7 @@ function UserDetail() {
         createdAt: "",
     }
 
-    // const InitOrder = {
-    //     skillId: null,
-    //     quality: null
-    // }
+    const [loaded, setLoaded] = useState(false);
 
     const { userId } = useParams();
 
@@ -81,7 +80,7 @@ function UserDetail() {
 
     const [quality, setQuality] = useState(1);
 
-    // const [requestCreateOrder, setRequestCreateOrder] = useState(InitOrder);
+    const [user, setUser] = useState(initUserInfo);
 
     const stopSound = () => {
         setIsPlay(0);
@@ -124,27 +123,31 @@ function UserDetail() {
             'skillId': skillId,
             'quality': quality
         }
+        setLoaded(true);
         OrderService.createNewOrder(requestCreateOrder)
             .then(response => {
+                setLoaded(false);
                 toast.success(response.data, {
                     position: toast.POSITION.TOP_RIGHT
                     });
             })
             .catch(error => {
+                setLoaded(false);
                 toast.error(error.response.data, {
                     position: toast.POSITION.TOP_RIGHT
                 });
             });
     }
 
-    const [user, setUser] = useState(initUserInfo);
-
     const getUserInfo = userId => {
+        setLoaded(true);
         UserService.get(userId)
             .then(response => {
+                setLoaded(false);
                 setUser(response.data);
             })
             .catch(e => {
+                setLoaded(false);
                 console.log(e);
             });
     };
@@ -192,10 +195,10 @@ function UserDetail() {
 
     return (
         <>
-            <Header />
+        <Loading loading={loaded} />
+            <Header handleChat={handleChat} />
             <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
             <div className='container mt-3' style={{ position: "relative" }}>
-
                 <div className='card main-info'>
                     <div className="mb-3" style={{ width: "280px", height: "70px" }}>
                         <div className="row g-0 ms-4 ">
@@ -233,7 +236,7 @@ function UserDetail() {
                                         <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 skill-index" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
                                             <div style={{ border: "solid #1890ff", width: "130px", borderRadius: "10px" }}>
                                                 <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
-                                                <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
+                                                <div className='category-name-div fw-bold fs-10px '>{skill.categoryName}</div>
                                             </div>
                                         </div>
                                     )
@@ -251,7 +254,7 @@ function UserDetail() {
                                 <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
                                 <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill.rating}  |  Đã phục vụ: {currentSkill.total}</p>
                                 <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Đặt đơn</button>
-                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3"><img src={icon} />Chat</button>
+                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><img src={icon} />Chat</button>
 
                                 <OrderForm user= {user} currentSkill= {currentSkill} quality = {quality} setQuality= {setQuality} handleOrder= {handleOrder}/>
                             </div>
@@ -291,7 +294,7 @@ function UserDetail() {
                                                                 {starArray.map(i => <img key={i} src={star} alt="eva" className=""></img>)}
                                                             </div>
                                                         </div>
-                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt}</div>
+                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt && dateTimeToString(review.createdAt)}</div>
                                                         <div className="text-16px text-#333333">{review.comment}</div>
                                                     </div>
                                                 </div>

@@ -30,7 +30,7 @@
 .button-arrow
 {
     opacity: 0.5;
-    z-index: 20;
+    z-index: 1;
     border-radius: 5%;
 }
 .button-arrow:hover{

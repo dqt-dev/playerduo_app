@@ -10,6 +10,7 @@ import ChatBoxComponent from './ChatBoxComponent';
 import { useSelector } from 'react-redux';
 import MessageService from '../services/MessageService';
 import { BASE_URL } from '../common/SystemConstant';
+import { dateTimeToString } from '../common/ultil';
 
 function Chat({ isShowChat, setIsShowChat }) {
   const userInfo = {
@@ -20,13 +21,11 @@ function Chat({ isShowChat, setIsShowChat }) {
 
   const [listUserChat, setListUserChat] = useState();
 
-  const userCurrent = useSelector(state => state.userInfoReducer.userInfo)
+  const userCurrent = useSelector(state => state.userInfoReducer.userInfo);
 
   const [userChatInfo, setUserChatInfo] = useState(userInfo);
 
   const [userId, setUserId] = useState();
-
-  const [getChat, setGetChat] = useState();
 
   const handleGetUserInfoById = (userId) => {
     const token = localStorage.getItem('user-token');
@@ -43,31 +42,15 @@ function Chat({ isShowChat, setIsShowChat }) {
       });
   };
 
-  const handleGetChat = (userChatId) => {
-
-    MessageService.getMessagesWithUserId(userChatId)
-      .then(response => {
-        setGetChat(response.data);
-      })
-      .catch(error => {
-        // toast.error(error.response.data, {
-        //     position: toast.POSITION.TOP_RIGHT
-        // });
-      });
-  };
-
   useEffect(() => {
     if (userId) {
       // handleGetUserCurrent();
       handleGetUserInfoById(userId);
     }
-    getListChat();
+    if(isShowChat) getListChat();
+    
   }, [isShowChat, userId]);
 
-  useEffect(() => {
-    if (userChatInfo.id != '')
-      handleGetChat(userChatInfo.id);
-  }, [userChatInfo.id]);
 
   const getListChat = () => {
     MessageService.getMyChats()
@@ -108,7 +91,7 @@ function Chat({ isShowChat, setIsShowChat }) {
                             <div className="d-flex items-center justify-content-between" style={{ width: "340px" }}>
                               <div class="text-18px user-select-none">{item.nickName}</div>
                               <div className=' flex justify-content-end text-12px user-select-none'>
-                                {item.lastestTime}
+                                {dateTimeToString(item.lastestTime)}
                               </div>
                             </div>
                             <div class="mt-5px text-16px text-#999999 text-message user-select-none">{item.lastestMessage}</div>
@@ -124,7 +107,7 @@ function Chat({ isShowChat, setIsShowChat }) {
 
           </div>
         </div> : <></>}
-      <ChatBoxComponent userCurrent={userCurrent} userChatInfo={userChatInfo} getChat={getChat} />
+      <ChatBoxComponent userCurrent={userCurrent} userChatInfo={userChatInfo} getListChat={getListChat} />
     </>
 
   );

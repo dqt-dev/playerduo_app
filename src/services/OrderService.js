@@ -5,25 +5,32 @@ const getReviewBySkillId = (skillId) => {
 const createNewOrder = (requestCreateOrder) => {
   return http.post("Orders/me", requestCreateOrder );
 };
+const ratingOrder = (orderId, requestRatingOrder) => {
+  return http.put(`Orders/${orderId}/rating`, requestRatingOrder );
+};
 const getNewOrder = () => {
   return http.get("Orders/me");
 };
 const getOrdersManage = () => {
   return http.get("Orders/manage");
 };
-const putConfirmOrder = (orderId, order) => {
-  return http.put(`Orders/${orderId}/confirm`, order)
+const ConfirmOrder = (orderId) => {
+  return http.put(`Orders/${orderId}/confirm`)
 }
-const putCancelOrder = (orderId, order) => {
-  return http.put(`Orders/${orderId}/cancel`, order)
+const CancelOrder = (orderId) => {
+  return http.put(`Orders/${orderId}/cancel`)
 }
-
+const FinishOrder = (orderId) => {
+  return http.put(`Orders/${orderId}/finish`)
+}
 const OrderService = {
     getReviewBySkillId,
     createNewOrder,
     getOrdersManage,
-    putConfirmOrder,
-    putCancelOrder,
-    getNewOrder
+    ConfirmOrder,
+    CancelOrder,
+    getNewOrder,
+    ratingOrder,
+    FinishOrder
 };
 export default OrderService;
