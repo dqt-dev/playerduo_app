@@ -17,6 +17,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Checkout from "./components/Checkout";
 import UsersByCategory from "./components/UsersByCategory";
 import UserInfo from "./components/UserInfo";
+import LoginGuard from "./components/LoginGuard/LoginGuard";
 const url = [
   {
     url: '/user/orders',
@@ -60,7 +61,11 @@ function App() {
     <PayPalScriptProvider options={{"client-id" : "AZ4c0ODM7QpQJAjznnMsFrIY9yEDnPTJuOGJgq0_YgFyYXJ2tcYn8Won2gjJ6GxiBVe0Vf0r--5AGst0"}}>
       <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={
+        <LoginGuard>
+          <LoginPage />
+        </LoginGuard>
+      } />
       <Route path="/user/:userId" search element={<UserDetail/>} />
       <Route path="/test" element={<Test />} />
       <Route path="/checkout" element={<Checkout />} />
