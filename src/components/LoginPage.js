@@ -5,8 +5,7 @@ import AuthenService from '../services/AuthenService';
 import { useNavigate } from 'react-router-dom';
 
 
-import { toast, ToastContainer } from 'react-toastify';
-import { USER_INFO } from './../common/SystemConstant/index';
+import { toast } from 'react-toastify';
 import { getMyInfo } from './../redux/UserInfo/action';
 import UserService from '../services/UserSerice';
 import { useDispatch } from 'react-redux';
@@ -110,7 +109,6 @@ function LoginPage() {
                     </div>
                 </div>
             </div>
-            <ToastContainer/>
         </>
 
     )

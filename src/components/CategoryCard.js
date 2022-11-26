@@ -54,7 +54,7 @@ function CategoryCard({ categories }) {
                         return (
                             <div onClick= {() => navigate(`skill/${index + 1}`)} key={index} className="col-sm-2">
                                 <div className="card card-category-small">
-                                    <img src={BASE_URL + item.imageUrl} className="card-img-top" alt="..." style={{ width: "189px" }} />
+                                    <img src={BASE_URL + item.imageUrl} className="card-img-top" alt="..." style={{ width: "189px" , height: "189px"}} />
                                     <div className="card-body" style={{ height: "70px" }}>
                                         <p className="card-text text-center" >{item.categoryName}</p>
                                     </div>

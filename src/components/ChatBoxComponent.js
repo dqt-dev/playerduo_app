@@ -15,6 +15,7 @@ import { BASE_URL } from '../common/SystemConstant';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import MessageService from '../services/MessageService';
 import { useRef } from 'react';
+import Loading from './Loading';
 
 function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
 
@@ -37,10 +38,13 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
 
     messageStateRef.current = messages;
 
-    const handleGetChat = (userChatId) => {
+    const [loaded, setLoaded] = useState(false);
 
+    const handleGetChat = (userChatId) => {
+        setLoaded(true);
         MessageService.getMessagesWithUserId(userChatId)
             .then(response => {
+                setLoaded(false);
                 setMessages(response.data);
             })
             .catch(error => {
@@ -155,12 +159,13 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
 
     return (
         <div className="offcanvas offcanvas-end d-flex flex-column" tabIndex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+            <Loading loading={loaded} />
             <div className="">
                 <div className='d-flex'>
                     <div type="button" className="btn btn-back text-reset mt-1" data-bs-dismiss="offcanvas" aria-label="Close" onClick={getListChat}><MdArrowBackIos size={20} /></div>
                     <div className='d-flex'>
                         <div className='position-relative'>
-                            <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "40px" }} />
+                            <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "40px", width: "40px" }} />
                             {userChatInfo.status ? <div className="position-absolute bottom-0 end-0" style={{ background: "green", width: "10px", height: "10px", borderRadius: "50%" }}></div> :
                                 <div className="position-absolute bottom-0 end-0" style={{ background: "red", width: "10px", height: "10px", borderRadius: "50%" }}></div>}
                         </div>
@@ -181,7 +186,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
                                 </div> :
                                 <div className='d-flex justify-content-start ms-2' >
                                     <div className='d-flex'>
-                                        <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "36px" }} />
+                                        <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "36px" , width: "36px"}} />
                                         <div className='pt-2 pb-1 ps-3 pe-3 ms-1 mb-3' style={{ backgroundColor: '#F4F4F4', borderRadius: "16px" }}>
                                             {chat.content}
                                         </div>
@@ -195,7 +200,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
             <hr className='text-gray' style={{ width: "96%", marginLeft: "2%" }} />
             <div className='align-self-start ps-3'>
                 <div className='d-flex'>
-                    <img className="rounded-50 me-2 align-self-center" src={BASE_URL + userCurrent?.avatarUrl} style={{ height: "36px" }} />
+                    <img className="rounded-50 me-2 align-self-center" src={BASE_URL + userCurrent?.avatarUrl} style={{ height: "36px", width: "36px" }} />
                     <div className="ps-2" >
                         <TextareaAutosize placeholder="Aa"  onKeyDown={handleKeyDown} maxRows='3' style={{ width: "270px" }} className="ps-2 pe-2 border rounded" value={messageContent} onChange={(e) => setMessageContent(e.target.value)} />
                     </div>

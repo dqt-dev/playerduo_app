@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../layout/Header'
 import NavBar from '../layout/NavBar'
-import { toast, ToastContainer } from 'react-toastify';
 import SkillService from '../services/SkillService';
 
 import ModalSkill from './ModalSkill';
