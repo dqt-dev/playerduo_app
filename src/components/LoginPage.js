@@ -7,7 +7,7 @@ import Loading from './Loading';
 
 import { ls } from "../common/ultil";
 
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { getMyInfo } from "./../redux/UserInfo/action";
 import UserService from "../services/UserSerice";
 import { useDispatch } from "react-redux";
@@ -252,7 +252,6 @@ function LoginPage() {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </>
   );
 }

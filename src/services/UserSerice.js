@@ -7,8 +7,13 @@ const getMyInfo = () => {
   return http.get("Users/me");
 }
 
+const UpdateUserInfo = (data) => {
+  return http.put("Users/me", data);
+}
+
 const UserService = {
   get,
-  getMyInfo
+  getMyInfo,
+  UpdateUserInfo
 };
 export default UserService;

@@ -200,26 +200,26 @@ function UserDetail() {
             <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
             <div className='container mt-3' style={{ position: "relative" }}>
                 <div className='card main-info'>
-                    <div className="mb-3" style={{ width: "280px", height: "70px" }}>
-                        <div className="row g-0 ms-4 ">
-                            <div className="col-md-4 mx-auto item-center">
-                                <img src={BASE_URL + user.avatarUrl} style={{ width: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
+                    <div className="mb-3 d-flex" style={{  height: "70px" }}>
+                        
+                            <div className="ps-4">
+                                <img src={BASE_URL + user.avatarUrl} style={{ width: "72px" , height: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
                                 {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
                                     <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
                             </div>
-                            <div className="col-md-8 mt-2">
+                            <div className="pt-2 ps-3">
                                 <div className="text-body">
                                     <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
                                     <p className="card-text text-start fw-bold ">ID: 2153860</p>
                                 </div>
                             </div>
-                        </div>
+                        
                     </div>
                 </div>
                 <div className="d-flex bd-highlight mt-3">
                     <div className='card' style={{ height: "800px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }}>
                         <div className="flex" style={{ width: "324px" }}>
-                            <img src={BASE_URL + user.avatarUrl} style={{ width: "324px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }} className="" alt="..." />
+                            <img src={BASE_URL + user.avatarUrl} style={{ width: "324px", height: "324px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }} className="" alt="..." />
                         </div>
                         <div>
                             <div className="text-body ms-2">
@@ -272,7 +272,7 @@ function UserDetail() {
                                     <img className="mt-3" src={BASE_URL + currentSkill.imageDetailUrl} style={{ height: "190px", width: "338px" }} />
                                 </div>
                             </div>
-                            <div>
+                            <div className='pb-3'>
                                 <div className="d-flex items-center justify-content-between mt-3">
                                     <div className="text-20px font-bold text-#333333 ms-3">Đánh Giá Của Người Dùng ({reviews.length})</div>
                                     <div className="d-flex me-3">
@@ -317,7 +317,6 @@ function UserDetail() {
                 </div>
             </div>
             <Footer />
-            <ToastContainer />
         </>
     )
 }

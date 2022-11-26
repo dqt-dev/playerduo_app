@@ -32,7 +32,7 @@ function SiderBar() {
           <div onClick= {() => navigate(`skill/${index + 1}`)} key={index} className="mb-3 card-category" style={{width: "280px", height: "55px"}}>
           <div className="row g-0 row-category">
               <div className="col-md-1 mx-auto">
-                  <img src={BASE_URL + category.imageUrl} style={{ width: "50px" }} className="mt-1" alt="..." />
+                  <img src={BASE_URL + category.imageUrl} style={{ width: "50px" , height: "50px" }} className="mt-1" alt="..." />
               </div>
               <div className="col-md-10">
                   <div className="card-body">
