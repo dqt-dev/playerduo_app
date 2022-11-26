@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/header.css';
 
 import { BsChatLeftQuote } from 'react-icons/bs';
-import { BASE_URL } from '../common/SystemConstant';
+import { BASE_URL,INFO_LOGIN } from '../common/SystemConstant';
 import { useSelector, useDispatch } from 'react-redux';
 import { getMyInfo } from '../redux/UserInfo/action';
-
+import {ls} from "../common/ultil"
 import coin from '../coin.png';
 import { IoIosAddCircle } from 'react-icons/io';
 
@@ -15,7 +15,11 @@ function Header({ handleChat }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSignOut = () => {
+    const infoLogin = ls.get(INFO_LOGIN)
     localStorage.clear()
+    if (infoLogin) {
+      ls.set(INFO_LOGIN, infoLogin)
+    }
     dispatch(getMyInfo(null));
     navigate('/')
   }
