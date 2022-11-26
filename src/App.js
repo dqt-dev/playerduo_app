@@ -17,6 +17,8 @@ import Checkout from "./components/Checkout";
 import UsersByCategory from "./components/UsersByCategory";
 import UserInfo from "./components/UserInfo";
 import LoginGuard from "./components/LoginGuard/LoginGuard";
+import RegisterPage from "./components/RegisterPage/RegisterPage";
+
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
 const url = [
@@ -37,10 +39,23 @@ const url = [
   },
   {
     url: '/user/me',
-    component: <UserComponent type={1} />,
-    id: 1
+    component: <UserComponent type ={1}/>,
+    id: 4
   },
 ]
+const urlLoginGuard = [
+  {
+    url: '/register',
+    component: <RegisterPage/>,
+    id: 1
+  },
+  {
+    url: '/login',
+    component: <LoginPage/>,
+    id: 2
+  }
+]
+
 function App() {
   const dispatch = useDispatch();
   (async () => {
@@ -63,11 +78,17 @@ function App() {
       <ToastContainer/>
       <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/login" element={
-        <LoginGuard>
-          <LoginPage />
-        </LoginGuard>
-      } />
+      {urlLoginGuard.map(item => {
+        return <Route
+        path={item.url}
+        key={item.id}
+        element={
+          <LoginGuard>
+            {item.component}
+          </LoginGuard>
+        }
+      />
+      })}
       <Route path="/user/:userId" search element={<UserDetail/>} />
       <Route path="/test" element={<Test />} />
       <Route path="/checkout" element={<Checkout />} />
