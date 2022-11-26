@@ -47,7 +47,8 @@ function Chat({ isShowChat, setIsShowChat }) {
       // handleGetUserCurrent();
       handleGetUserInfoById(userId);
     }
-    getListChat();
+    if(isShowChat) getListChat();
+    
   }, [isShowChat, userId]);
 
 
@@ -90,7 +91,6 @@ function Chat({ isShowChat, setIsShowChat }) {
                             <div className="d-flex items-center justify-content-between" style={{ width: "340px" }}>
                               <div class="text-18px user-select-none">{item.nickName}</div>
                               <div className=' flex justify-content-end text-12px user-select-none'>
-                                {/* {item.lastestTime} */}
                                 {dateTimeToString(item.lastestTime)}
                               </div>
                             </div>

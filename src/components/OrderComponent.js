@@ -4,31 +4,74 @@ import coin from '../coin.png';
 import RatingModal from './RatingModal';
 import { toast } from 'react-toastify';
 import OrderService from '../services/OrderService';
+import { useEffect } from 'react';
 
-function OrderComponent({ orderType, setOrderType, myOrder, manageOrder, handleManageMyOrder}) {
+function OrderComponent() {
 
-    const [rating, setRating] = useState(null);
+    const [orderId, setOrderId] = useState();
 
-    const [comment, setComment] = useState("");
+    const [orderType, setOrderType] = useState(true); // true is myOder , false is orderMe
 
-    const handleRating = (orderId) => {
+    const [myOrder, setMyOrder] = useState([]);
 
+    const [manageOrder, setManageOrder] = useState([]);
+
+    const handleGetMyOrder = () => {
+        OrderService.getNewOrder()
+            .then(response => {
+                setMyOrder(response.data.resultObj)
+            })
+            .catch(error => {
+                console.log(error)
+            });
     }
+
+    const handleManageMyOrder = () => {
+        OrderService.getOrdersManage()
+            .then(response => {
+                setManageOrder(response.data.resultObj)
+
+            })
+            .catch(error => {
+                toast.error(error.response.data, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            });
+    }
+
+    useEffect(() => {
+        handleGetMyOrder();
+        handleManageMyOrder();
+    }, [orderType]);
+
 
     const handleFinish = (orderId) => {
-
+        OrderService.FinishOrder(orderId)
+            .then(response => {
+                handleManageMyOrder();
+                toast.success(response.data, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            })
+            .catch(error => {
+                handleManageMyOrder();
+                toast.error(error.response.data, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            });
     }
+
 
     const getStatusName = (status) => {
         return status === 1 ? "Chờ xác nhận"
             : status === 2 ? "Đang thực hiện"
                 : status === 3 ? "Hoàn thành"
                     : status === 5 ? "Hoàn thành"
-                    : "Đã hủy"
+                        : "Đã hủy"
     }
 
     const handleConfirmOrder = (orderId) => {
-        OrderService.putConfirmOrder(orderId, orderId)
+        OrderService.ConfirmOrder(orderId)
             .then(response => {
                 handleManageMyOrder();
                 toast.success(response.data, {
@@ -44,7 +87,7 @@ function OrderComponent({ orderType, setOrderType, myOrder, manageOrder, handleM
     }
 
     const handleCancelOrder = (orderId) => {
-        OrderService.putCancelOrder(orderId, orderId)
+        OrderService.CancelOrder(orderId)
             .then(response => {
                 handleManageMyOrder();
                 toast.success(response.data.resultObj, {
@@ -72,22 +115,18 @@ function OrderComponent({ orderType, setOrderType, myOrder, manageOrder, handleM
                 </div>
             </div>
             : (status === 2 && type === 1) ?
-                <div onClick={() => handleConfirmOrder(orderId)} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2'>
+                <div onClick={() => handleFinish(orderId)} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2'>
                     Hoàn thành
                 </div>
-            : (status === 5 && type === 2) ?
-            <div onClick={() => handleConfirmOrder(orderId)} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2'>
-                Đặt lại
-            </div>
-            : (status === 3 && type === 2) ?
-            <div onClick={() => handleRating(orderId)} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2' data-bs-toggle="modal" data-bs-target="#exampleRatingModal">
-                Đánh giá
-            </div> 
-            :<></>
+                : (status === 3 && type === 2) ?
+                    <div onClick={() => setOrderId(orderId)} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2' data-bs-toggle="modal" data-bs-target="#exampleRatingModal">
+                        Đánh giá
+                    </div>
+                    : <></>
     }
     return (
         <div className='order-container ms-4 pt-3 fw-bold text-20px'>
-            <RatingModal/>
+            <RatingModal orderId={orderId} handleGetMyOrder={handleGetMyOrder} />
             <div className='text-24px mb-2'>
                 Đơn hàng
             </div>

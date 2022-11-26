@@ -1,0 +1,181 @@
+.display-flex1{
+    display: flex;
+}
+
+.center {
+    
+}
+
+.lienquan 
+{
+    padding: 0, 20px;
+    color: red;
+
+}
+.gameName {
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+    user-select: none;
+    padding-top: 24px;
+}
+
+.pd-left-right-40px
+{
+    padding: 0, 40px;
+}
+
+.text-24
+{
+    margin-left: 20px;
+    font-family: Gilroy-Medium-2,gilroy-bold-4;
+    color: #0d6efd;
+    font-weight: 500;
+    line-height: 1.2;
+    font-size: calc(1.325rem + .9vw);
+}
+
+.text-24:hover 
+{
+    cursor: pointer;
+    background: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.userFill
+{
+    display: flex;
+    padding-left: 40px;
+    padding-right: 40px;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.suggestFill
+{
+    align-items: center;
+    height: 40px;
+}
+
+.sexFill
+{
+    align-items: center;
+    height: 40px;
+}
+
+.levelFill
+{
+    align-items: center;
+    height: 40px;
+}
+
+.positionFill
+{
+    align-items: center;
+    height: 40px;
+}
+
+.display-flex 
+{
+    display: flex;
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-left: 12px;
+    margin-right: 6px;
+    background-color: #fff;
+    font-size: 20px;
+    color: #000000d9;
+    border-radius: 8px;
+}
+
+.iconFill
+{
+    width: 30px;
+    height: 30px;
+}
+
+/* phần người dùng */
+.imgUser {
+    max-width: 100%;
+    border-radius: 8px 0 0 8px;
+}
+
+.img-stateIcon-voiceIcon .onlineStatus {
+    width: 14px;
+    height: 14px;
+}
+
+.img-stateIcon-voiceIcon .offlineStatus {
+    width: 14px;
+    height: 14px;
+}
+
+.img-stateIcon-voiceIcon {
+    position: relative;
+}
+
+.onlineStatus {
+    background-color: green;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #fff;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.offlineStatus {
+    background-color: red;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #fff;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.voiceIcon-time {
+    width: 60px;
+    height: 24px;
+    align-items: center;
+    display: flex;
+    bottom: 10px;
+    right: 5px;
+    position: absolute;
+}
+
+/*Thong tin user*/
+.infoUser {
+    padding: 16px 18px 10px 18px;
+    width: 342px;
+    height: 200px;
+    background: #fff;
+    position: relative;
+    border-radius: 8px;
+}
+
+.towUser-inline {
+    flex-basis: 50%;
+    padding-right: 20px;
+    margin-top: 18px;
+}
+
+.list_fill{
+    position: absolute;
+    top: 45px;
+    left: 0;
+    background-color: #fff;
+    font-size: 16px;
+    width: 150px;
+    text-align: center;
+    border-style: solid;
+    border-width: 0.5px;
+    border-color: currentColor;
+}
+.selected
+{
+    background-color: #f1ecff;
+}

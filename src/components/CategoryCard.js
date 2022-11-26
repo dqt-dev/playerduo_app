@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick.css";
 
 import "slick-carousel/slick/slick-theme.css";
 import { BASE_URL } from '../common/SystemConstant';
+import { useNavigate } from 'react-router-dom';
 
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
@@ -31,6 +32,8 @@ function SamplePrevArrow(props) {
 
 function CategoryCard({ categories }) {
 
+    const navigate = useNavigate();
+
     const settings = {
         dots: true,
         infinite: true,
@@ -49,7 +52,7 @@ function CategoryCard({ categories }) {
                 <Slider {...settings}>
                     {categories.map((item, index) => {
                         return (
-                            <div key={index} className="col-sm-2">
+                            <div onClick= {() => navigate(`skill/${index + 1}`)} key={index} className="col-sm-2">
                                 <div className="card card-category-small">
                                     <img src={BASE_URL + item.imageUrl} className="card-img-top" alt="..." style={{ width: "189px" }} />
                                     <div className="card-body" style={{ height: "70px" }}>

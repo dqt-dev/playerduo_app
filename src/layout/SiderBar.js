@@ -2,8 +2,12 @@ import '../styles/sidebar.css';
 import React, { useState, useEffect } from "react";
 import CategoryService from "../services/CategoryService";
 import { BASE_URL } from '../common/SystemConstant';
+import { useNavigate } from 'react-router-dom';
 
 function SiderBar() {
+
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
   // chỉ thực thi khi render lần đầu tiên
   useEffect(() => {
@@ -25,7 +29,7 @@ function SiderBar() {
       <h3 className="ms-3">Tất các các game</h3>
       {categories &&
         categories.map((category, index) => (
-          <div key={index} className="mb-3 card-category" style={{width: "280px", height: "55px"}}>
+          <div onClick= {() => navigate(`skill/${index + 1}`)} key={index} className="mb-3 card-category" style={{width: "280px", height: "55px"}}>
           <div className="row g-0 row-category">
               <div className="col-md-1 mx-auto">
                   <img src={BASE_URL + category.imageUrl} style={{ width: "50px" }} className="mt-1" alt="..." />

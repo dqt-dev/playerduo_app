@@ -13,7 +13,6 @@ import '../styles/chatbox.css';
 import { BASE_URL } from '../common/SystemConstant';
 
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-import UserInfo from './UserInfo';
 import MessageService from '../services/MessageService';
 import { useRef } from 'react';
 
@@ -52,6 +51,13 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
     };
 
     const navigate = useNavigate();
+
+    const handleKeyDown = (event) => {
+        if(event.key === 'Enter') {
+            handleSendClick();
+        }
+    };
+
 
     const connectToChatHub = async () => {
         console.log("connect to chat hub")
@@ -191,7 +197,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
                 <div className='d-flex'>
                     <img className="rounded-50 me-2 align-self-center" src={BASE_URL + userCurrent?.avatarUrl} style={{ height: "36px" }} />
                     <div className="ps-2" >
-                        <TextareaAutosize maxRows='3' style={{ width: "270px" }} className="ps-2 pe-2" value={messageContent} onChange={(e) => setMessageContent(e.target.value)} />
+                        <TextareaAutosize placeholder="Aa"  onKeyDown={handleKeyDown} maxRows='3' style={{ width: "270px" }} className="ps-2 pe-2 border rounded" value={messageContent} onChange={(e) => setMessageContent(e.target.value)} />
                     </div>
                     <TbSend onClick={handleSendClick} size={26} className='btn-send align-self-end mb-2 ms-3' />
                 </div>

@@ -8,9 +8,12 @@ import Footer from '../layout/Footer';
 
 import { useNavigate } from 'react-router-dom';
 import Chat from './ChatListComponent';
+import Loading from './Loading';
 
 function Dashboard() {
   const navigate = useNavigate();
+
+  const [loaded, setLoaded] = useState(false);
 
   const [categories, setCategories] = useState([]);
 
@@ -35,11 +38,14 @@ function Dashboard() {
   }, []);
   // truy vấn đến database, gọi hàm get all đế lấy ra tất cả các record 
   const retrieveCategories = () => {
+    setLoaded(true);
     CategoryService.getAll()
       .then(response => {
+        setLoaded(false);
         setCategories(response.data);
       })
       .catch(e => {
+        setLoaded(false);
         console.log(e);
       });
   };
@@ -56,6 +62,7 @@ function Dashboard() {
   }
   return (
     <>
+     <Loading loading={loaded} />
       <Header handleChat = {handleChat}/>
       <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
       <div className='main'>
