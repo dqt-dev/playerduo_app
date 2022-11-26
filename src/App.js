@@ -18,6 +18,8 @@ import Checkout from "./components/Checkout";
 import UsersByCategory from "./components/UsersByCategory";
 import UserInfo from "./components/UserInfo";
 import LoginGuard from "./components/LoginGuard/LoginGuard";
+import RegisterPage from "./components/RegisterPage/RegisterPage";
+
 const url = [
   {
     url: '/user/orders',
@@ -37,9 +39,22 @@ const url = [
   {
     url: '/user/me',
     component: <UserComponent type ={1}/>,
-    id: 1
+    id: 4
   },
 ]
+const urlLoginGuard = [
+  {
+    url: '/register',
+    component: <RegisterPage/>,
+    id: 1
+  },
+  {
+    url: '/login',
+    component: <LoginPage/>,
+    id: 2
+  }
+]
+
 function App() {
   const dispatch = useDispatch();
   (async () => {
@@ -61,11 +76,17 @@ function App() {
     <PayPalScriptProvider options={{"client-id" : "AZ4c0ODM7QpQJAjznnMsFrIY9yEDnPTJuOGJgq0_YgFyYXJ2tcYn8Won2gjJ6GxiBVe0Vf0r--5AGst0"}}>
       <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/login" element={
-        <LoginGuard>
-          <LoginPage />
-        </LoginGuard>
-      } />
+      {urlLoginGuard.map(item => {
+        return <Route
+        path={item.url}
+        key={item.id}
+        element={
+          <LoginGuard>
+            {item.component}
+          </LoginGuard>
+        }
+      />
+      })}
       <Route path="/user/:userId" search element={<UserDetail/>} />
       <Route path="/test" element={<Test />} />
       <Route path="/checkout" element={<Checkout />} />
