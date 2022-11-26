@@ -15,6 +15,8 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Checkout from "./components/Checkout";
 import UsersByCategory from "./components/UsersByCategory";
+import UserInfo from "./components/UserInfo";
+import LoginGuard from "./components/LoginGuard/LoginGuard";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
 const url = [
@@ -60,23 +62,27 @@ function App() {
     <PayPalScriptProvider options={{ "client-id": "AZ4c0ODM7QpQJAjznnMsFrIY9yEDnPTJuOGJgq0_YgFyYXJ2tcYn8Won2gjJ6GxiBVe0Vf0r--5AGst0" }}>
       <ToastContainer/>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/user/:userId" search element={<UserDetail />} />
-        <Route path="/test" element={<Test />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/skill/:categoryId" search element={<UsersByCategory />} />
-        {url.map(item => {
-          return <Route
-            path={item.url}
-            key={item.id}
-            element={
-              <PrivateRoute>
-                {item.component}
-              </PrivateRoute>
-            }
-          />
-        })}
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/login" element={
+        <LoginGuard>
+          <LoginPage />
+        </LoginGuard>
+      } />
+      <Route path="/user/:userId" search element={<UserDetail/>} />
+      <Route path="/test" element={<Test />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/skill/:categoryId" search element={<UsersByCategory/>} />
+      {url.map(item => {
+        return   <Route
+        path={item.url}
+        key={item.id}
+        element={
+          <PrivateRoute>
+            {item.component}
+          </PrivateRoute>
+        }
+      />
+      })}
 
       </Routes>
     </PayPalScriptProvider>

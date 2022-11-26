@@ -5,3 +5,5 @@ export const BASE_URL = "https://cf47-2001-ee0-4b77-cd60-2c50-d0d0-e553-a5bd.ngr
 export const USER_TOKEN = "user-token";
 
 export const USER_INFO = "USER_INFO"
+
+export const INFO_LOGIN = "LOGIN_INFO"

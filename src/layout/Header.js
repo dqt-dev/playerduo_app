@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/header.css';
 
 import { BsChatLeftQuote } from 'react-icons/bs';
-import { BASE_URL } from '../common/SystemConstant';
+import { BASE_URL,INFO_LOGIN } from '../common/SystemConstant';
 import { useSelector, useDispatch } from 'react-redux';
 import { getMyInfo } from '../redux/UserInfo/action';
-
+import {ls} from "../common/ultil"
 import coin from '../coin.png';
 import { IoIosAddCircle } from 'react-icons/io';
 
@@ -15,7 +15,11 @@ function Header({ handleChat }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleSignOut = () => {
+    const infoLogin = ls.get(INFO_LOGIN)
     localStorage.clear()
+    if (infoLogin) {
+      ls.set(INFO_LOGIN, infoLogin)
+    }
     dispatch(getMyInfo(null));
     navigate('/')
   }
@@ -32,8 +36,8 @@ function Header({ handleChat }) {
             <li><Link to={"/"} className="nav-link px-2 link-secondary">ICON HOME</Link></li>
             <li><Link to={"/"} className="nav-link px-2 link-dark">HOME</Link></li>
           </ul>
-          <div class="form-check form-switch me-3">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style={{height: "20px", width: "40px"}}/>
+          <div className="form-check form-switch me-3">
+            <input className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style={{height: "20px", width: "40px"}}/>
           </div>
           <div onClick={() => goToPage('wallet')} className='d-flex justify-content-center rounded pt-1 pb-1 me-3 item-coin-header' style={{ width: "90px", backgroundColor: "#e8e8f1" }}>
             <img src={coin} style={{ height: "25px" }} />
