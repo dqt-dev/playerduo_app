@@ -6,11 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import {ls} from "../common/ultil"
 
-<<<<<<< HEAD
-import { toast, ToastContainer } from 'react-toastify';
-=======
 import { toast } from 'react-toastify';
->>>>>>> 0e21c295cc938f685d17ed77d135784126ada898
 import { getMyInfo } from './../redux/UserInfo/action';
 import UserService from '../services/UserSerice';
 import { useDispatch } from 'react-redux';
@@ -241,10 +237,6 @@ function LoginPage() {
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
-            <ToastContainer />
-=======
->>>>>>> 0e21c295cc938f685d17ed77d135784126ada898
         </>
 
     );
