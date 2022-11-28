@@ -27,7 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import OrderForm from './OrderForm';
 import { BASE_URL } from '../common/SystemConstant';
-import { dateTimeToString } from '../common/ultil';
+import { handleConvertDate } from '../common/ultil';
 import Loading from './Loading';
 
 function UserDetail() {
@@ -115,10 +115,6 @@ function UserDetail() {
     }
 
     const handleOrder = (skillId, quality) => {
-        const token = localStorage.getItem('user-token');
-        if(!token) {
-            navigate('/login');
-        }
         const requestCreateOrder = {
             'skillId': skillId,
             'quality': quality
@@ -193,10 +189,12 @@ function UserDetail() {
         }
     }, [skillId, userId]);
 
+    const [userInfo, setUserInfo] = useState("");
+
     return (
         <>
         <Loading loading={loaded} />
-            <Header handleChat={handleChat} />
+            <Header handleChat={handleChat} user = {userInfo} setUser = {setUserInfo}/>
             <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
             <div className='container mt-3' style={{ position: "relative" }}>
                 <div className='card main-info'>
@@ -294,8 +292,8 @@ function UserDetail() {
                                                                 {starArray.map(i => <img key={i} src={star} alt="eva" className=""></img>)}
                                                             </div>
                                                         </div>
-                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt && dateTimeToString(review.createdAt)}</div>
-                                                        <div className="text-16px text-#333333">{review.comment}</div>
+                                                        <div className="mt-5px text-16px text-#999999">{review?.updatedAt && handleConvertDate(review?.updatedAt)}</div>
+                                                        <div className="text-16px text-#333333">{review?.comment}</div>
                                                     </div>
                                                 </div>
                                             </div>

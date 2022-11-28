@@ -5,8 +5,11 @@ import RatingModal from './RatingModal';
 import { toast } from 'react-toastify';
 import OrderService from '../services/OrderService';
 import { useEffect } from 'react';
+import Loading from './Loading';
 
 function OrderComponent() {
+    
+    const [loaded, setLoaded] = useState(false);
 
     const [orderId, setOrderId] = useState();
 
@@ -16,23 +19,31 @@ function OrderComponent() {
 
     const [manageOrder, setManageOrder] = useState([]);
 
+    const [isShow, setIsShow] = useState(false);
+
     const handleGetMyOrder = () => {
+        setLoaded(true);
         OrderService.getNewOrder()
             .then(response => {
+                setLoaded(false);
                 setMyOrder(response.data.resultObj)
             })
             .catch(error => {
+                setLoaded(false);
                 console.log(error)
             });
     }
 
     const handleManageMyOrder = () => {
+        setLoaded(true);
         OrderService.getOrdersManage()
             .then(response => {
+                setLoaded(false);
                 setManageOrder(response.data.resultObj)
 
             })
             .catch(error => {
+                setLoaded(false);
                 toast.error(error.response.data, {
                     position: toast.POSITION.TOP_RIGHT
                 });
@@ -119,14 +130,15 @@ function OrderComponent() {
                     Hoàn thành
                 </div>
                 : (status === 3 && type === 2) ?
-                    <div onClick={() => setOrderId(orderId)} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2' data-bs-toggle="modal" data-bs-target="#exampleRatingModal">
+                    <div onClick={() => {setOrderId(orderId); setIsShow(true)}} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2' data-bs-toggle="modal" data-bs-target="#exampleRatingModal">
                         Đánh giá
                     </div>
                     : <></>
     }
     return (
         <div className='order-container ms-4 pt-3 fw-bold text-20px'>
-            <RatingModal orderId={orderId} handleGetMyOrder={handleGetMyOrder} />
+            <Loading loading={loaded} />
+            <RatingModal orderId={orderId} handleGetMyOrder={handleGetMyOrder} isShow = {isShow} setIsShow = {setIsShow} />
             <div className='text-24px mb-2'>
                 Đơn hàng
             </div>
@@ -162,7 +174,7 @@ function OrderComponent() {
             </div>
             <hr className='mt-1 mb-0' />
             <div className='list-order overflow-auto '>
-                {!orderType && myOrder.map((item, index) => {
+                {!orderType &&  myOrder.map((item, index) => {
                     return (
                         <div key={index} className="order-item mt-4">
                             <div className='d-flex justify-content-between pt-3' >

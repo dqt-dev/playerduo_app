@@ -10,7 +10,7 @@ import ChatBoxComponent from './ChatBoxComponent';
 import { useSelector } from 'react-redux';
 import MessageService from '../services/MessageService';
 import { BASE_URL } from '../common/SystemConstant';
-import { dateTimeToString } from '../common/ultil';
+import { handleConvertDate } from '../common/ultil';
 
 function Chat({ isShowChat, setIsShowChat }) {
   const userInfo = {
@@ -83,18 +83,18 @@ function Chat({ isShowChat, setIsShowChat }) {
               {
                 listUserChat && listUserChat.map((item, index) => {
                   return (
-                    <div onClick={() => setUserId(item.userId)} key={index} class="d-flex items-center justify-content-between pb-2 pt-1 chat-element " data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-                      <div class="text-18px font-bold text-#333333 ms-3">
+                    <div onClick={() => setUserId(item.userId)} key={index} className="d-flex items-center justify-content-between pb-2 pt-1 chat-element " data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                      <div className="text-18px font-bold text-#333333 ms-3">
                         <div className="d-flex">
-                          <img class="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUrl} style={{ height: "44px", width: "44px" }} />
+                          <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUrl} style={{ height: "44px", width: "44px" }} />
                           <div className='flex ms-2'>
                             <div className="d-flex items-center justify-content-between" style={{ width: "340px" }}>
-                              <div class="text-18px cursor-pointer">{item.nickName}</div>
+                              <div className="text-18px cursor-pointer">{item.nickName}</div>
                               <div className=' flex justify-content-end text-12px cursor-pointer'>
-                                {dateTimeToString(item.lastestTime)}
+                                {handleConvertDate(item.lastestTime)}
                               </div>
                             </div>
-                            <div class="mt-5px text-16px text-#999999 text-message cursor-pointer">{item.lastestMessage}</div>
+                            <div className="mt-5px text-16px text-#999999 text-message cursor-pointer">{item.lastestMessage}</div>
                           </div>
                         </div>
                       </div>

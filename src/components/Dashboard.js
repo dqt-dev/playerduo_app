@@ -13,6 +13,8 @@ import Loading from './Loading';
 function Dashboard() {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState("");
+
   const [loaded, setLoaded] = useState(false);
 
   const [categories, setCategories] = useState([]);
@@ -63,7 +65,7 @@ function Dashboard() {
   return (
     <>
      <Loading loading={loaded} />
-      <Header handleChat = {handleChat}/>
+      <Header handleChat = {handleChat} user = {user} setUser = {setUser}/>
       <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
       <div className='main'>
         <SiderBar />

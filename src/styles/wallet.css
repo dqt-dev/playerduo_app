@@ -11,3 +11,11 @@
     transform: scale(1.05);
 }
 
+.coin-plus
+{
+    color: green;
+}
+.coin-minus
+{
+    color: red;
+}

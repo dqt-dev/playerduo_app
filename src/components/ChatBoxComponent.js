@@ -187,7 +187,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
                                 <div className='d-flex justify-content-start ms-2' >
                                     <div className='d-flex'>
                                         <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "36px" , width: "36px"}} />
-                                        <div className='pt-2 pb-1 ps-3 pe-3 ms-1 mb-3' style={{ backgroundColor: '#F4F4F4', borderRadius: "16px" }}>
+                                        <div className='pt-2 pb-1 ps-3 pe-3 ms-1 mb-3 content-chat' style={{ backgroundColor: '#F4F4F4', borderRadius: "16px" }}>
                                             {chat.content}
                                         </div>
                                     </div>

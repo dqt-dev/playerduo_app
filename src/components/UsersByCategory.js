@@ -35,6 +35,8 @@ function UsersByCategory() {
 
     const [loaded, setLoaded] = useState(false);
 
+    const [user, setUser] = useState("");
+
     const stopSound = () => {
         setIsPlay(0);
         if (sound) sound.stop();
@@ -99,7 +101,7 @@ function UsersByCategory() {
     return (
         <>
         <Loading loading={loaded} />
-            <Header />
+            <Header user = {user} setUser = {setUser}/>
             <div>
                 <div className='gameName'>
                     <div >
@@ -114,7 +116,7 @@ function UsersByCategory() {
                         Lọc:
                     </div>
                     <div className='ms-3 me-3'>
-                        <select value={cond1} onChange={(e) => setCond1(e.target.value)} class={cond1 === '' ? "form-select form-select-sm " : "form-select form-select-sm selected"} style={{ maxWidth: "150px" }} >
+                        <select value={cond1} onChange={(e) => setCond1(e.target.value)} className={cond1 === '' ? "form-select form-select-sm " : "form-select form-select-sm selected"} style={{ maxWidth: "150px" }} >
                             <option selected value="">Đề cử</option>
                             <option value="1">Mới nhất</option>
                             <option value="2">Đánh giá cao nhất</option>
@@ -126,7 +128,7 @@ function UsersByCategory() {
 
                     </div>
                     <div className='ms-3 me-3'>
-                        <select value={cond2} onChange={(e) => setCond2(e.target.value)} class={cond2 === '' ? "form-select form-select-sm " : "form-select form-select-sm selected"} >
+                        <select value={cond2} onChange={(e) => setCond2(e.target.value)} className={cond2 === '' ? "form-select form-select-sm " : "form-select form-select-sm selected"} >
                             <option value="">Giới tính</option>
                             <option value="1">Nam</option>
                             <option value="2">Nữ</option>

@@ -8,13 +8,11 @@ import { useRef } from 'react';
 import UserService from '../services/UserSerice';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
+import Loading from './Loading';
 
-function UserInfo() {
+function UserInfo({user, setUser}) {
 
-    const userInfo = useSelector(state => state.userInfoReducer.userInfo);
-
-    const [nickName, setNickName] = useState(userInfo?.nickName);
-    const [description, setDescription] = useState(userInfo?.description);
+    const userId = useSelector(state => state.userInfoReducer.userInfo)?.id;
 
     const [avatar, setAvatar] = useState();
 
@@ -23,15 +21,6 @@ function UserInfo() {
 
     const [loaded, setLoaded] = useState(false);
 
-    const requestUpdate = {
-        nickName : '',
-        description : '',
-        avatar : '',
-        voice : '',
-        isLoading: false
-    }
-
-    const [userUpdate, setUserUpdate] = useState(requestUpdate);
 
     const inputRef = useRef(null);
 
@@ -67,6 +56,7 @@ function UserInfo() {
             .then(response => {
                 setLoaded(false);
                 localStorage.setItem(USER_INFO,JSON.stringify(response.data));
+                setUser(response.data);
                 toast.success(response.data, {
                     position: toast.POSITION.TOP_RIGHT
                 });
@@ -79,6 +69,19 @@ function UserInfo() {
             });
     }
 
+    const getUserInfo = (userId) => {
+        setLoaded(true);
+        UserService.get(userId)
+            .then(response => {
+                setLoaded(false);
+                setUser(response.data);
+            })
+            .catch(e => {
+                setLoaded(false);
+                console.log(e);
+            });
+    };
+
     useEffect(() => {
         if (avatar) {
             handleUpdateAvatar();
@@ -86,20 +89,26 @@ function UserInfo() {
         }
     }, [avatar]);
 
-    const handleUpdateProfile = () => {
+    useEffect(() => {
+        getUserInfo(userId);
+    }, [userId]);
+
+    const handleUpdateProfile = (field, value) => {
         let data = new FormData();
-        if(nickName != null) {
-            data.append('nickName', nickName);
+        if(value != null) {
+            data.append(`${field}`, value);
         }
 
         UserService.UpdateUserInfo(data)
             .then(response => {
-                toast.success(response.data, {
-                    position: toast.POSITION.TOP_RIGHT
+                setUser(response.data);
+                localStorage.setItem(USER_INFO,JSON.stringify(response.data));
+                toast.success("Cập nhật thông tin thành công", {
+                    position: toast.POSITION.TOP_CENTER
                 });
             })
             .catch(error => {
-                toast.error(error.response.data, {
+                toast.error("Cập nhật thông tin không thành công", {
                     position: toast.POSITION.TOP_RIGHT
                 });
             });
@@ -109,6 +118,7 @@ function UserInfo() {
 
     return (
         <div className='order-container ms-4 pt-3 fw-bold text-20px'>
+            <Loading loading={loaded} />
             <div className='text-24px mb-2'>
                 Thông tin cá nhân
             </div>
@@ -117,7 +127,7 @@ function UserInfo() {
             <div className='d-flex'>
                 <div className=''>
                     <div>Ảnh đại diện</div>
-                    <img onClick={handleClick} src={BASE_URL + userInfo?.avatarUrl} style={{width: "400px"}}/>
+                    <img onClick={handleClick} src={BASE_URL + user?.avatarUrl} style={{width: "400px"}}/>
                     <input
                         id='avatar'
                         style={{ display: 'none' }}
@@ -130,16 +140,16 @@ function UserInfo() {
                     <div className='pt-2'>Biệt danh</div>
                     {!editNickName ?
                         <div className='d-flex'>
-                            <div>{userInfo?.nickName}</div>
+                            <div>{user?.nickName}</div>
                             <div className='' onClick={() => setEditNickName(true)}>
-                                <img style={{ height: '20px', marginLeft: '5px' }} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAAXNSR0IArs4c6QAAAwtJREFUWEfN2EtoE0EcBvDvv2nwouKjIioUFATBi89DkyAexAeIB0VBfJb20NIkUBXUHiT4pAVbaLbWg7ZYsQeLJw8qChVpVimIJ6+KvXgpolI92GY/2bZJZhOT7G62qYHAJtmd/eWbmf9MIvjPHuK3Jx5mHYFDJrEVwCIN+FAjeN6dko9O7uUbiKTEwmgh0AFisXpzEUxDcKt2La4nhuVPKZgvoESC2sQLDBA4XTIFwciqlTiYeCq/i51XMcgxJiMog6oIVAwjgq8QXNWIXybQTmKTLZESKM+gEphx1GC3/kY+W4hLES6fTOMVgW1OUJ5ATjEZgBuUa5BbjCPUOuzPzD5XIK+YcijRcE1PyRXrPMegSjGlUFadCgq2WMXTEcgvjA1lwlBnnya4kDTkdlmQ35gMKh7iqTQxmJ15gke9hpwsCZovjIWIhtlME30KqL/XkMaioHnF7OJ6TCNFYk0GpGmIJVOi/xNUBcxrEnVKOpMBweaelIwXgKqOsaa6oFU35E7BtF8QDDCYNHBWRFgAiobYT6Ihby9jW5ucbLLyz4nOjhl7N80WwcHafWhIJMTMbQbmjgqm4WyUVcVkE4od4FL+wBcSy7LSBcDkQBHuMdN4qcT2LRjAzu5R+eSli2bqjItusg0R60UszHbTxA0lnU7dkIvVxmQTitazi0CbUhfO9xrS5QXkNRnboI6G2EMipiQU1w1JugVVilET6iPQnAVpaNFTctcNyA+MCrpHoFEBNekpue8U5BdGBT1Qf1NpAZxJjkpua1BC5icmBwpxiMTxbEIBnNBHZahcQn5j1IQeEziqjPRj+lsZLgVqi3DDlIkR26pdZDko98UK6lC0nk8IHM58oAk6SLxHAEEBakgEAQRBBImZ91aDaCKwIq+xgrXJDUZN6CaBy24v9huTA4W5g8Q7EAEvKBEM1O5Fk7pqe2knC7IOWkM8B6DTDUoE3zUg3mPIQ6+A/OtsO8Z4hNvNNI5QsFEIwvpfh5gC5p6CKRDTomECgjEswVjymfz0C2NLyM9GK2nrL6zhBUO55aRFAAAAAElFTkSuQmCC" class="ml-12px w-18px h-18px cursor-pointer" data-v-2ea5ff2c="" />
+                                <img style={{ height: '20px', marginLeft: '5px' }} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAAXNSR0IArs4c6QAAAwtJREFUWEfN2EtoE0EcBvDvv2nwouKjIioUFATBi89DkyAexAeIB0VBfJb20NIkUBXUHiT4pAVbaLbWg7ZYsQeLJw8qChVpVimIJ6+KvXgpolI92GY/2bZJZhOT7G62qYHAJtmd/eWbmf9MIvjPHuK3Jx5mHYFDJrEVwCIN+FAjeN6dko9O7uUbiKTEwmgh0AFisXpzEUxDcKt2La4nhuVPKZgvoESC2sQLDBA4XTIFwciqlTiYeCq/i51XMcgxJiMog6oIVAwjgq8QXNWIXybQTmKTLZESKM+gEphx1GC3/kY+W4hLES6fTOMVgW1OUJ5ATjEZgBuUa5BbjCPUOuzPzD5XIK+YcijRcE1PyRXrPMegSjGlUFadCgq2WMXTEcgvjA1lwlBnnya4kDTkdlmQ35gMKh7iqTQxmJ15gke9hpwsCZovjIWIhtlME30KqL/XkMaioHnF7OJ6TCNFYk0GpGmIJVOi/xNUBcxrEnVKOpMBweaelIwXgKqOsaa6oFU35E7BtF8QDDCYNHBWRFgAiobYT6Ihby9jW5ucbLLyz4nOjhl7N80WwcHafWhIJMTMbQbmjgqm4WyUVcVkE4od4FL+wBcSy7LSBcDkQBHuMdN4qcT2LRjAzu5R+eSli2bqjItusg0R60UszHbTxA0lnU7dkIvVxmQTitazi0CbUhfO9xrS5QXkNRnboI6G2EMipiQU1w1JugVVilET6iPQnAVpaNFTctcNyA+MCrpHoFEBNekpue8U5BdGBT1Qf1NpAZxJjkpua1BC5icmBwpxiMTxbEIBnNBHZahcQn5j1IQeEziqjPRj+lsZLgVqi3DDlIkR26pdZDko98UK6lC0nk8IHM58oAk6SLxHAEEBakgEAQRBBImZ91aDaCKwIq+xgrXJDUZN6CaBy24v9huTA4W5g8Q7EAEvKBEM1O5Fk7pqe2knC7IOWkM8B6DTDUoE3zUg3mPIQ6+A/OtsO8Z4hNvNNI5QsFEIwvpfh5gC5p6CKRDTomECgjEswVjymfz0C2NLyM9GK2nrL6zhBUO55aRFAAAAAElFTkSuQmCC" className="ml-12px w-18px h-18px cursor-pointer" data-v-2ea5ff2c="" />
                             </div>
                         </div> :
                         <div>
-                            <input name= 'nickName' id = 'nickName' value={nickName} onChange={(e) => setNickName(e.target.value)} className='mb-2'></input>
+                            <input name= 'nickName' id = 'nickName' value={user?.nickName} onChange={(e) => setUser({ ...user, nickName : e.target.value})} className='mb-2'></input>
                             <div className='d-flex justify-content-center'>
-                                <button onClick={() => {setEditNickName(false); setNickName(userInfo?.nickName)}} type="button" class="btn btn-light">Hủy</button>
-                                <button onClick={() => {setEditNickName(false); handleUpdateProfile();}} type="button" class="btn btn-info">Lưu</button>
+                                <button onClick={() => {setEditNickName(false); setUser({ ...user, nickName : user?.nickName})}} type="button" className="btn btn-light">Hủy</button>
+                                <button onClick={() => {setEditNickName(false); handleUpdateProfile('nickName', user?.nickName);}} type="button" className="btn btn-info">Lưu</button>
                             </div>
                         </div>
                     }
@@ -152,22 +162,20 @@ function UserInfo() {
 
                     {!editDescription ?
                         <div className='d-flex'>
-                            <div>{description}</div>
+                            <div>{user?.description}</div>
                             <div onClick={() => setEditDescription(true)}>
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAAXNSR0IArs4c6QAAAwtJREFUWEfN2EtoE0EcBvDvv2nwouKjIioUFATBi89DkyAexAeIB0VBfJb20NIkUBXUHiT4pAVbaLbWg7ZYsQeLJw8qChVpVimIJ6+KvXgpolI92GY/2bZJZhOT7G62qYHAJtmd/eWbmf9MIvjPHuK3Jx5mHYFDJrEVwCIN+FAjeN6dko9O7uUbiKTEwmgh0AFisXpzEUxDcKt2La4nhuVPKZgvoESC2sQLDBA4XTIFwciqlTiYeCq/i51XMcgxJiMog6oIVAwjgq8QXNWIXybQTmKTLZESKM+gEphx1GC3/kY+W4hLES6fTOMVgW1OUJ5ATjEZgBuUa5BbjCPUOuzPzD5XIK+YcijRcE1PyRXrPMegSjGlUFadCgq2WMXTEcgvjA1lwlBnnya4kDTkdlmQ35gMKh7iqTQxmJ15gke9hpwsCZovjIWIhtlME30KqL/XkMaioHnF7OJ6TCNFYk0GpGmIJVOi/xNUBcxrEnVKOpMBweaelIwXgKqOsaa6oFU35E7BtF8QDDCYNHBWRFgAiobYT6Ihby9jW5ucbLLyz4nOjhl7N80WwcHafWhIJMTMbQbmjgqm4WyUVcVkE4od4FL+wBcSy7LSBcDkQBHuMdN4qcT2LRjAzu5R+eSli2bqjItusg0R60UszHbTxA0lnU7dkIvVxmQTitazi0CbUhfO9xrS5QXkNRnboI6G2EMipiQU1w1JugVVilET6iPQnAVpaNFTctcNyA+MCrpHoFEBNekpue8U5BdGBT1Qf1NpAZxJjkpua1BC5icmBwpxiMTxbEIBnNBHZahcQn5j1IQeEziqjPRj+lsZLgVqi3DDlIkR26pdZDko98UK6lC0nk8IHM58oAk6SLxHAEEBakgEAQRBBImZ91aDaCKwIq+xgrXJDUZN6CaBy24v9huTA4W5g8Q7EAEvKBEM1O5Fk7pqe2knC7IOWkM8B6DTDUoE3zUg3mPIQ6+A/OtsO8Z4hNvNNI5QsFEIwvpfh5gC5p6CKRDTomECgjEswVjymfz0C2NLyM9GK2nrL6zhBUO55aRFAAAAAElFTkSuQmCC" class="ml-12px w-18px h-18px cursor-pointer" data-v-2ea5ff2c="" style={{ height: '20px', marginLeft: '5px' }} />
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAAXNSR0IArs4c6QAAAwtJREFUWEfN2EtoE0EcBvDvv2nwouKjIioUFATBi89DkyAexAeIB0VBfJb20NIkUBXUHiT4pAVbaLbWg7ZYsQeLJw8qChVpVimIJ6+KvXgpolI92GY/2bZJZhOT7G62qYHAJtmd/eWbmf9MIvjPHuK3Jx5mHYFDJrEVwCIN+FAjeN6dko9O7uUbiKTEwmgh0AFisXpzEUxDcKt2La4nhuVPKZgvoESC2sQLDBA4XTIFwciqlTiYeCq/i51XMcgxJiMog6oIVAwjgq8QXNWIXybQTmKTLZESKM+gEphx1GC3/kY+W4hLES6fTOMVgW1OUJ5ATjEZgBuUa5BbjCPUOuzPzD5XIK+YcijRcE1PyRXrPMegSjGlUFadCgq2WMXTEcgvjA1lwlBnnya4kDTkdlmQ35gMKh7iqTQxmJ15gke9hpwsCZovjIWIhtlME30KqL/XkMaioHnF7OJ6TCNFYk0GpGmIJVOi/xNUBcxrEnVKOpMBweaelIwXgKqOsaa6oFU35E7BtF8QDDCYNHBWRFgAiobYT6Ihby9jW5ucbLLyz4nOjhl7N80WwcHafWhIJMTMbQbmjgqm4WyUVcVkE4od4FL+wBcSy7LSBcDkQBHuMdN4qcT2LRjAzu5R+eSli2bqjItusg0R60UszHbTxA0lnU7dkIvVxmQTitazi0CbUhfO9xrS5QXkNRnboI6G2EMipiQU1w1JugVVilET6iPQnAVpaNFTctcNyA+MCrpHoFEBNekpue8U5BdGBT1Qf1NpAZxJjkpua1BC5icmBwpxiMTxbEIBnNBHZahcQn5j1IQeEziqjPRj+lsZLgVqi3DDlIkR26pdZDko98UK6lC0nk8IHM58oAk6SLxHAEEBakgEAQRBBImZ91aDaCKwIq+xgrXJDUZN6CaBy24v9huTA4W5g8Q7EAEvKBEM1O5Fk7pqe2knC7IOWkM8B6DTDUoE3zUg3mPIQ6+A/OtsO8Z4hNvNNI5QsFEIwvpfh5gC5p6CKRDTomECgjEswVjymfz0C2NLyM9GK2nrL6zhBUO55aRFAAAAAElFTkSuQmCC" className="ml-12px w-18px h-18px cursor-pointer" data-v-2ea5ff2c="" style={{ height: '20px', marginLeft: '5px' }} />
                             </div>
                         </div> :
                         <div>
-                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+                            <textarea value={user?.description} onChange={(e) => setUser({ ...user, description : e.target.value})} />
                             <div className='d-flex'>
-                                <button onClick={() => setEditDescription(false)} type="button" class="btn btn-light">Hủy</button>
-                                <button onClick={() => setEditDescription(false)} type="button" class="btn btn-info">Lưu</button>
+                                <button onClick={() => {setEditDescription(false); setUser({ ...user, description : user?.description})}} type="button" className="btn btn-light">Hủy</button>
+                                <button onClick={() => {setEditDescription(false); handleUpdateProfile('description', user?.description);}} type="button" className="btn btn-info">Lưu</button>
                             </div>
                         </div>
                     }
                 </div>
-
-
             </div>
             <RecordModel />
 
