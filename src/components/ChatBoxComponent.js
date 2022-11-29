@@ -16,8 +16,11 @@ import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import MessageService from '../services/MessageService';
 import { useRef } from 'react';
 import Loading from './Loading';
+import UserService from '../services/UserSerice';
 
-function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
+function ChatBoxComponent({ userChatInfo, getListChat }) {
+
+    const [userCurrent, setCurrentUser] = useState();
 
     const [messages, setMessages] = useState([]);
 
@@ -40,6 +43,25 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
 
     const [loaded, setLoaded] = useState(false);
 
+    const getUserInfo = userId => {
+        setLoaded(true);
+        UserService.get(currentUserId)
+            .then(response => {
+                setLoaded(false);
+                setCurrentUser(response.data);
+            })
+            .catch(e => {
+                setLoaded(false);
+                console.log(e);
+            });
+    };
+
+    // useEffect(() => {
+    //     if (currentUserId) {
+    //         getUserInfo(currentUserId);
+    //     }
+    // }, [currentUserId]);
+
     const handleGetChat = (userChatId) => {
         setLoaded(true);
         MessageService.getMessagesWithUserId(userChatId)
@@ -57,18 +79,18 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
     const navigate = useNavigate();
 
     const handleKeyDown = (event) => {
-        if(event.key === 'Enter') {
+        if (event.key === 'Enter') {
             handleSendClick();
         }
     };
 
 
     const connectToChatHub = async () => {
-        console.log("connect to chat hub")
-        console.log('current user id', currentUserId);
+        // console.log("connect to chat hub")
+        // console.log('current user id', currentUserId);
 
         if (connection) {
-            console.log("connection exist")
+            // console.log("connection exist")
             return;
         }
 
@@ -79,21 +101,19 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
                 .build();
 
             // method to receive message from our server
-            connection.on("ShakeHandMessage", (message) => {
-                console.log('Shake hand message:', message);
-            });
+            // connection.on("ShakeHandMessage", (message) => {
+            //     console.log('Shake hand message:', message);
+            // });
             // method to receive message from our server
             connection.on("ReceiveMessage", (message) => {
-                console.log('message received:', message);
+                // console.log('message received:', message);
                 //console.log(`current: ${this.state.current_user.id}, sender: ${message.senderId}`)
                 //console.log('current != sender ?', this.state.current_user.id !== message.senderId)          
                 // update messages list logic
 
                 if (message.senderId == userChatInfo.id || message.senderId == currentUserId) {
                     let messages = messageStateRef.current;
-                    console.log(' messages 11111:', messages)
                     setMessages([...messages, message]);
-                    console.log('update list messages')
                 }
             });
 
@@ -151,6 +171,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
             if (userChatInfo.id != '') {
                 await connectToChatHub();
                 handleGetChat(userChatInfo.id);
+                getUserInfo(currentUserId);
             }
         }
         fetchData();
@@ -186,7 +207,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
                                 </div> :
                                 <div className='d-flex justify-content-start ms-2' >
                                     <div className='d-flex'>
-                                        <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "36px" , width: "36px"}} />
+                                        <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo.avatarUrl} style={{ height: "36px", width: "36px" }} />
                                         <div className='pt-2 pb-1 ps-3 pe-3 ms-1 mb-3 content-chat' style={{ backgroundColor: '#F4F4F4', borderRadius: "16px" }}>
                                             {chat.content}
                                         </div>
@@ -202,7 +223,7 @@ function ChatBoxComponent({ userCurrent, userChatInfo, getListChat }) {
                 <div className='d-flex'>
                     <img className="rounded-50 me-2 align-self-center" src={BASE_URL + userCurrent?.avatarUrl} style={{ height: "36px", width: "36px" }} />
                     <div className="ps-2" >
-                        <TextareaAutosize placeholder="Aa"  onKeyDown={handleKeyDown} maxRows='3' style={{ width: "270px" }} className="ps-2 pe-2 border rounded" value={messageContent} onChange={(e) => setMessageContent(e.target.value)} />
+                        <TextareaAutosize placeholder="Aa" onKeyDown={handleKeyDown} maxRows='3' style={{ width: "270px" }} className="ps-2 pe-2 border rounded" value={messageContent} onChange={(e) => setMessageContent(e.target.value)} />
                     </div>
                     <TbSend onClick={handleSendClick} size={26} className='btn-send align-self-end mb-2 ms-3' />
                 </div>

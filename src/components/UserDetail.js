@@ -19,8 +19,6 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import SkillService from '../services/SkillService';
 import { Howl, Howler } from 'howler';
 import OrderService from '../services/OrderService';
-import Test from './Test';
-import Chat from './ChatListComponent';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -29,6 +27,10 @@ import OrderForm from './OrderForm';
 import { BASE_URL } from '../common/SystemConstant';
 import { handleConvertDate } from '../common/ultil';
 import Loading from './Loading';
+import MessageService from '../services/MessageService';
+import ChatBoxComponent from './ChatBoxComponent';
+import { useSelector } from 'react-redux';
+import Chat from './ChatListComponent';
 
 function UserDetail() {
 
@@ -81,6 +83,8 @@ function UserDetail() {
     const [quality, setQuality] = useState(1);
 
     const [user, setUser] = useState(initUserInfo);
+
+    const userCurrent = useSelector(state => state.userInfoReducer.userInfo);
 
     const stopSound = () => {
         setIsPlay(0);
@@ -189,13 +193,26 @@ function UserDetail() {
         }
     }, [skillId, userId]);
 
-    const [userInfo, setUserInfo] = useState("");
+    const [listUserChat, setListUserChat] = useState();
+    const getListChat = () => {
+        MessageService.getMyChats()
+          .then(response => {
+            setListUserChat(response.data);
+            console.log(response.data);
+          })
+          .catch(error => {
+            // console.log(error.response.data)
+            toast.error(error.response.data, {
+              position: toast.POSITION.TOP_RIGHT
+            });
+          });
+      };
 
     return (
         <>
         <Loading loading={loaded} />
-            <Header handleChat={handleChat} user = {userInfo} setUser = {setUserInfo}/>
-            <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
+            <Header handleChat={handleChat} user = {userCurrent} setUser = {setUser}/>
+            <ChatBoxComponent userChatInfo={user} getListChat={getListChat} />
             <div className='container mt-3' style={{ position: "relative" }}>
                 <div className='card main-info'>
                     <div className="mb-3 d-flex" style={{  height: "70px" }}>
@@ -292,8 +309,8 @@ function UserDetail() {
                                                                 {starArray.map(i => <img key={i} src={star} alt="eva" className=""></img>)}
                                                             </div>
                                                         </div>
-                                                        <div className="mt-5px text-16px text-#999999">{review?.updatedAt && handleConvertDate(review?.updatedAt)}</div>
-                                                        <div className="text-16px text-#333333">{review?.comment}</div>
+                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt && handleConvertDate(review.createdAt)}</div>
+                                                        <div className="text-16px text-#333333">{review.comment}</div>
                                                     </div>
                                                 </div>
                                             </div>

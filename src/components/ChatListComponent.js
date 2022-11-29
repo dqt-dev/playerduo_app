@@ -107,7 +107,7 @@ function Chat({ isShowChat, setIsShowChat }) {
 
           </div>
         </div> : <></>}
-      <ChatBoxComponent userCurrent={userCurrent} userChatInfo={userChatInfo} getListChat={getListChat} />
+      <ChatBoxComponent userChatInfo={userChatInfo} getListChat={getListChat} />
     </>
 
   );
