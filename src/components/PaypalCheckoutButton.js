@@ -1,7 +1,11 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import UserService from "../services/UserSerice";
 
 const PaypalCheckoutButton = (props) => {
+    const navigate = useNavigate();
     const { paymentRequestInfo } = props;
 
     const [paidFor, setPaidFor] = useState(false);
@@ -11,8 +15,22 @@ const PaypalCheckoutButton = (props) => {
     const handleApprove = (orderId) => {
         // Call backend function to fulfill order
 
+        UserService.Payment({coin: paymentRequestInfo.coin})
+        .then(response => {
+            setPaidFor(true);
+            toast.success(response.data, {
+                position: toast.POSITION.TOP_RIGHT
+                });
+        })
+        .catch(error => {
+            setPaidFor(false);
+            toast.error(error.response.data, {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        });
+
         // if response is success
-        setPaidFor(true);
+        
         // Refresh user's account or subscription status
 
         // if response is error
@@ -22,6 +40,7 @@ const PaypalCheckoutButton = (props) => {
     if (paidFor) {
         // Display success message, modal or redirect user to success page
         alert("Thank you for your purchase!");
+        // navigate('/payment/success');
     }
 
     if (error) {
@@ -49,10 +68,10 @@ const PaypalCheckoutButton = (props) => {
 
     //     // change date time format to string dd/MM/yyyy
     //     for (let i = 0; i < adultsList.length; i++) {
-    //         adultsList[i].dob = this.dateTimeToString(adultsList[i].dob);
+    //         adultsList[i].dob = this.handleConvertDate(adultsList[i].dob);
     //     }
     //     for (let i = 0; i < childrenList.length; i++) {
-    //         childrenList[i].dob = this.dateTimeToString(childrenList[i].dob);
+    //         childrenList[i].dob = this.handleConvertDate(childrenList[i].dob);
     //     }
 
     //     // start point & end point

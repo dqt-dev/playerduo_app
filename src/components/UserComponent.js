@@ -8,16 +8,18 @@ import UserInfo from './UserInfo';
 import WalletPage from './WalletPage';
 
 function UserComponent({ type }) {
-    console.log("type :", type)
+
+    const [user, setUser] = useState("");
+
     return (
         <>
-            <Header />
+            <Header user = {user} setUser = {setUser} />
             <div className='d-flex'>
                 <NavBar />
-                {type === 3 ? <OrderComponent />
-                    : type === 2 ? <WalletPage />
-                        : type === 4 ? <SkillUser />
-                            : type === 1 ? <UserInfo />
+                {type === 3 ? <OrderComponent user = {user} setUser = {setUser}/>
+                    : type === 2 ? <WalletPage user = {user} setUser = {setUser}/>
+                        : type === 4 ? <SkillUser user = {user} setUser = {setUser}/>
+                            : type === 1 ? <UserInfo user = {user} setUser = {setUser}/>
                                 : <></>}
             </div>
 

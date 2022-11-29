@@ -15,12 +15,11 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Checkout from "./components/Checkout";
 import UsersByCategory from "./components/UsersByCategory";
-import UserInfo from "./components/UserInfo";
-import LoginGuard from "./components/LoginGuard/LoginGuard";
 import RegisterPage from "./components/RegisterPage/RegisterPage";
-
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
+import LoginGuard from "./components/LoginGuard/LoginGuard";
+import PaypalSuccess from "./components/PaypalSuccess";
 const url = [
   {
     url: '/user/orders',
@@ -93,6 +92,7 @@ function App() {
       <Route path="/test" element={<Test />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/skill/:categoryId" search element={<UsersByCategory/>} />
+      <Route path="/payment/success" search element={<PaypalSuccess/>} />
       {url.map(item => {
         return   <Route
         path={item.url}

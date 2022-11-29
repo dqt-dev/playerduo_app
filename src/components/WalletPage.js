@@ -4,10 +4,19 @@ import '../styles/wallet.css';
 import coin from '../coin.png'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserService from '../services/UserSerice';
+import { useEffect } from 'react';
+import { handleConvertDate } from '../common/ultil';
+import Loading from './Loading';
+import { useSelector } from 'react-redux';
 
 
 
 function WalletPage() {
+
+    const userInfo = useSelector(state => state.userInfoReducer.userInfo)
+
+    const [loaded, setLoaded] = useState(false);
 
     const navigate = useNavigate();
 
@@ -24,17 +33,46 @@ function WalletPage() {
         { money: 100, coin: 1700 },
     ]
 
+    const convertType = (type) =>
+    {
+        return type === 1 ? "Nạp tiền" 
+        : type === 2 ? "Thanh toán đơn hàng"
+        : type === 3 ? "Hoàn tiền hủy đơn"
+        : "Nhận tiền"
+    }
+
+
     const [data, setData] = useState(recommendPackage);
 
+    const [history, setHistory] = useState();
+
+    const getTradesHistory = () => {
+        setLoaded(true);
+        UserService.getTradesHistory()
+            .then(response => {
+                setLoaded(false);
+                setHistory(response.data);
+            })
+            .catch(e => {
+                setLoaded(false);
+                console.log(e);
+            });
+    }
+
+    useEffect(() => {
+        getTradesHistory();
+    }, []);
+
     const handleLog = (paymentRequest) => {
-        navigate('/checkout', {state:{paymentRequest: paymentRequest}});
+        navigate('/checkout', { state: { paymentRequest: paymentRequest } });
     }
 
     return (
         <div className='ms-4 mt-3' style={{ width: "900px" }}>
+            <Loading loading= {loaded}/>
             <div className='border rounded text-20px fw-bold d-flex pt-2 pb-2' style={{ backgroundColor: "#ffff" }}>
                 <div className='ms-3'>Số dư tài khoản:</div>
-                <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer ms-2 me-1'>300</div>
+                <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer ms-2 me-1'>{userInfo?.coin}</div>
                 <img src={coin} style={{ height: "30px" }} />
             </div>
 
@@ -45,7 +83,7 @@ function WalletPage() {
                 <div className='d-flex flex-wrap justify-content-around pb-3'>
                     {data.map(item => {
                         return (
-                            <div onClick={() => handleLog(item)} className='rounded border wallet-item mt-3'>
+                            <div onClick={() => handleLog(item)} className='rounded border wallet-item mt-3 ' data-bs-toggle="modal" data-bs-target="#exampleCheckoutModal">
                                 <div className='d-flex justify-content-center pt-2'>
                                     <img src={coin} />
                                     <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer'>{item.coin}</div>
@@ -64,7 +102,7 @@ function WalletPage() {
                 <div className='text-20px fw-bold'>
                     Lịch sử giao dịch
                 </div>
-                <table id="example" class="table table-striped" style={{ width: "100%" }} >
+                <table id="example" className="table table-striped" style={{ width: "100%" }} >
                     <thead>
                         <tr>
                             <th>Ngày giao dịch</th>
@@ -73,22 +111,18 @@ function WalletPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                        </tr>
-                        <tr>
-                            <td>Garrett Winters</td>
-                            <td>Accountant</td>
-                            <td>Tokyo</td>
-                        </tr>
-                        <tr>
-                            <td>Ashton Cox</td>
-                            <td>Junior Technical Author</td>
-                            <td>San Francisco</td>
-                        </tr>
 
+                        {history && history.length > 0 ? history.map((item, index) => {
+                            return (
+                                <tr key = {index}>
+                                    <td className='fw-bold'>{handleConvertDate(item.createdAt)}</td>
+                                    <td className='fw-bold'>{convertType(item.type)}</td>
+                                    {item.type !== 2 ? <td className='coin-plus fw-bold'> + {item.coin} xu</td> :
+                                    <td className='coin-minus fw-bold'> - {item.coin} xu</td>}
+                                </tr>
+                            )
+                        }
+                        ) : <></>}
                     </tbody>
                 </table>
             </div>
