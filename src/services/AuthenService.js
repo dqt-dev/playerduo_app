@@ -5,10 +5,15 @@ const Login = (loginRequest) => {
 
   const Register = (registerRequest) => {
     return http.post("Authen/register", registerRequest);
+  }
+
+  const ChangePassword = (request) => {
+    return http.put("Authen/me/change-password", request);
 
   }
 const AuthenService = {
     Login,
-    Register
+    Register,
+    ChangePassword
 };
 export default AuthenService;

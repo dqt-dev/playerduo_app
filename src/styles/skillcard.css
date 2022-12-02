@@ -7,6 +7,10 @@
     position: absolute;
     top: 8%;
     left: 5%;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #fff;
 
 }
 
@@ -24,7 +28,9 @@
 }
 
 .card-skill:hover .avatar{
+    
     transform: scale(1.08);
+    transform-origin: center;
 }
 
 .card-skill:hover

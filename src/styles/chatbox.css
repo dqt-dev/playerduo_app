@@ -12,11 +12,18 @@
 }
 
 .chat-box-content {
-    height: 825px;
+    height: 845px;
     overflow-y: scroll;
-    
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.chat-box-content::-webkit-scrollbar {
+    display: none;
+}
+.chat-box-content {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 .btn-send {
     color: blue;
 }

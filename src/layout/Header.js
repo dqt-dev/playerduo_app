@@ -6,21 +6,23 @@ import { BsChatLeftQuote } from 'react-icons/bs';
 import { BASE_URL, INFO_LOGIN } from '../common/SystemConstant';
 import { useSelector, useDispatch } from 'react-redux';
 import { getMyInfo } from '../redux/UserInfo/action';
-import { ls } from "../common/ultil"
+import { formatNumberWithComma, ls } from "../common/ultil"
 import coin from '../coin.png';
 import { IoIosAddCircle } from 'react-icons/io';
 import { useState } from 'react';
 import UserService from '../services/UserSerice';
 import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
+import logo from '../logo.png';
 
-function Header({ handleChat, user, setUser }) {
+function Header({ handleClickChatList, currentUser, setCurrentUser }) {
   const userId = useSelector(state => state.userInfoReducer.userInfo)?.id;
 
   const [loaded, setLoaded] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleSignOut = () => {
     
     const infoLogin = ls.get(INFO_LOGIN)
@@ -28,7 +30,7 @@ function Header({ handleChat, user, setUser }) {
     if (infoLogin) {
       ls.set(INFO_LOGIN, infoLogin)
     }
-    setUser(null);
+    setCurrentUser(null);
     dispatch(getMyInfo(null));
     navigate('/')
   }
@@ -38,7 +40,7 @@ function Header({ handleChat, user, setUser }) {
     UserService.get(userId)
       .then(response => {
         setLoaded(false);
-        setUser(response.data);
+        setCurrentUser(response.data);
       })
       .catch(e => {
         setLoaded(false);
@@ -54,11 +56,11 @@ function Header({ handleChat, user, setUser }) {
     UserService.UpdateStatus(status)
       .then(response => {
         setLoaded(false);
-        !user?.status ? toast.success("Bạn đang ở trạng thái sẵn sàng nhận đơn hàng!", {
-          position: toast.POSITION.TOP_RIGHT
+        !currentUser?.status ? toast.success("Bạn đang ở trạng thái sẵn sàng nhận đơn hàng!", {
+          position: toast.POSITION.TOP_CENTER
         }) :
           toast.success("Bạn đang ở trạng thái bận!", {
-            position: toast.POSITION.TOP_RIGHT
+            position: toast.POSITION.TOP_CENTER
           });
       })
       .catch(error => {
@@ -80,32 +82,32 @@ function Header({ handleChat, user, setUser }) {
       <div className="">
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
           <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-            <li><Link to={"/"} className="nav-link px-2 link-secondary">ICON HOME</Link></li>
+            <li><Link to={"/"} className="nav-link px-2 link-secondary pt-0 pb-0"><img src={logo} style= {{height: "40px", width: "60px"}}/></Link></li>
             <li><Link to={"/"} className="nav-link px-2 link-dark">HOME</Link></li>
           </ul>
           <div className="form-check form-switch me-3">
-            <input disabled={!user} onChange={() => { handleUpdateStatus(!user?.status); setUser({...user, status : !user?.status}); }} className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style={{ height: "20px", width: "40px" }} checked={user?.status} />
+            <input disabled={!userId} onChange={() => { handleUpdateStatus(!currentUser?.status); setCurrentUser({...currentUser, status : !currentUser?.status}); }} className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style={{ height: "20px", width: "40px" }} checked={currentUser?.status}/>
           </div>
           <div onClick={() => goToPage('wallet')} className='d-flex justify-content-center rounded pt-1 pb-1 me-3 item-coin-header' style={{ width: "90px", backgroundColor: "#e8e8f1" }}>
             <img src={coin} style={{ height: "25px" }} />
-            <div className="ps-1 pe-1">{user?.coin}</div>
+            <div className="ps-1 pe-1">{ currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
             <IoIosAddCircle color="#1890ff" size={25} />
           </div>
-          <BsChatLeftQuote onClick={handleChat} size={28} className="me-4" />
-          {user ?
+          <BsChatLeftQuote onClick={handleClickChatList} size={28} className="me-4" />
+          {currentUser ?
             <div className="dropdown text-end me-4">
               <a className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src={BASE_URL + user?.avatarUrl} alt="mdo" width="32" height="32" className="rounded-circle" />
+                <img src={BASE_URL + currentUser?.avatarUrl} alt="mdo" width="32" height="32" className="rounded-circle" />
               </a>
 
               <ul className="dropdown-menu text-small" aria-labelledby="dropdownUser1" style={{ width: "260px" }}>
                 <div className="d-flex ">
                   <div className="ps-4 pe-3">
-                    <img src={BASE_URL + user?.avatarUrl} style={{ width: "45px", borderRadius: "50%" }} className="mt-2" alt="..." />
+                    <img src={BASE_URL + currentUser?.avatarUrl} style={{ width: "45px", height: "45px", borderRadius: "50%" }} className="mt-2" alt="..." />
                   </div>
                   <div className="">
                     <div className="text-body">
-                      <p className="card-text text-start mt-2 mb-0 fw-bold">{user?.nickName}</p>
+                      <p className="card-text text-start mt-2 mb-0 fw-bold">{currentUser?.nickName}</p>
                       <p className="card-text text-start fw-bold ">ID: 2153860</p>
                     </div>
                   </div>
@@ -114,6 +116,7 @@ function Header({ handleChat, user, setUser }) {
                 <li><a onClick={() => goToPage('me')} className="dropdown-item cursor-pointer">Trang cá nhân</a></li>
                 <li><a onClick={() => goToPage('wallet')} className="dropdown-item cursor-pointer ">Ví</a></li>
                 <li><a onClick={() => goToPage('orders')} className="dropdown-item cursor-pointer">Đơn hàng</a></li>
+                <li><a onClick={() => goToPage('skills')} className="dropdown-item cursor-pointer">Kỹ năng cá nhân</a></li>
                 <li><hr className="dropdown-divider" /></li>
                 <li><a onClick={handleSignOut} className="dropdown-item cursor-pointer">Sign out</a></li>
               </ul>
