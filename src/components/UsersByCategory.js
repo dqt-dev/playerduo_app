@@ -23,9 +23,9 @@ function UsersByCategory() {
         }
     );
 
-    const [cond1, setCond1] = useState('');
+    const [cond1, setCond1] = useState("null");
 
-    const [cond2, setCond2] = useState('');
+    const [cond2, setCond2] = useState("null");
 
     const [listUser, setListUser] = useState([]);
 
@@ -35,7 +35,7 @@ function UsersByCategory() {
 
     const [loaded, setLoaded] = useState(false);
 
-    const [user, setUser] = useState("");
+    const [ currentUser, setCurrentUser] = useState("");
 
     const stopSound = () => {
         setIsPlay(0);
@@ -55,8 +55,8 @@ function UsersByCategory() {
     }
 
     const handleReset = () => {
-        setCond1('');
-        setCond2('');
+        setCond1("null");
+        setCond2("null");
     };
 
     // find skill from category
@@ -65,7 +65,8 @@ function UsersByCategory() {
         CategoryService.getAll()
             .then(response => {
                 setLoaded(false);
-                setSkill(response.data[categoryId - 1])
+                const filterCategory = (response.data.filter(item => item.categoryId == categoryId));
+                setSkill(filterCategory[0])
             })
             .catch(e => {
                 setLoaded(false);
@@ -74,7 +75,7 @@ function UsersByCategory() {
     };
 
     const getUserByCategory = (categoryId) => {
-        SkillService.getAll({ "isEnabled": true })
+        SkillService.getAll({ "isEnabled": true , "type" : cond1 !== "null" ? cond1 : null , "gender": cond2 !== "null" ? (cond2 === "true") : null })
             .then(response => {
                 let listUser = response.data.filter(s => s.categoryId == categoryId);
                 setListUser(listUser);
@@ -92,23 +93,23 @@ function UsersByCategory() {
     // call when filter is change
     useEffect(() => {
         getUserByCategory(categoryId);
-    }, [cond1]);
+    }, [cond1, cond2]);
 
     const goToUserPage = (userId, skillId) => {
-        navigate("user/" + userId + "?skillId=" + skillId)
+        navigate(`/user/${userId}?skillId=${skillId}`);
     }
 
     return (
         <>
         <Loading loading={loaded} />
-            <Header user = {user} setUser = {setUser}/>
+            <Header currentUser = {currentUser} setCurrentUser = {setCurrentUser}/>
             <div>
                 <div className='gameName'>
                     <div >
-                        <img style={{ width: "44px", height: "44px" }} src={BASE_URL + skill.imageUrl}></img>
+                        <img style={{ width: "44px", height: "44px" }} src={BASE_URL + skill?.imageUrl}></img>
                     </div>
                     <div className='text-24'>
-                        {skill.categoryName}
+                        {skill?.categoryName}
                     </div>
                 </div>
                 <div className='userFill'>
@@ -116,8 +117,8 @@ function UsersByCategory() {
                         Lọc:
                     </div>
                     <div className='ms-3 me-3'>
-                        <select value={cond1} onChange={(e) => setCond1(e.target.value)} className={cond1 === '' ? "form-select form-select-sm " : "form-select form-select-sm selected"} style={{ maxWidth: "150px" }} >
-                            <option selected value="">Đề cử</option>
+                        <select value={cond1} onChange={(e) => setCond1(e.target.value)} className={cond1 === "null" ? "form-select form-select-sm " : "form-select form-select-sm selected"} style={{ maxWidth: "150px" }} >
+                            <option selected value="null">Đề cử</option>
                             <option value="1">Mới nhất</option>
                             <option value="2">Đánh giá cao nhất</option>
                             <option value="3">Giá cao nhất</option>
@@ -128,49 +129,49 @@ function UsersByCategory() {
 
                     </div>
                     <div className='ms-3 me-3'>
-                        <select value={cond2} onChange={(e) => setCond2(e.target.value)} className={cond2 === '' ? "form-select form-select-sm " : "form-select form-select-sm selected"} >
-                            <option value="">Giới tính</option>
-                            <option value="1">Nam</option>
-                            <option value="2">Nữ</option>
+                        <select value={cond2} onChange={(e) => setCond2(e.target.value)} className={cond2 === "null" ? "form-select form-select-sm " : "form-select form-select-sm selected"} >
+                            <option value= "null">Giới tính</option>
+                            <option value="true">Nam</option>
+                            <option value="false">Nữ</option>
                         </select>
                     </div>
 
                     <div onClick={handleReset} className='ms-4 cursor-pointer btn-reset ' style={{ fontSize: "20px", color: "#6B39FF" }}>Reset</div>
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", marginTop: "18px", paddingLeft: "40px", paddingRight: "40px" }}>
+                <div className = "pb-4" style={{ display: "flex", flexWrap: "wrap", marginTop: "18px", paddingLeft: "40px", paddingRight: "40px" }}>
                     {listUser.length > 0 ? listUser.map((skill, index) => {
                         return (
                             <div key={index} className='towUser-inline' style={{}}>
                                 <a style={{ display: "flex" }}>
                                     <div className='img-stateIcon-voiceIcon' style={{ width: "200px", height: "200px" }}>
-                                        <div>
-                                            <img className='imgUser' src={BASE_URL + skill.avatarUrl}>
+                                        <div onClick={() => goToUserPage(skill?.userId, skill?.skillId)}  >
+                                            <img className='imgUser' src={BASE_URL + skill?.avatarUrl} style={{ width: "200px", height: "200px" }}>
 
                                             </img>
                                         </div>
-                                        <div className={skill.status ? "onlineStatus" : "offlineStatus"}>
+                                        <div className={skill?.status ? "onlineStatus" : "offlineStatus"}>
                                         </div>
                                         <div className='voiceIcon-time'>
-                                            {isPlay !== skill.skillId ? <img src="https://data.lita.cool/cdn-web/www/assets/player_audio_play_normal.eeb1a285.png" className="sound-icon" style={{ width: "30px" }}
-                                                onClick={() => soundPlay(BASE_URL + skill.audioUrl, skill.skillId)} /> :
+                                            {isPlay !== skill?.skillId ? <img src="https://data.lita.cool/cdn-web/www/assets/player_audio_play_normal.eeb1a285.png" className="sound-icon" style={{ width: "30px" }}
+                                                onClick={() => soundPlay(BASE_URL + skill?.audioUrl, skill?.skillId)} /> :
                                                 <img src="https://data.lita.cool/cdn-web/www/assets/player_audio_play.f3bcd3a1.gif" className="sound-icon" style={{ width: "30px" }}
                                                     onClick={() => stopSound()} />}
                                         </div>
                                     </div>
-                                    <div className='infoUser'>
+                                    <div onClick={() => goToUserPage(skill?.userId, skill?.skillId)}  className='infoUser'>
                                         <div className='display-flex1'>
                                             <div style={{ fontWeight: "700", fontSize: "18px", width: "100%" }}>
-                                                {skill.playerName}
+                                                {skill?.playerName}
                                             </div>
                                             <div style={{ width: "auto" }}>
                                             </div>
                                             <img style={{ width: "14px", height: "14px", display: "block", objectFit: "cover", maxWidth: "100%", marginTop: "auto", marginBottom: "auto", }} src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAAAAXNSR0IArs4c6QAAAtFJREFUSEulVE1IVFEU/s4oKEHUoo39QKGTQeQfKFaLFlGQFARBCC1CmXEEscCCNi1mEa1DCZoCyUWI/bqqKC2VrMhVUEGEjVOmtonchPDuPSfu873nnTfTc6C7eT/33PN95zvfuYQSV7ZbdsofjIpGBZfjeHyIZks5SqUEmZivHfKMFY6IBiB4Hh+mo6WcLQkgm5BWdvBGGDAA5kmC/fERerseSGkAnfKYFY6xYc+A93xSe5/a/hvgW1KalYN3hrUNYCohQUvtQ5qJAomsQO5K2dxTjLPGIV8aWyZhTO4px2G6R6a2oisPQNJSubSMamcFcWHUgnFKKzS7SS39XTANsOkFY0ZrPIgxPgvjy4YqzO66TSs+Gkm/VCzlcE002lhjhzDIlUN5Sf3k3reRyez7vbArM3vEEBF8Z4WXsUr00OIlOS0ORvxAN4GXxNbdfw/2/Bgr1q3KPi9I0c+LUqc13vvMAjksxgHbIlIF52wgT4FyoNXtwWKf9LDCABt5LAZ5rrGSh//nEVi1spGpt3GKrgdNXjgvSe0gIwIK62++3SThRnugAaByrSvMSDVO0i1DPs9F8z1yVhiDWiHmu8ZuatAHk9hIKJ6b1hrP0Oisn6ChwEVh8+a6JcUKN6yJdV1jN89lLGv//FgSdNeNU8bOWXTQcklZYI0q3+th54Qn2lTCGosNY7Q1TLgowFxC5lljW4FdveEqmIFViX7Uj9P2dQF+dcmmZY3fxViHLWxPuKlqYwybq8doOVKiuaQcEI3pf1kxrL99hZQBB/e9oNeRALmEdDEjU6BzyJLB1OYPn7HnzWiApPRrhV776jCaC7tXdsa8a4WUMFoC9p5NmTHQNEnnoiVKyCArdFilfyTgcs0wjdoHP52Qk8rBFWjsta6ZkaYpao8EyCalQRw8gmBFO7hasxt3KE3m/ixYkpbYh2mcEY0LzNgCoL1hgl7ZgX8B2qSUB/vv33EAAAAASUVORK5CYII='>
                                             </img>
                                             <div style={{ fontSize: "14px", color: "#333333", fontWeight: "700", textAlign: "center", marginLeft: "5px", paddingTop: "3px" }}>
-                                                {skill.rating}
+                                                {skill?.rating}
                                             </div>
                                             <div style={{ fontSize: "14px", color: "#999999", textAlign: "center", marginLeft: "3px", paddingTop: "3px" }}>
-                                                {`(${skill.total})`}
+                                                {`(${skill?.total})`}
                                             </div>
                                         </div>
                                         <div className='display-flex1' style={{ height: "20px", marginTop: "16px" }}>
@@ -181,7 +182,7 @@ function UsersByCategory() {
                                             </div>
                                         </div>
                                         <div style={{ marginTop: "16px" }}>
-                                            {skill.description}
+                                            {skill?.description}
                                         </div>
 
                                         <div style={{ display: "flex", position: "absolute", bottom: "10px" }}>
@@ -189,7 +190,7 @@ function UsersByCategory() {
                                                 <img style={{ width: "20px", height: "20px" }} src='data:image/png;base64,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'></img>
                                             </div>
                                             <div style={{ color: "#FF9B00", fontSize: "18px", marginLeft: "4px" }}>
-                                                {skill.price}
+                                                {skill?.price}
                                             </div>
                                             <div style={{ marginLeft: "2px" }}>
                                                 /Trận

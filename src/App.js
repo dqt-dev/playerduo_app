@@ -20,6 +20,7 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.min.css';
 import LoginGuard from "./components/LoginGuard/LoginGuard";
 import PaypalSuccess from "./components/PaypalSuccess";
+import ChangePassword from "./components/ChangePassword";
 const url = [
   {
     url: '/user/orders',
@@ -40,6 +41,11 @@ const url = [
     url: '/user/me',
     component: <UserComponent type ={1}/>,
     id: 4
+  },
+  {
+    url: '/user/change-password',
+    component: <ChangePassword type={5} />,
+    id: 5
   },
 ]
 const urlLoginGuard = [
@@ -73,7 +79,7 @@ function App() {
   })();
 
   return (
-    <PayPalScriptProvider options={{ "client-id": "AZ4c0ODM7QpQJAjznnMsFrIY9yEDnPTJuOGJgq0_YgFyYXJ2tcYn8Won2gjJ6GxiBVe0Vf0r--5AGst0" }}>
+    <PayPalScriptProvider options={{ "client-id": "AYoWdX_c-b3hsale2IsHdAp9DRYujZqsaSuj7s7Q5tB4eLOv5-mpcNttdzPKFCCTFbs5ia5CbZwNgYVe" }}>
       <ToastContainer/>
       <Routes>
       <Route path="/" element={<Dashboard />} />

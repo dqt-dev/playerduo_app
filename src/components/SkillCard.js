@@ -75,7 +75,7 @@ function SkillCard(props) {
 
     return (
         <div className="container" style={{ marginTop: "50px" }}>
-            <h2>Đồng hành đề cử:  <a onClick= {() => navigate(`skill/${categoryId}`)} className="text-decoration-none category-title">{categoryName}</a></h2>
+            <h2>Đồng hành đề cử:  <a onClick={() => navigate(`skill/${categoryId}`)} className="text-decoration-none category-title">{categoryName}</a></h2>
             {
                 data.length > 0 ?
                     <Slider {...settings}>
@@ -85,7 +85,8 @@ function SkillCard(props) {
                                     <div className="card card-skill" style={{ width: "190px", height: "300px" }}>
                                         <div className="container-card">
                                             <img onClick={() => goToUserPage(item.userId, item.skillId)} src={BASE_URL + item.avatarUrl} className="card-img-top avatar" alt="..." style={{ width: "189px", height: "189px" }} />
-                                            {item.status ? <div className="div-online-1" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> : <></>}
+                                            {item.status ? <div className="div-online-1" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
+                                                <div className="div-online-1" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
                                             {isPlay !== item.skillId ? <img src="https://data.lita.cool/cdn-web/www/assets/player_audio_play_normal.eeb1a285.png" className="sound-icon" style={{ width: "30px" }}
                                                 onClick={() => soundPlay(BASE_URL + item.audioUrl, item.skillId)} /> :
                                                 <img src="https://data.lita.cool/cdn-web/www/assets/player_audio_play.f3bcd3a1.gif" className="sound-icon" style={{ width: "30px" }}

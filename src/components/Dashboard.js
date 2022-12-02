@@ -9,11 +9,12 @@ import Footer from '../layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import Chat from './ChatListComponent';
 import Loading from './Loading';
+import ChatList from './ChatListComponent';
 
 function Dashboard() {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState("");
+  const [currentUser, setCurrentUser] = useState("");
 
   const [loaded, setLoaded] = useState(false);
 
@@ -21,11 +22,9 @@ function Dashboard() {
 
   const [skill, setSkill] = useState([]);
 
-  const [requestSkill, setRequestSkill] = useState({ "isEnabled": true });
-
   const [isShowChat, setIsShowChat] = useState(false);
 
-  const handleChat = () => {
+  const handleClickChatList = () => {
     const token = localStorage.getItem('user-token');
     if (!token) {
       navigate('/login');
@@ -54,7 +53,7 @@ function Dashboard() {
 
   // gọi tới api create
   const retrieveSkills = () => {
-    SkillService.getAll(requestSkill)
+    SkillService.getAll({ "isEnabled": true })
       .then(response => { // get các field được nhập vào 
         setSkill(response.data)
       })
@@ -65,8 +64,8 @@ function Dashboard() {
   return (
     <>
      <Loading loading={loaded} />
-      <Header handleChat = {handleChat} user = {user} setUser = {setUser}/>
-      <Chat isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
+      <Header handleClickChatList = {handleClickChatList} currentUser = {currentUser} setCurrentUser = {setCurrentUser}/>
+      <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
       <div className='main'>
         <SiderBar />
         <Content categories={categories} skill={skill} />

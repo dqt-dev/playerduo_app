@@ -9,20 +9,20 @@ export default function Content({ categories, skill }) {
   const [isPlay, setIsPlay] = useState(0)
 
   return (
-    <main className='main-content pt-3'>
-      <CategoryCard categories={categories} />
+    <main className='home-content pt-3'>
+        <CategoryCard categories={categories} />
 
-      {
-        categories.map((item, index) => {
-          let temp = skill.filter(s => s.categoryName === item.categoryName)
-          return (
-            <div key={index}>
-              <SkillCard data={temp} isPlay = {isPlay} setIsPlay = {setIsPlay} categoryName={item.categoryName} categoryId = {item.categoryId}/>
-            </div>
+        {
+          categories.map((item, index) => {
+            let temp = skill.filter(s => s.categoryId === item.categoryId)
+            return (
+              <div key={index}>
+                <SkillCard data={temp} isPlay={isPlay} setIsPlay={setIsPlay} categoryName={item.categoryName} categoryId={item.categoryId} />
+              </div>
+            )
+          }
           )
         }
-        )
-      }
     </main>
   )
 }

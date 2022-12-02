@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserService from '../services/UserSerice';
 import { useEffect } from 'react';
-import { handleConvertDate } from '../common/ultil';
+import { formatNumberWithComma, handleConvertDate } from '../common/ultil';
 import Loading from './Loading';
 import { useSelector } from 'react-redux';
 
@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 
 function WalletPage() {
 
-    const userInfo = useSelector(state => state.userInfoReducer.userInfo)
+    const currentUserId = useSelector(state => state.userInfoReducer.userInfo)?.id;
 
     const [loaded, setLoaded] = useState(false);
 
@@ -41,8 +41,24 @@ function WalletPage() {
         : "Nhận tiền"
     }
 
+    const [currentUser, setCurrentUser] = useState();
 
-    const [data, setData] = useState(recommendPackage);
+    const getUserInfo = (userId) => {
+        setLoaded(true);
+        UserService.get(userId)
+            .then(response => {
+                setLoaded(false);
+                setCurrentUser(response.data);
+            })
+            .catch(e => {
+                setLoaded(false);
+                console.log(e);
+            });
+    };
+
+    useEffect(() => {
+        getUserInfo(currentUserId);
+    }, [currentUserId]);
 
     const [history, setHistory] = useState();
 
@@ -72,7 +88,7 @@ function WalletPage() {
             <Loading loading= {loaded}/>
             <div className='border rounded text-20px fw-bold d-flex pt-2 pb-2' style={{ backgroundColor: "#ffff" }}>
                 <div className='ms-3'>Số dư tài khoản:</div>
-                <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer ms-2 me-1'>{userInfo?.coin}</div>
+                <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer ms-2 me-1'>{currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
                 <img src={coin} style={{ height: "30px" }} />
             </div>
 
@@ -81,16 +97,16 @@ function WalletPage() {
                     Các gói giá trị nạp
                 </div>
                 <div className='d-flex flex-wrap justify-content-around pb-3'>
-                    {data.map(item => {
+                    {recommendPackage.map(item => {
                         return (
                             <div onClick={() => handleLog(item)} className='rounded border wallet-item mt-3 ' data-bs-toggle="modal" data-bs-target="#exampleCheckoutModal">
                                 <div className='d-flex justify-content-center pt-2'>
                                     <img src={coin} />
-                                    <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer'>{item.coin}</div>
+                                    <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer'>{formatNumberWithComma(item?.coin)}</div>
                                 </div>
                                 <hr className='mt-2 mb-0' />
                                 <div className='d-flex justify-content-center pt-2'>
-                                    <div className=' fw-bold ps-1 cursor-pointer'>{item.money}$</div>
+                                    <div className=' fw-bold ps-1 cursor-pointer'>{formatNumberWithComma(item?.money)}$</div>
                                 </div>
                             </div>
                         )
@@ -117,8 +133,8 @@ function WalletPage() {
                                 <tr key = {index}>
                                     <td className='fw-bold'>{handleConvertDate(item.createdAt)}</td>
                                     <td className='fw-bold'>{convertType(item.type)}</td>
-                                    {item.type !== 2 ? <td className='coin-plus fw-bold'> + {item.coin} xu</td> :
-                                    <td className='coin-minus fw-bold'> - {item.coin} xu</td>}
+                                    {item.type !== 2 ? <td className='coin-plus fw-bold'> + {formatNumberWithComma(item?.coin)} xu</td> :
+                                    <td className='coin-minus fw-bold'> - {formatNumberWithComma(item?.coin)} xu</td>}
                                 </tr>
                             )
                         }

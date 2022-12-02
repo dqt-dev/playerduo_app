@@ -6,9 +6,10 @@ import { toast } from 'react-toastify';
 import OrderService from '../services/OrderService';
 import { useEffect } from 'react';
 import Loading from './Loading';
+import { handleConvertDate } from '../common/ultil';
 
 function OrderComponent() {
-    
+
     const [loaded, setLoaded] = useState(false);
 
     const [orderId, setOrderId] = useState();
@@ -130,7 +131,7 @@ function OrderComponent() {
                     Hoàn thành
                 </div>
                 : (status === 3 && type === 2) ?
-                    <div onClick={() => {setOrderId(orderId); setIsShow(true)}} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2' data-bs-toggle="modal" data-bs-target="#exampleRatingModal">
+                    <div onClick={() => { setOrderId(orderId); setIsShow(true) }} className='border btn btn-primary rounded ps-4 pe-4 pt-1 pb-1 fw-500 me-2' data-bs-toggle="modal" data-bs-target="#exampleRatingModal">
                         Đánh giá
                     </div>
                     : <></>
@@ -138,7 +139,7 @@ function OrderComponent() {
     return (
         <div className='order-container ms-4 pt-3 fw-bold text-20px'>
             <Loading loading={loaded} />
-            <RatingModal orderId={orderId} handleGetMyOrder={handleGetMyOrder} isShow = {isShow} setIsShow = {setIsShow} />
+            <RatingModal orderId={orderId} handleGetMyOrder={handleGetMyOrder} isShow={isShow} setIsShow={setIsShow} />
             <div className='text-24px mb-2'>
                 Đơn hàng
             </div>
@@ -174,12 +175,12 @@ function OrderComponent() {
             </div>
             <hr className='mt-1 mb-0' />
             <div className='list-order overflow-auto '>
-                {!orderType &&  myOrder.map((item, index) => {
+                {!orderType && myOrder.map((item, index) => {
                     return (
                         <div key={index} className="order-item mt-4">
                             <div className='d-flex justify-content-between pt-3' >
                                 <div className='ms-3' style={{ fontWeight: "500", height: "14px", color: "rgba(51,51,51)" }}>
-                                    11/11 20:01
+                                    {handleConvertDate(item.orderDate)}
                                 </div>
                                 <div className='me-3 text-14px fw-bold' style={{ color: "rgba(255,131,14)" }}>
                                     {getStatusName(item.status)}
@@ -226,7 +227,7 @@ function OrderComponent() {
                         <div key={index} className="order-item mt-4">
                             <div className='d-flex justify-content-between pt-3' >
                                 <div className='ms-3' style={{ fontWeight: "500", height: "14px", color: "rgba(51,51,51)" }}>
-                                    11/11 20:01
+                                    {handleConvertDate(item.orderDate)}
                                 </div>
                                 <div className='me-3 text-14px fw-bold' style={{ color: "rgba(255,131,14)" }}>
                                     {getStatusName(item.status)}

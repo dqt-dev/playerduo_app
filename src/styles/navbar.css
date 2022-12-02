@@ -10,6 +10,12 @@
 
 .navbar-item-custom div:hover
 {
+    /* color: blue;       */
+    box-shadow: 0 0 7px rgba(33,33,33,.3); 
+}
+
+.navbar-item-custom-selected
+{
     color: blue;      
     box-shadow: 0 0 7px rgba(33,33,33,.3); 
 }

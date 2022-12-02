@@ -5,8 +5,6 @@ import '../styles/userdetail.css';
 import { getAudioDurationInSeconds } from "@remotion/media-utils";
 import { AiOutlineInbox } from 'react-icons/ai';
 
-import axios from "axios";
-
 import star from '../star.png'
 import coin from '../coin.png'
 import icon from '../icon.png'
@@ -22,7 +20,7 @@ import OrderService from '../services/OrderService';
 
 import { useNavigate } from 'react-router-dom';
 
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import OrderForm from './OrderForm';
 import { BASE_URL } from '../common/SystemConstant';
 import { handleConvertDate } from '../common/ultil';
@@ -30,7 +28,6 @@ import Loading from './Loading';
 import MessageService from '../services/MessageService';
 import ChatBoxComponent from './ChatBoxComponent';
 import { useSelector } from 'react-redux';
-import Chat from './ChatListComponent';
 
 function UserDetail() {
 
@@ -60,19 +57,18 @@ function UserDetail() {
 
     const [loaded, setLoaded] = useState(false);
 
-    const { userId } = useParams();
+    const { userId } = useParams(); // get userId from Url
 
-    const [searchParam] = useSearchParams(0);
-
+    const [searchParam] = useSearchParams(0);  // set skillId from Url
     const [skillId, setSkillId] = useState(searchParam.get('skillId'));
 
-    const [isPlay, setIsPlay] = useState(0);
+    const [isPlay, setIsPlay] = useState(0); // set play or stop
 
-    const [skills, setSkills] = useState([initSkill]);
+    const [skills, setSkills] = useState([initSkill]); // skills for render 
 
-    const [currentSkill, setCurrentSkill] = useState(initSkill);
+    const [currentSkill, setCurrentSkill] = useState(initSkill); // current skill 
 
-    const [sound, setSound] = useState(null);
+    const [sound, setSound] = useState(null); 
 
     const [duration, setDuration] = useState(0);
 
@@ -82,35 +78,40 @@ function UserDetail() {
 
     const [quality, setQuality] = useState(1);
 
+    const [currentUser, setCurrentUser] = useState(initUserInfo);
+
     const [user, setUser] = useState(initUserInfo);
 
-    const userCurrent = useSelector(state => state.userInfoReducer.userInfo);
+    const [userChatInfo, setUserChatInfo] = useState(initUserInfo);
+
+    const userIdCurrent = useSelector(state => state.userInfoReducer.userInfo)?.id;
+
+    const [userVoice, setUserVoice] = useState(false);
 
     const stopSound = () => {
         setIsPlay(0);
+        setUserVoice(false); // stop user voice if click user voice
         if (sound) sound.stop();
-
     }
 
     const myFunction = (data) => getAudioDurationInSeconds(BASE_URL + data.audioUrl).then((duration) => {
         setDuration(duration)
     });
 
-
-    const handleChat = () =>
-    {
+    const handleChat = () => {
         const token = localStorage.getItem('user-token');
-        if(!token) {
+        if (!token) {
             navigate('/login');
         }
         setIsShowChat(!isShowChat);
     }
 
-    const soundPlay = (src, skillId) => {
+    const soundPlay = (src, skillId, userVoice) => {
         Howler.stop();
         const sound = new Howl({ src })
         setSound(sound);
-        setIsPlay(skillId)
+        skillId !== null && setIsPlay(skillId)
+        setUserVoice(userVoice);
         sound.play();
         sound.on('end', () => {
             stopSound();
@@ -129,7 +130,7 @@ function UserDetail() {
                 setLoaded(false);
                 toast.success(response.data, {
                     position: toast.POSITION.TOP_RIGHT
-                    });
+                });
             })
             .catch(error => {
                 setLoaded(false);
@@ -139,12 +140,26 @@ function UserDetail() {
             });
     }
 
+    const getCurrentUserInfo = userId => {
+        setLoaded(true);
+        UserService.get(userId)
+            .then(response => {
+                setLoaded(false);
+                setCurrentUser(response.data);
+            })
+            .catch(e => {
+                setLoaded(false);
+                console.log(e);
+            });
+    };
+
     const getUserInfo = userId => {
         setLoaded(true);
         UserService.get(userId)
             .then(response => {
                 setLoaded(false);
                 setUser(response.data);
+                setUserChatInfo(response.data);
             })
             .catch(e => {
                 setLoaded(false);
@@ -161,6 +176,7 @@ function UserDetail() {
         SkillService.getAll(
             {
                 userId: userId,
+                isEnabled: true
             }
         )
             .then(response => {
@@ -187,76 +203,96 @@ function UserDetail() {
 
     useEffect(() => {
         if (userId, skillId) {
+        const setup = async () => {
+            await 
             getUserInfo(userId);
+            getCurrentUserInfo(userIdCurrent);
             getSkills(userId);
             getReviewBySkillId(skillId);
+          };
+          setup();
         }
     }, [skillId, userId]);
 
     const [listUserChat, setListUserChat] = useState();
     const getListChat = () => {
         MessageService.getMyChats()
-          .then(response => {
-            setListUserChat(response.data);
-            console.log(response.data);
-          })
-          .catch(error => {
-            // console.log(error.response.data)
-            toast.error(error.response.data, {
-              position: toast.POSITION.TOP_RIGHT
+            .then(response => {
+                setListUserChat(response.data);
+                console.log(response.data);
+            })
+            .catch(error => {
+                // console.log(error.response.data)
+                toast.error(error.response.data, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
             });
-          });
-      };
+    };
 
     return (
         <>
-        <Loading loading={loaded} />
-            <Header handleChat={handleChat} user = {userCurrent} setUser = {setUser}/>
-            <ChatBoxComponent userChatInfo={user} getListChat={getListChat} />
+            <Loading loading={loaded} />
+            <Header handleChat={handleChat} currentUser={currentUser} setCurrentUser={setCurrentUser} />
+            <ChatBoxComponent userChatInfo={userChatInfo} getListChat={getListChat} />
             <div className='container mt-3' style={{ position: "relative" }}>
                 <div className='card main-info'>
-                    <div className="mb-3 d-flex" style={{  height: "70px" }}>
-                        
-                            <div className="ps-4">
-                                <img src={BASE_URL + user.avatarUrl} style={{ width: "72px" , height: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
-                                {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
-                                    <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
+                    <div className="mb-3 d-flex" style={{ height: "70px" }}>
+
+                        <div className="ps-4">
+                            <img src={BASE_URL + user.avatarUrl} style={{ width: "72px", height: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
+                            {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
+                                <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
+                        </div>
+
+                        <div className="pt-2 ps-3">
+                            <div className="text-body">
+                                <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
+                                <p className="card-text text-start fw-bold ">ID: 2153860</p>
                             </div>
-                            <div className="pt-2 ps-3">
-                                <div className="text-body">
-                                    <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
-                                    <p className="card-text text-start fw-bold ">ID: 2153860</p>
-                                </div>
-                            </div>
-                        
+                        </div>
+
                     </div>
                 </div>
                 <div className="d-flex bd-highlight mt-3">
                     <div className='card' style={{ height: "800px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }}>
-                        <div className="flex" style={{ width: "324px" }}>
+                        <div className="flex position-relative" style={{ width: "324px" }}>
                             <img src={BASE_URL + user.avatarUrl} style={{ width: "324px", height: "324px", borderTopRightRadius: "18px", borderTopLeftRadius: "18px" }} className="" alt="..." />
                         </div>
+                        {!userVoice ?
+                            <img
+                                src="https://data.lita.cool/cdn-web/www/assets/player_audio_play_normal.eeb1a285.png"
+                                className="position-absolute"
+                                style={{ width: "50px", right: "5px", top: "270px" }}
+                                onClick={() => soundPlay(BASE_URL + user.audioUrl, null, true)}
+                            /> :
+                            <img
+                                src="https://data.lita.cool/cdn-web/www/assets/player_audio_play.f3bcd3a1.gif"
+                                className="position-absolute"
+                                style={{ width: "50px", right: "5px", top: "270px" }}
+                                onClick={() => stopSound()}
+                            />}
                         <div>
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">Lý lịch</p>
                                 <p className="card-text text-start fw-bold">{user?.description}</p>
                             </div>
                         </div>
+
                     </div>
                     <div className='detail-skill-info ms-3'>
-                        <div className="d-flex flex-row">
+                        <div className="d-flex flex-wrap">
                             {skills.map((skill) => {
                                 if (skill.skillId == skillId)
                                     return (
-                                        <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 skill-index" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
+                                        <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 skill-index mb-3" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
                                             <div style={{ border: "solid #1890ff", width: "130px", borderRadius: "10px" }}>
                                                 <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
-                                                <div className='category-name-div fw-bold fs-10px '>{skill.categoryName}</div>
+                                                <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
                                             </div>
                                         </div>
                                     )
                                 return (
-                                    <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 mt-1 skill-index" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
+                                    <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 mt-1 skill-index mb-3" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
                                         <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
                                         <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
                                     </div>
@@ -268,10 +304,10 @@ function UserDetail() {
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">{currentSkill.categoryName}</p>
                                 <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
                                 <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill.rating}  |  Đã phục vụ: {currentSkill.total}</p>
-                                <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Đặt đơn</button>
-                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><img src={icon} />Chat</button>
+                                <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled = {userId == userIdCurrent}>Đặt đơn</button>
+                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled = {userId == userIdCurrent}><img src={icon} />Chat</button>
 
-                                <OrderForm user= {user} currentSkill= {currentSkill} quality = {quality} setQuality= {setQuality} handleOrder= {handleOrder}/>
+                                <OrderForm user={user} currentSkill={currentSkill} quality={quality} setQuality={setQuality} handleOrder={handleOrder} />
                             </div>
                         </div>
                         <div className="card skill-info mt-3">

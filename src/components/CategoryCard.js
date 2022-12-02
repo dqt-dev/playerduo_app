@@ -52,7 +52,7 @@ function CategoryCard({ categories }) {
                 <Slider {...settings}>
                     {categories.map((item, index) => {
                         return (
-                            <div onClick= {() => navigate(`skill/${index + 1}`)} key={index} className="col-sm-2">
+                            <div onClick= {() => navigate(`skill/${item.categoryId}`)} key={index} className="col-sm-2">
                                 <div className="card card-category-small">
                                     <img src={BASE_URL + item.imageUrl} className="card-img-top" alt="..." style={{ width: "189px" , height: "189px"}} />
                                     <div className="card-body" style={{ height: "70px" }}>

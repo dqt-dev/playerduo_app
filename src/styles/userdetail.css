@@ -36,6 +36,10 @@
     position: absolute;
     bottom: 12%;
     left: 80px;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #fff;
 }
 .skill-info-of-user
 {
@@ -80,7 +84,11 @@ button:hover{
 .category-name-div
 {
     position: absolute;
-    top: 10%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
     color:#ffffff;
 }
 

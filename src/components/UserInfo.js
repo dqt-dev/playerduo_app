@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import Loading from './Loading';
 
-function UserInfo({user, setUser}) {
+function UserInfo({currentUser, setCurrentUser}) {
 
     const userId = useSelector(state => state.userInfoReducer.userInfo)?.id;
 
@@ -56,7 +56,7 @@ function UserInfo({user, setUser}) {
             .then(response => {
                 setLoaded(false);
                 localStorage.setItem(USER_INFO,JSON.stringify(response.data));
-                setUser(response.data);
+                setCurrentUser(response.data);
                 toast.success(response.data, {
                     position: toast.POSITION.TOP_RIGHT
                 });
@@ -74,7 +74,7 @@ function UserInfo({user, setUser}) {
         UserService.get(userId)
             .then(response => {
                 setLoaded(false);
-                setUser(response.data);
+                setCurrentUser(response.data);
             })
             .catch(e => {
                 setLoaded(false);
@@ -101,7 +101,7 @@ function UserInfo({user, setUser}) {
 
         UserService.UpdateUserInfo(data)
             .then(response => {
-                setUser(response.data);
+                setCurrentUser(response.data);
                 localStorage.setItem(USER_INFO,JSON.stringify(response.data));
                 toast.success("Cập nhật thông tin thành công", {
                     position: toast.POSITION.TOP_CENTER
@@ -127,7 +127,7 @@ function UserInfo({user, setUser}) {
             <div className='d-flex'>
                 <div className=''>
                     <div>Ảnh đại diện</div>
-                    <img onClick={handleClick} src={BASE_URL + user?.avatarUrl} style={{width: "400px"}}/>
+                    <img onClick={handleClick} src={BASE_URL + currentUser?.avatarUrl} style={{width: "400px", height: "400px"}}/>
                     <input
                         id='avatar'
                         style={{ display: 'none' }}
@@ -140,16 +140,16 @@ function UserInfo({user, setUser}) {
                     <div className='pt-2'>Biệt danh</div>
                     {!editNickName ?
                         <div className='d-flex'>
-                            <div>{user?.nickName}</div>
+                            <div>{currentUser?.nickName}</div>
                             <div className='' onClick={() => setEditNickName(true)}>
                                 <img style={{ height: '20px', marginLeft: '5px' }} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAAXNSR0IArs4c6QAAAwtJREFUWEfN2EtoE0EcBvDvv2nwouKjIioUFATBi89DkyAexAeIB0VBfJb20NIkUBXUHiT4pAVbaLbWg7ZYsQeLJw8qChVpVimIJ6+KvXgpolI92GY/2bZJZhOT7G62qYHAJtmd/eWbmf9MIvjPHuK3Jx5mHYFDJrEVwCIN+FAjeN6dko9O7uUbiKTEwmgh0AFisXpzEUxDcKt2La4nhuVPKZgvoESC2sQLDBA4XTIFwciqlTiYeCq/i51XMcgxJiMog6oIVAwjgq8QXNWIXybQTmKTLZESKM+gEphx1GC3/kY+W4hLES6fTOMVgW1OUJ5ATjEZgBuUa5BbjCPUOuzPzD5XIK+YcijRcE1PyRXrPMegSjGlUFadCgq2WMXTEcgvjA1lwlBnnya4kDTkdlmQ35gMKh7iqTQxmJ15gke9hpwsCZovjIWIhtlME30KqL/XkMaioHnF7OJ6TCNFYk0GpGmIJVOi/xNUBcxrEnVKOpMBweaelIwXgKqOsaa6oFU35E7BtF8QDDCYNHBWRFgAiobYT6Ihby9jW5ucbLLyz4nOjhl7N80WwcHafWhIJMTMbQbmjgqm4WyUVcVkE4od4FL+wBcSy7LSBcDkQBHuMdN4qcT2LRjAzu5R+eSli2bqjItusg0R60UszHbTxA0lnU7dkIvVxmQTitazi0CbUhfO9xrS5QXkNRnboI6G2EMipiQU1w1JugVVilET6iPQnAVpaNFTctcNyA+MCrpHoFEBNekpue8U5BdGBT1Qf1NpAZxJjkpua1BC5icmBwpxiMTxbEIBnNBHZahcQn5j1IQeEziqjPRj+lsZLgVqi3DDlIkR26pdZDko98UK6lC0nk8IHM58oAk6SLxHAEEBakgEAQRBBImZ91aDaCKwIq+xgrXJDUZN6CaBy24v9huTA4W5g8Q7EAEvKBEM1O5Fk7pqe2knC7IOWkM8B6DTDUoE3zUg3mPIQ6+A/OtsO8Z4hNvNNI5QsFEIwvpfh5gC5p6CKRDTomECgjEswVjymfz0C2NLyM9GK2nrL6zhBUO55aRFAAAAAElFTkSuQmCC" className="ml-12px w-18px h-18px cursor-pointer" data-v-2ea5ff2c="" />
                             </div>
                         </div> :
                         <div>
-                            <input name= 'nickName' id = 'nickName' value={user?.nickName} onChange={(e) => setUser({ ...user, nickName : e.target.value})} className='mb-2'></input>
-                            <div className='d-flex justify-content-center'>
-                                <button onClick={() => {setEditNickName(false); setUser({ ...user, nickName : user?.nickName})}} type="button" className="btn btn-light">Hủy</button>
-                                <button onClick={() => {setEditNickName(false); handleUpdateProfile('nickName', user?.nickName);}} type="button" className="btn btn-info">Lưu</button>
+                            <input name= 'nickName' id = 'nickName' value={currentUser?.nickName} onChange={(e) => setCurrentUser({ ...currentUser, nickName : e.target.value})} className='mb-2'></input>
+                            <div className='d-flex'>
+                                <button onClick={() => {setEditNickName(false); setCurrentUser({ ...currentUser, nickName : currentUser?.nickName})}} type="button" className="btn btn-light">Hủy</button>
+                                <button onClick={() => {setEditNickName(false); handleUpdateProfile('nickName', currentUser?.nickName);}} type="button" className="btn btn-info">Lưu</button>
                             </div>
                         </div>
                     }
@@ -160,18 +160,21 @@ function UserInfo({user, setUser}) {
                     <button className='rounded' data-bs-toggle="modal" data-bs-target="#exampleRecordModal"><BsMic color='blue' className='mb-1 me-1' />Ghi âm</button>
                     <hr />
 
+                    <div className='mb-2'>
+                        Mô tả bản thân
+                    </div>
                     {!editDescription ?
                         <div className='d-flex'>
-                            <div>{user?.description}</div>
+                            <div >{currentUser?.description == null ? "Hãy cho người biết bạn thú vị như thế nào..." : currentUser?.description}</div>
                             <div onClick={() => setEditDescription(true)}>
                                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAAXNSR0IArs4c6QAAAwtJREFUWEfN2EtoE0EcBvDvv2nwouKjIioUFATBi89DkyAexAeIB0VBfJb20NIkUBXUHiT4pAVbaLbWg7ZYsQeLJw8qChVpVimIJ6+KvXgpolI92GY/2bZJZhOT7G62qYHAJtmd/eWbmf9MIvjPHuK3Jx5mHYFDJrEVwCIN+FAjeN6dko9O7uUbiKTEwmgh0AFisXpzEUxDcKt2La4nhuVPKZgvoESC2sQLDBA4XTIFwciqlTiYeCq/i51XMcgxJiMog6oIVAwjgq8QXNWIXybQTmKTLZESKM+gEphx1GC3/kY+W4hLES6fTOMVgW1OUJ5ATjEZgBuUa5BbjCPUOuzPzD5XIK+YcijRcE1PyRXrPMegSjGlUFadCgq2WMXTEcgvjA1lwlBnnya4kDTkdlmQ35gMKh7iqTQxmJ15gke9hpwsCZovjIWIhtlME30KqL/XkMaioHnF7OJ6TCNFYk0GpGmIJVOi/xNUBcxrEnVKOpMBweaelIwXgKqOsaa6oFU35E7BtF8QDDCYNHBWRFgAiobYT6Ihby9jW5ucbLLyz4nOjhl7N80WwcHafWhIJMTMbQbmjgqm4WyUVcVkE4od4FL+wBcSy7LSBcDkQBHuMdN4qcT2LRjAzu5R+eSli2bqjItusg0R60UszHbTxA0lnU7dkIvVxmQTitazi0CbUhfO9xrS5QXkNRnboI6G2EMipiQU1w1JugVVilET6iPQnAVpaNFTctcNyA+MCrpHoFEBNekpue8U5BdGBT1Qf1NpAZxJjkpua1BC5icmBwpxiMTxbEIBnNBHZahcQn5j1IQeEziqjPRj+lsZLgVqi3DDlIkR26pdZDko98UK6lC0nk8IHM58oAk6SLxHAEEBakgEAQRBBImZ91aDaCKwIq+xgrXJDUZN6CaBy24v9huTA4W5g8Q7EAEvKBEM1O5Fk7pqe2knC7IOWkM8B6DTDUoE3zUg3mPIQ6+A/OtsO8Z4hNvNNI5QsFEIwvpfh5gC5p6CKRDTomECgjEswVjymfz0C2NLyM9GK2nrL6zhBUO55aRFAAAAAElFTkSuQmCC" className="ml-12px w-18px h-18px cursor-pointer" data-v-2ea5ff2c="" style={{ height: '20px', marginLeft: '5px' }} />
                             </div>
                         </div> :
                         <div>
-                            <textarea value={user?.description} onChange={(e) => setUser({ ...user, description : e.target.value})} />
+                            <textarea value={currentUser?.description} onChange={(e) => setCurrentUser({ ...currentUser, description : e.target.value})} />
                             <div className='d-flex'>
-                                <button onClick={() => {setEditDescription(false); setUser({ ...user, description : user?.description})}} type="button" className="btn btn-light">Hủy</button>
-                                <button onClick={() => {setEditDescription(false); handleUpdateProfile('description', user?.description);}} type="button" className="btn btn-info">Lưu</button>
+                                <button onClick={() => {setEditDescription(false); setCurrentUser({ ...currentUser, description : currentUser?.description})}} type="button" className="btn btn-light">Hủy</button>
+                                <button onClick={() => {setEditDescription(false); handleUpdateProfile('description', currentUser?.description);}} type="button" className="btn btn-info">Lưu</button>
                             </div>
                         </div>
                     }
