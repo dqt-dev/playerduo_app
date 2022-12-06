@@ -36,8 +36,6 @@ function UsersByCategory() {
 
     const [loaded, setLoaded] = useState(false);
 
-    const [ currentUser, setCurrentUser] = useState("");
-
     const stopSound = () => {
         setIsPlay(0);
         if (sound) sound.stop();
@@ -113,7 +111,7 @@ function UsersByCategory() {
     return (
         <>
         <Loading loading={loaded} />
-            <Header  handleClickChatList = {handleClickChatList} currentUser = {currentUser} setCurrentUser = {setCurrentUser}/>
+            <Header  handleClickChatList = {handleClickChatList}/>
             <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
             <div>
                 <div className='gameName'>

@@ -27,11 +27,13 @@ import { handleConvertDate } from '../common/ultil';
 import Loading from './Loading';
 import MessageService from '../services/MessageService';
 import ChatBoxComponent from './ChatBoxComponent';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ChatList from './ChatListComponent';
+import { getMyInfo } from '../redux/UserInfo/action';
 
 function UserDetail() {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const initSkill = {
@@ -136,7 +138,8 @@ function UserDetail() {
         OrderService.createNewOrder(requestCreateOrder)
             .then(response => {
                 setLoaded(false);
-                toast.success(response.data, {
+                dispatch(getMyInfo(response.data));
+                toast.success("Đặt đơn hàng thành công, vui lòng chờ phản hồi!", {
                     position: toast.POSITION.TOP_RIGHT
                 });
             })

@@ -9,12 +9,13 @@ import { useEffect } from 'react';
 import { formatNumberWithComma, handleConvertDate } from '../common/ultil';
 import Loading from './Loading';
 import { useSelector } from 'react-redux';
+import ReactPaginate from 'react-paginate';
 
 
 
 function WalletPage() {
 
-    const currentUserId = useSelector(state => state.userInfoReducer.userInfo)?.id;
+    const currentUser = useSelector(state => state.userInfoReducer.userInfo);
 
     const [loaded, setLoaded] = useState(false);
 
@@ -33,32 +34,12 @@ function WalletPage() {
         { money: 100, coin: 1700 },
     ]
 
-    const convertType = (type) =>
-    {
-        return type === 1 ? "Nạp tiền" 
-        : type === 2 ? "Thanh toán đơn hàng"
-        : type === 3 ? "Hoàn tiền hủy đơn"
-        : "Nhận tiền"
+    const convertType = (type) => {
+        return type === 1 ? "Nạp tiền"
+            : type === 2 ? "Thanh toán đơn hàng"
+                : type === 3 ? "Hoàn tiền hủy đơn"
+                    : "Nhận tiền"
     }
-
-    const [currentUser, setCurrentUser] = useState();
-
-    const getUserInfo = (userId) => {
-        setLoaded(true);
-        UserService.get(userId)
-            .then(response => {
-                setLoaded(false);
-                setCurrentUser(response.data);
-            })
-            .catch(e => {
-                setLoaded(false);
-                console.log(e);
-            });
-    };
-
-    useEffect(() => {
-        getUserInfo(currentUserId);
-    }, [currentUserId]);
 
     const [history, setHistory] = useState();
 
@@ -83,9 +64,33 @@ function WalletPage() {
         navigate('/checkout', { state: { paymentRequest: paymentRequest } });
     }
 
+    const [pageNumber, setPageNumber] = useState(0);
+    const usersPerPage = 10;
+    const pagesVisited = pageNumber * usersPerPage;
+
+    const displayUsers = history
+        ?.slice(pagesVisited, pagesVisited + usersPerPage)
+        ?.map((item) => {
+            return (
+                <tr>
+                    <td className='fw-bold'>{handleConvertDate(item.createdAt)}</td>
+                    <td className='fw-bold'>{convertType(item.type)}</td>
+                    {item.type !== 2 ? <td className='coin-plus fw-bold'> + {formatNumberWithComma(item?.coin)} xu</td> :
+                        <td className='coin-minus fw-bold'> - {formatNumberWithComma(item?.coin)} xu</td>}
+                </tr>
+            )
+        }
+        );
+
+    const pageCount = Math.ceil(history?.length / usersPerPage);
+
+    const changePage = ({ selected }) => {
+        setPageNumber(selected);
+    };
+
     return (
         <div className='ms-4 mt-3' style={{ width: "900px" }}>
-            <Loading loading= {loaded}/>
+            <Loading loading={loaded} />
             <div className='border rounded text-20px fw-bold d-flex pt-2 pb-2' style={{ backgroundColor: "#ffff" }}>
                 <div className='ms-3'>Số dư tài khoản:</div>
                 <div className=' fw-bold ps-1 cursor-pointer text-20px cursor-pointer ms-2 me-1'>{currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
@@ -128,19 +133,21 @@ function WalletPage() {
                     </thead>
                     <tbody>
 
-                        {history && history.length > 0 ? history.map((item, index) => {
-                            return (
-                                <tr key = {index}>
-                                    <td className='fw-bold'>{handleConvertDate(item.createdAt)}</td>
-                                    <td className='fw-bold'>{convertType(item.type)}</td>
-                                    {item.type !== 2 ? <td className='coin-plus fw-bold'> + {formatNumberWithComma(item?.coin)} xu</td> :
-                                    <td className='coin-minus fw-bold'> - {formatNumberWithComma(item?.coin)} xu</td>}
-                                </tr>
-                            )
-                        }
-                        ) : <></>}
+                        {displayUsers}
+                        <ReactPaginate
+                            previousLabel={"Previous"}
+                            nextLabel={"Next"}
+                            pageCount={pageCount}
+                            onPageChange={changePage}
+                            containerClassName={"paginationBttns"}
+                            previousLinkClassName={"previousBttn"}
+                            nextLinkClassName={"nextBttn"}
+                            disabledClassName={"paginationDisabled"}
+                            activeClassName={"paginationActive"}
+                        />
                     </tbody>
                 </table>
+
             </div>
         </div>
     )

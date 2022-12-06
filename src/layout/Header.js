@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/header.css';
 
 import { BsChatLeftQuote } from 'react-icons/bs';
-import { BASE_URL, INFO_LOGIN } from '../common/SystemConstant';
+import { BASE_URL, INFO_LOGIN, USER_INFO, USER_TOKEN } from '../common/SystemConstant';
 import { useSelector, useDispatch } from 'react-redux';
 import { getMyInfo } from '../redux/UserInfo/action';
 import { formatNumberWithComma, ls } from "../common/ultil"
@@ -15,8 +15,8 @@ import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
 import logo from '../logo.png';
 
-function Header({ handleClickChatList, currentUser, setCurrentUser }) {
-  const userId = useSelector(state => state.userInfoReducer.userInfo)?.id;
+function Header({ handleClickChatList }) {
+  const currentUser = useSelector(state => state.userInfoReducer.userInfo);
 
   const [loaded, setLoaded] = useState(false);
 
@@ -24,38 +24,26 @@ function Header({ handleClickChatList, currentUser, setCurrentUser }) {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    
+
     const infoLogin = ls.get(INFO_LOGIN)
     localStorage.clear()
     if (infoLogin) {
       ls.set(INFO_LOGIN, infoLogin)
     }
-    setCurrentUser(null);
     dispatch(getMyInfo(null));
     navigate('/')
   }
-
-  const getUserInfo = (userId) => {
-    setLoaded(true);
-    UserService.get(userId)
-      .then(response => {
-        setLoaded(false);
-        setCurrentUser(response.data);
-      })
-      .catch(e => {
-        setLoaded(false);
-        console.log(e);
-      });
-  };
 
   const goToPage = (link) => {
     navigate(`/user/${link}`)
   }
 
   const handleUpdateStatus = (status) => {
+      setLoaded(true);
     UserService.UpdateStatus(status)
       .then(response => {
         setLoaded(false);
+        dispatch(getMyInfo(response.data));
         !currentUser?.status ? toast.success("Bạn đang ở trạng thái sẵn sàng nhận đơn hàng!", {
           position: toast.POSITION.TOP_CENTER
         }) :
@@ -71,26 +59,21 @@ function Header({ handleClickChatList, currentUser, setCurrentUser }) {
       });
   }
 
-  useEffect(() => {
-    if(userId)
-    getUserInfo(userId);
-  }, [userId]);
-
   return (
     <header className="p-2 border-bottom header">
       <Loading loaded={loaded} />
       <div className="">
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
           <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-            <li><Link to={"/"} className="nav-link px-2 link-secondary pt-0 pb-0"><img src={logo} style= {{height: "40px", width: "60px"}}/></Link></li>
+            <li><Link to={"/"} className="nav-link px-2 link-secondary pt-0 pb-0"><img src={logo} style={{ height: "40px", width: "60px" }} /></Link></li>
             <li><Link to={"/"} className="nav-link px-2 link-dark">HOME</Link></li>
           </ul>
           <div className="form-check form-switch me-3">
-            <input disabled={!userId} onChange={() => { handleUpdateStatus(!currentUser?.status); setCurrentUser({...currentUser, status : !currentUser?.status}); }} className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style={{ height: "20px", width: "40px" }} checked={currentUser?.status}/>
+            <input disabled={!currentUser} onChange={() => handleUpdateStatus(!currentUser?.status)} className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style={{ height: "20px", width: "40px" }} checked={currentUser?.status} />
           </div>
           <div onClick={() => goToPage('wallet')} className='d-flex justify-content-center rounded pt-1 pb-1 me-3 item-coin-header' style={{ width: "90px", backgroundColor: "#e8e8f1" }}>
             <img src={coin} style={{ height: "25px" }} />
-            <div className="ps-1 pe-1">{ currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
+            <div className="ps-1 pe-1">{currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
             <IoIosAddCircle color="#1890ff" size={25} />
           </div>
           <BsChatLeftQuote onClick={handleClickChatList} size={28} className="me-4" />

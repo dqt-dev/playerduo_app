@@ -1,10 +1,13 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getMyInfo } from "../redux/UserInfo/action";
 import UserService from "../services/UserSerice";
 
 const PaypalCheckoutButton = (props) => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { paymentRequestInfo } = props;
 
@@ -18,6 +21,7 @@ const PaypalCheckoutButton = (props) => {
         UserService.Payment({coin: paymentRequestInfo.coin})
         .then(response => {
             setPaidFor(true);
+            dispatch(getMyInfo(response.data));
             toast.success(response.data, {
                 position: toast.POSITION.TOP_RIGHT
                 });

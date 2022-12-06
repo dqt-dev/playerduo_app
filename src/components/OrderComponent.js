@@ -7,8 +7,12 @@ import OrderService from '../services/OrderService';
 import { useEffect } from 'react';
 import Loading from './Loading';
 import { handleConvertDate } from '../common/ultil';
+import { getMyInfo } from '../redux/UserInfo/action';
+import { useDispatch } from 'react-redux';
 
 function OrderComponent() {
+
+    const dispatch = useDispatch();
 
     const [loaded, setLoaded] = useState(false);
 
@@ -86,7 +90,8 @@ function OrderComponent() {
         OrderService.ConfirmOrder(orderId)
             .then(response => {
                 handleManageMyOrder();
-                toast.success(response.data, {
+                dispatch(getMyInfo(response.data));
+                toast.success("Đơn hàng đã được xác nhận!", {
                     position: toast.POSITION.TOP_RIGHT
                 });
             })

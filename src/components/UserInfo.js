@@ -3,16 +3,21 @@ import { useState } from 'react';
 import { BASE_URL, USER_INFO } from '../common/SystemConstant'
 import { BsMic } from 'react-icons/bs';
 import RecordModel from './RecordModel';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRef } from 'react';
 import UserService from '../services/UserSerice';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import Loading from './Loading';
+import { getMyInfo } from '../redux/UserInfo/action';
 
-function UserInfo({currentUser, setCurrentUser}) {
+function UserInfo() {
 
-    const userId = useSelector(state => state.userInfoReducer.userInfo)?.id;
+    const userInfo = useSelector(state => state.userInfoReducer.userInfo);
+
+    const [currentUser, setCurrentUser] = useState(userInfo);
+
+    const dispatch = useDispatch();
 
     const [avatar, setAvatar] = useState();
 
@@ -55,8 +60,8 @@ function UserInfo({currentUser, setCurrentUser}) {
         UserService.UpdateUserInfo(data)
             .then(response => {
                 setLoaded(false);
-                localStorage.setItem(USER_INFO,JSON.stringify(response.data));
                 setCurrentUser(response.data);
+                dispatch(getMyInfo(response.data));
                 toast.success(response.data, {
                     position: toast.POSITION.TOP_RIGHT
                 });
@@ -69,29 +74,12 @@ function UserInfo({currentUser, setCurrentUser}) {
             });
     }
 
-    const getUserInfo = (userId) => {
-        setLoaded(true);
-        UserService.get(userId)
-            .then(response => {
-                setLoaded(false);
-                setCurrentUser(response.data);
-            })
-            .catch(e => {
-                setLoaded(false);
-                console.log(e);
-            });
-    };
-
     useEffect(() => {
         if (avatar) {
             handleUpdateAvatar();
             setAvatar('');
         }
     }, [avatar]);
-
-    useEffect(() => {
-        getUserInfo(userId);
-    }, [userId]);
 
     const handleUpdateProfile = (field, value) => {
         let data = new FormData();
@@ -102,7 +90,7 @@ function UserInfo({currentUser, setCurrentUser}) {
         UserService.UpdateUserInfo(data)
             .then(response => {
                 setCurrentUser(response.data);
-                localStorage.setItem(USER_INFO,JSON.stringify(response.data));
+                dispatch(getMyInfo(response.data));
                 toast.success("Cập nhật thông tin thành công", {
                     position: toast.POSITION.TOP_CENTER
                 });
