@@ -10,6 +10,9 @@ import coin from '../coin.png'
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineInbox } from 'react-icons/ai';
 import { BASE_URL } from '../common/SystemConstant';
+import UserService from '../services/UserSerice';
+import { toast } from 'react-toastify';
+import SkillService from '../services/SkillService';
 
 function SampleNextArrow(props) {
     const { className, onClick } = props;
@@ -37,8 +40,39 @@ function SamplePrevArrow(props) {
 function SkillCard(props) {
     const navigate = useNavigate();
 
+    const retrieveSkills = {props}
+
     const goToUserPage = (userId, skillId) => {
-        navigate("user/" + userId + "?skillId=" + skillId)
+        let check = true;
+        UserService.get(userId)
+            .then(response => {
+                if (!response?.data?.isEnabled) {
+                    check = false;
+                    toast.error("Người dùng này đã bị vô hiệu hóa!", {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                    retrieveSkills();
+                    return;
+                }
+            })
+            .catch(e => {
+                console.log(e);
+            });
+        SkillService.getSkillById(skillId)
+            .then(response => {
+                if (!response?.data?.isEnabled) {
+                    check = false;
+                    toast.error("Kỹ năng này đã bị vô hiệu hóa!", {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                    retrieveSkills();
+                    return;
+                }
+            })
+            .catch(e => {
+                console.log(e);
+            });
+        check && navigate("user/" + userId + "?skillId=" + skillId)
     }
 
     const { data, categoryName, isPlay, setIsPlay, categoryId } = props

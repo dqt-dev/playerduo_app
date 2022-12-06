@@ -9,6 +9,7 @@ import CategoryService from '../services/CategoryService';
 import { Howl, Howler } from 'howler';
 import { AiOutlineInbox } from 'react-icons/ai';
 import Loading from './Loading';
+import ChatList from './ChatListComponent';
 
 function UsersByCategory() {
 
@@ -99,10 +100,21 @@ function UsersByCategory() {
         navigate(`/user/${userId}?skillId=${skillId}`);
     }
 
+    const [isShowChat, setIsShowChat] = useState(false);
+
+    const handleClickChatList = () => {
+      const token = localStorage.getItem('user-token');
+      if (!token) {
+        navigate('/login');
+      }
+      setIsShowChat(!isShowChat);
+    }
+
     return (
         <>
         <Loading loading={loaded} />
-            <Header currentUser = {currentUser} setCurrentUser = {setCurrentUser}/>
+            <Header  handleClickChatList = {handleClickChatList} currentUser = {currentUser} setCurrentUser = {setCurrentUser}/>
+            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
             <div>
                 <div className='gameName'>
                     <div >

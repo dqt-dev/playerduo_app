@@ -68,7 +68,7 @@ function Dashboard() {
       <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
       <div className='main'>
         <SiderBar />
-        <Content categories={categories} skill={skill} />
+        <Content categories={categories} skill={skill} retrieveSkills= {retrieveSkills}/>
       </div>
       <Footer />
     </>

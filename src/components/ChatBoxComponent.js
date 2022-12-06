@@ -147,16 +147,16 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
     }, [userChatInfo?.id]);
 
 
-    // useEffect(() => {
-    //     getListChat()
-    // }, [messages]);
+    useEffect(() => {
+        getListChat()
+    }, [messages]);
 
     return (
         <div className="offcanvas offcanvas-end d-flex flex-column" tabIndex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
             <Loading loading={loaded} />
             <div className="">
                 <div className='d-flex'>
-                    <div type="button" className="btn btn-back text-reset mt-1" data-bs-dismiss="offcanvas" aria-label="Close" onClick={getListChat}><MdArrowBackIos size={20} /></div>
+                    <div type="button" className="btn btn-back text-reset mt-1" data-bs-dismiss="offcanvas" aria-label="Close" ><MdArrowBackIos size={20} /></div>
                     <div className='d-flex'>
                         <div className='position-relative'>
                             <img className="rounded-50 mt-1" src={BASE_URL + userChatInfo?.avatarUrl} style={{ height: "40px", width: "40px" }} />

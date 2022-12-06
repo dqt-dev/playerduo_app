@@ -4,7 +4,7 @@ import '../styles/content.css';
 import CategoryCard from './CategoryCard';
 import SkillCard from './SkillCard';
 
-export default function Content({ categories, skill }) {
+export default function Content({ categories, skill, retrieveSkills }) {
 
   const [isPlay, setIsPlay] = useState(0)
 
@@ -17,7 +17,7 @@ export default function Content({ categories, skill }) {
             let temp = skill.filter(s => s.categoryId === item.categoryId)
             return (
               <div key={index}>
-                <SkillCard data={temp} isPlay={isPlay} setIsPlay={setIsPlay} categoryName={item.categoryName} categoryId={item.categoryId} />
+                <SkillCard data={temp} isPlay={isPlay} setIsPlay={setIsPlay} categoryName={item.categoryName} categoryId={item.categoryId} retrieveSkills = {retrieveSkills}/>
               </div>
             )
           }

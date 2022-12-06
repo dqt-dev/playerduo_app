@@ -28,6 +28,7 @@ import Loading from './Loading';
 import MessageService from '../services/MessageService';
 import ChatBoxComponent from './ChatBoxComponent';
 import { useSelector } from 'react-redux';
+import ChatList from './ChatListComponent';
 
 function UserDetail() {
 
@@ -120,6 +121,13 @@ function UserDetail() {
     }
 
     const handleOrder = (skillId, quality) => {
+        if(quality < 1) 
+        {
+            toast.error("Số lượng ít nhất là 1!", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            return;
+        }
         const requestCreateOrder = {
             'skillId': skillId,
             'quality': quality
@@ -181,7 +189,7 @@ function UserDetail() {
         )
             .then(response => {
                 setSkills(response.data);
-                let temp = response.data.filter(skill => skill.skillId == skillId);
+                let temp = response.data.filter(skill => skill?.skillId == skillId);
 
                 setCurrentSkill(...temp);
                 myFunction(...temp)
@@ -229,10 +237,19 @@ function UserDetail() {
             });
     };
 
+    const handleClickChatList = () => {
+      const token = localStorage.getItem('user-token');
+      if (!token) {
+        navigate('/login');
+      }
+      setIsShowChat(!isShowChat);
+    }
+
     return (
         <>
             <Loading loading={loaded} />
-            <Header handleChat={handleChat} currentUser={currentUser} setCurrentUser={setCurrentUser} />
+            <Header handleClickChatList = {handleClickChatList} currentUser={currentUser} setCurrentUser={setCurrentUser} />
+            {/* <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} /> */}
             <ChatBoxComponent userChatInfo={userChatInfo} getListChat={getListChat} />
             <div className='container mt-3' style={{ position: "relative" }}>
                 <div className='card main-info'>
@@ -274,7 +291,7 @@ function UserDetail() {
                         <div>
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">Lý lịch</p>
-                                <p className="card-text text-start fw-bold">{user?.description}</p>
+                                <p className="card-text text-start fw-bold">{user?.description !== null ? user?.description : "Chưa có thông tin mô tả..."}</p>
                             </div>
                         </div>
 
@@ -282,28 +299,28 @@ function UserDetail() {
                     <div className='detail-skill-info ms-3'>
                         <div className="d-flex flex-wrap">
                             {skills.map((skill) => {
-                                if (skill.skillId == skillId)
+                                if (skill?.skillId == skillId)
                                     return (
-                                        <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 skill-index mb-3" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
+                                        <div onClick={() => { changeSkill(skill?.skillId); myFunction(currentSkill?.audioUrl) }} className="text-center me-4 skill-index mb-3" key={skill?.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
                                             <div style={{ border: "solid #1890ff", width: "130px", borderRadius: "10px" }}>
-                                                <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
-                                                <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
+                                                <img src={BASE_URL + skill?.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
+                                                <div className='category-name-div fw-bold fs-10px ms-1'>{skill?.categoryName}</div>
                                             </div>
                                         </div>
                                     )
                                 return (
-                                    <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 mt-1 skill-index mb-3" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
-                                        <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
-                                        <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
+                                    <div onClick={() => { changeSkill(skill?.skillId); myFunction(currentSkill?.audioUrl) }} className="text-center me-4 mt-1 skill-index mb-3" key={skill?.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
+                                        <img src={BASE_URL + skill?.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
+                                        <div className='category-name-div fw-bold fs-10px'>{skill?.categoryName}</div>
                                     </div>
                                 )
                             })}
                         </div>
                         <div className="card skill-info-of-user mt-3">
                             <div className="text-body ms-2">
-                                <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">{currentSkill.categoryName}</p>
-                                <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
-                                <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill.rating}  |  Đã phục vụ: {currentSkill.total}</p>
+                                <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">{currentSkill?.categoryName}</p>
+                                <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill?.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
+                                <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill?.rating}  |  Đã phục vụ: {currentSkill?.total}</p>
                                 <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled = {userId == userIdCurrent}>Đặt đơn</button>
                                 <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled = {userId == userIdCurrent}><img src={icon} />Chat</button>
 
@@ -313,14 +330,14 @@ function UserDetail() {
                         <div className="card skill-info mt-3">
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-3">Thông tin game</p>
-                                <p className="align-items-center mb-1 card-text fs-5" >{currentSkill.description}</p>
+                                <p className="align-items-center mb-1 card-text fs-5" >{currentSkill?.description}</p>
                                 <div className="d-flex flex-row items-center px-4px border rounded-2" style={{ height: "24px", width: "60px" }}>
-                                    {isPlay === currentSkill.skillId ? <img src={stop} alt="stop" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => stopSound()} /> :
-                                        <img src={play} alt="play" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => soundPlay(BASE_URL + currentSkill.audioUrl, currentSkill.skillId)} />}
+                                    {isPlay === currentSkill?.skillId ? <img src={stop} alt="stop" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => stopSound()} /> :
+                                        <img src={play} alt="play" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => soundPlay(BASE_URL + currentSkill?.audioUrl, currentSkill?.skillId)} />}
                                     <div>{Math.ceil(duration)}'</div>
                                 </div>
                                 <div>
-                                    <img className="mt-3" src={BASE_URL + currentSkill.imageDetailUrl} style={{ height: "190px", width: "338px" }} />
+                                    <img className="mt-3" src={BASE_URL + currentSkill?.imageDetailUrl} style={{ height: "190px", width: "338px" }} />
                                 </div>
                             </div>
                             <div className='pb-3'>
@@ -328,7 +345,7 @@ function UserDetail() {
                                     <div className="text-20px font-bold text-#333333 ms-3">Đánh Giá Của Người Dùng ({reviews.length})</div>
                                     <div className="d-flex me-3">
                                         <img src={star} alt="rating" className="mt-1 w-24px h-24px" />
-                                        <div className=" text-20px font-bold text-#333333 ms-1">{currentSkill.rating}/5</div>
+                                        <div className=" text-20px font-bold text-#333333 ms-1">{currentSkill?.rating}/5</div>
                                     </div>
                                 </div>
                                 {reviews.length > 0 ? reviews.map((review, index) => {
