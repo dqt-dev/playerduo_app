@@ -15,8 +15,10 @@ import MessageService from '../services/MessageService';
 import { useRef } from 'react';
 import Loading from './Loading';
 import UserService from '../services/UserSerice';
+import { useSelector } from 'react-redux';
 
 function ChatBoxComponent({ userChatInfo, getListChat }) {
+    const currentCurrent = useSelector(state => state.userInfoReducer.userInfo);
 
     const messagesEndRef = useRef(null)
 
@@ -24,14 +26,9 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
-    const [userCurrent, setCurrentUser] = useState(); 
-
     const [messages, setMessages] = useState([]);
 
     const [messageContent, setMessageContent] = useState("");
-
-    //get userId of user login
-    const currentUserId = JSON.parse(localStorage.getItem('USER_INFO')) ? JSON.parse(localStorage.getItem('USER_INFO')).id : 0; 
 
     const [connection, setConnection] = useState();
 
@@ -40,20 +37,6 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
     messageStateRef.current = messages;
 
     const [loaded, setLoaded] = useState(false);
-
-    // get info of user login
-    const getUserInfo = userId => {
-        setLoaded(true);
-        UserService.get(userId)
-            .then(response => {
-                setLoaded(false);
-                setCurrentUser(response.data);
-            })
-            .catch(e => {
-                setLoaded(false);
-                console.log(e);
-            });
-    };
 
     useEffect(() => {
         scrollToBottom()
@@ -94,14 +77,14 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
             // method to receive message from our server
             connection.on("ReceiveMessage", (message) => {
 
-                if (message.senderId == userChatInfo?.id || message.senderId == currentUserId) {
+                if (message.senderId == userChatInfo?.id || message.senderId == currentCurrent?.id) {
                     let messages = messageStateRef.current;
                     setMessages([...messages, message]);
                 }
             });
 
             await connection.start();
-            await connection.invoke("ConnectUserToChatHub", currentUserId.toString());
+            await connection.invoke("ConnectUserToChatHub", currentCurrent?.id.toString());
 
             setConnection(connection);
 
@@ -112,7 +95,7 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
 
     const sendMessage = async (messageContent) => {
         const messageDto = {
-            senderId: currentUserId.toString(),
+            senderId: currentCurrent?.id.toString(),
             receiverId: userChatInfo?.id.toString(),
             content: messageContent,
             imageUrl: ''
@@ -138,7 +121,6 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
         async function fetchData() {
             if (userChatInfo?.id != '') {
                 await connectToChatHub();
-                getUserInfo(currentUserId);
                 handleGetChat(userChatInfo?.id);
             }
         }
@@ -173,7 +155,7 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
                     {messages && messages.map((chat, index) => {
                         return (
                             <div key={index} >
-                                {chat.senderId == userCurrent?.id ?
+                                {chat.senderId == currentCurrent?.id ?
                                     <div className='d-flex justify-content-end me-2' >
                                         <div className='pt-2 pb-2 ps-3 pe-3 mb-3 content-chat ' style={{ backgroundColor: '#F4F4F4', borderRadius: "16px" }}>
                                             {chat.content}
@@ -201,7 +183,7 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
             <hr className='text-gray mt-0' style={{ width: "96%", marginLeft: "2%" }} />
             <div className='align-self-start ps-3'>
                 <div className='d-flex'>
-                    <img className="rounded-50 me-2 align-self-center" src={BASE_URL + userCurrent?.avatarUrl} style={{ height: "36px", width: "36px" }} />
+                    <img className="rounded-50 me-2 align-self-center" src={BASE_URL + currentCurrent?.avatarUrl} style={{ height: "36px", width: "36px" }} />
                     <div className="ps-2" >
                         <TextareaAutosize placeholder="Aa" onKeyDown={handleKeyDown} maxRows='3' style={{ width: "270px" }} className="ps-2 pe-2 border rounded" value={messageContent} onChange={(e) => setMessageContent(e.target.value)} />
                     </div>
