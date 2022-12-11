@@ -108,11 +108,13 @@ function UsersByCategory() {
       setIsShowChat(!isShowChat);
     }
 
+    const [userChatId, setUserChatId] = useState();
+
     return (
         <>
         <Loading loading={loaded} />
             <Header  handleClickChatList = {handleClickChatList}/>
-            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
+            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} userChatId = {userChatId} setUserChatId = {setUserChatId}/>
             <div>
                 <div className='gameName'>
                     <div >

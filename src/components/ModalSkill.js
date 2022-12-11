@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import SkillService from '../services/SkillService';
 import { useRef } from 'react';
 
-function OrderForm({ skillBeforeUpdate, skills, skillDetail, setSkillDetail, type, getSkills }) {
+function OrderForm({ skillBeforeUpdate, skills, skillDetail, setSkillDetail, type, getSkills, getSkillTemps }) {
 
   const userId = JSON.parse(localStorage.getItem('USER_INFO')).id
 
@@ -112,13 +112,14 @@ function OrderForm({ skillBeforeUpdate, skills, skillDetail, setSkillDetail, typ
             setSkillDetail(initSkill);
             resetFileInput();
             getSkills(userId);
+            getSkillTemps();
             toast.success(response.data, {
               position: toast.POSITION.TOP_RIGHT
             });
           })
           .catch(error => {
             setLoaded(false);
-            toast.error(error.data, {
+            toast.error(error.response.data, {
               position: toast.POSITION.TOP_RIGHT
             });
           });

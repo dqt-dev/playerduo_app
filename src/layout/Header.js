@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/header.css';
 
-import { BsChatLeftQuote } from 'react-icons/bs';
+import { FaFacebookMessenger } from 'react-icons/fa';
 import { BASE_URL, INFO_LOGIN, USER_INFO, USER_TOKEN } from '../common/SystemConstant';
 import { useSelector, useDispatch } from 'react-redux';
 import { getMyInfo } from '../redux/UserInfo/action';
@@ -39,7 +39,7 @@ function Header({ handleClickChatList }) {
   }
 
   const handleUpdateStatus = (status) => {
-      setLoaded(true);
+    setLoaded(true);
     UserService.UpdateStatus(status)
       .then(response => {
         setLoaded(false);
@@ -73,10 +73,13 @@ function Header({ handleClickChatList }) {
           </div>
           <div onClick={() => goToPage('wallet')} className='d-flex justify-content-center rounded pt-1 pb-1 me-3 item-coin-header' style={{ width: "90px", backgroundColor: "#e8e8f1" }}>
             <img src={coin} style={{ height: "25px" }} />
-            <div className="ps-1 pe-1">{currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
+            <div className="ps-1 pe-1 cursor-pointer ">{currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
             <IoIosAddCircle color="#1890ff" size={25} />
           </div>
-          <BsChatLeftQuote onClick={handleClickChatList} size={28} className="me-4" />
+          {/* <div onClick={handleClickChatList} className="d-flex border rounded me-2"> */}
+            <FaFacebookMessenger onClick={handleClickChatList} size={28} className="me-3" color='#1876f2' />
+            {/* <div className=''>Tin nhắn</div> */}
+          {/* </div> */}
           {currentUser ?
             <div className="dropdown text-end me-4">
               <a className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">

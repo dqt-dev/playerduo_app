@@ -4,6 +4,7 @@ import Header from '../layout/Header'
 import '../styles/userdetail.css';
 import { getAudioDurationInSeconds } from "@remotion/media-utils";
 import { AiOutlineInbox } from 'react-icons/ai';
+import {BsThreeDots} from 'react-icons/bs';
 
 import star from '../star.png'
 import coin from '../coin.png'
@@ -25,8 +26,6 @@ import OrderForm from './OrderForm';
 import { BASE_URL } from '../common/SystemConstant';
 import { handleConvertDate } from '../common/ultil';
 import Loading from './Loading';
-import MessageService from '../services/MessageService';
-import ChatBoxComponent from './ChatBoxComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import ChatList from './ChatListComponent';
 import { getMyInfo } from '../redux/UserInfo/action';
@@ -62,6 +61,8 @@ function UserDetail() {
 
     const { userId } = useParams(); // get userId from Url
 
+    const [userChatId, setUserChatId] = useState(userId);
+
     const [searchParam] = useSearchParams(0);  // set skillId from Url
     const [skillId, setSkillId] = useState(searchParam.get('skillId'));
 
@@ -71,7 +72,7 @@ function UserDetail() {
 
     const [currentSkill, setCurrentSkill] = useState(initSkill); // current skill 
 
-    const [sound, setSound] = useState(null); 
+    const [sound, setSound] = useState(null);
 
     const [duration, setDuration] = useState(0);
 
@@ -81,13 +82,9 @@ function UserDetail() {
 
     const [quality, setQuality] = useState(1);
 
-    const [currentUser, setCurrentUser] = useState(initUserInfo);
-
     const [user, setUser] = useState(initUserInfo);
 
-    const [userChatInfo, setUserChatInfo] = useState(initUserInfo);
-
-    const userIdCurrent = useSelector(state => state.userInfoReducer.userInfo)?.id;
+    const currentUser = useSelector(state => state.userInfoReducer.userInfo);
 
     const [userVoice, setUserVoice] = useState(false);
 
@@ -106,7 +103,8 @@ function UserDetail() {
         if (!token) {
             navigate('/login');
         }
-        setIsShowChat(!isShowChat);
+        setUserChatId(userId)
+        !isShowChat && setIsShowChat(!isShowChat);
     }
 
     const soundPlay = (src, skillId, userVoice) => {
@@ -123,8 +121,7 @@ function UserDetail() {
     }
 
     const handleOrder = (skillId, quality) => {
-        if(quality < 1) 
-        {
+        if (quality < 1) {
             toast.error("Số lượng ít nhất là 1!", {
                 position: toast.POSITION.TOP_RIGHT
             });
@@ -151,26 +148,12 @@ function UserDetail() {
             });
     }
 
-    const getCurrentUserInfo = userId => {
-        setLoaded(true);
-        UserService.get(userId)
-            .then(response => {
-                setLoaded(false);
-                setCurrentUser(response.data);
-            })
-            .catch(e => {
-                setLoaded(false);
-                console.log(e);
-            });
-    };
-
     const getUserInfo = userId => {
         setLoaded(true);
         UserService.get(userId)
             .then(response => {
                 setLoaded(false);
                 setUser(response.data);
-                setUserChatInfo(response.data);
             })
             .catch(e => {
                 setLoaded(false);
@@ -214,63 +197,45 @@ function UserDetail() {
 
     useEffect(() => {
         if (userId, skillId) {
-        const setup = async () => {
-            await 
-            getUserInfo(userId);
-            getCurrentUserInfo(userIdCurrent);
-            getSkills(userId);
-            getReviewBySkillId(skillId);
-          };
-          setup();
+            const setup = async () => {
+                await
+                    getUserInfo(userId);
+                getSkills(userId);
+                getReviewBySkillId(skillId);
+            };
+            setup();
         }
     }, [skillId, userId]);
 
-    const [listUserChat, setListUserChat] = useState();
-    const getListChat = () => {
-        MessageService.getMyChats()
-            .then(response => {
-                setListUserChat(response.data);
-                console.log(response.data);
-            })
-            .catch(error => {
-                // console.log(error.response.data)
-                toast.error(error.response.data, {
-                    position: toast.POSITION.TOP_RIGHT
-                });
-            });
-    };
-
     const handleClickChatList = () => {
-      const token = localStorage.getItem('user-token');
-      if (!token) {
-        navigate('/login');
-      }
-      setIsShowChat(!isShowChat);
+        const token = localStorage.getItem('user-token');
+        if (!token) {
+            navigate('/login');
+        }
+        setIsShowChat(!isShowChat);
     }
 
     return (
-        <>
+        <div>
             <Loading loading={loaded} />
-            <Header handleClickChatList = {handleClickChatList} currentUser={currentUser} setCurrentUser={setCurrentUser} />
-            {/* <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} /> */}
-            <ChatBoxComponent userChatInfo={userChatInfo} getListChat={getListChat} />
+            <Header handleClickChatList={handleClickChatList} />
+            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} userChatId={userChatId} setUserChatId={setUserChatId} />
             <div className='container mt-3' style={{ position: "relative" }}>
-                <div className='card main-info'>
-                    <div className="mb-3 d-flex" style={{ height: "70px" }}>
-
-                        <div className="ps-4">
+                <div className='card main-info d-flex '>
+                    <div className="mb-3 d-flex justify-content-between" style={{ height: "70px" }}>
+                        <div className="d-flex ps-4">
                             <img src={BASE_URL + user.avatarUrl} style={{ width: "72px", height: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
                             {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
                                 <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
-                        </div>
-
-                        <div className="pt-2 ps-3">
+                                <div className="pt-2 ps-3">
                             <div className="text-body">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
                                 <p className="card-text text-start fw-bold ">ID: 2153860</p>
                             </div>
                         </div>
+                        </div>
 
+                        <BsThreeDots size={20} className='mt-2 me-2'/>
                     </div>
                 </div>
                 <div className="d-flex bd-highlight mt-3">
@@ -324,8 +289,10 @@ function UserDetail() {
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">{currentSkill?.categoryName}</p>
                                 <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill?.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
                                 <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill?.rating}  |  Đã phục vụ: {currentSkill?.total}</p>
-                                <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled = {userId == userIdCurrent}>Đặt đơn</button>
-                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled = {userId == userIdCurrent}><img src={icon} />Chat</button>
+                                <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={userId == currentUser?.id} >
+                                    Đặt đơn
+                                </button>
+                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled={userId == currentUser?.id}><img src={icon} />Chat</button>
 
                                 <OrderForm user={user} currentSkill={currentSkill} quality={quality} setQuality={setQuality} handleOrder={handleOrder} />
                             </div>
@@ -365,7 +332,7 @@ function UserDetail() {
                                                                 {starArray.map(i => <img key={i} src={star} alt="eva" className=""></img>)}
                                                             </div>
                                                         </div>
-                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt && handleConvertDate(review.createdAt)}</div>
+                                                        <div className="mt-5px text-16px text-#999999">{review.updatedAt && handleConvertDate(review.updatedAt)}</div>
                                                         <div className="text-16px text-#333333">{review.comment}</div>
                                                     </div>
                                                 </div>
@@ -388,7 +355,7 @@ function UserDetail() {
                 </div>
             </div>
             <Footer />
-        </>
+        </div>
     )
 }
 

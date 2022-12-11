@@ -22,10 +22,6 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
 
     const messagesEndRef = useRef(null)
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    }
-
     const [messages, setMessages] = useState([]);
 
     const [messageContent, setMessageContent] = useState("");
@@ -37,10 +33,6 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
     messageStateRef.current = messages;
 
     const [loaded, setLoaded] = useState(false);
-
-    useEffect(() => {
-        scrollToBottom()
-    }, [messages]);
 
     // get messages between 2 user
     const handleGetChat = (userChatId) => {
@@ -151,8 +143,8 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
             </div>
             <hr className='text-gray mt-3 mb-1' style={{ width: "96%", marginLeft: "2%" }} />
             <div>
-                <div className=" pt-3 chat-box-content d-flex flex-column" >
-                    {messages && messages.map((chat, index) => {
+                <div className=" pt-3 chat-box-content d-flex flex-column-reverse" >
+                    {messages.length > 0 && messages.slice().reverse().map((chat, index) => {
                         return (
                             <div key={index} >
                                 {chat.senderId == currentCurrent?.id ?

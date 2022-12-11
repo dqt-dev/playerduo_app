@@ -62,8 +62,8 @@ function UserInfo() {
                 setLoaded(false);
                 setCurrentUser(response.data);
                 dispatch(getMyInfo(response.data));
-                toast.success(response.data, {
-                    position: toast.POSITION.TOP_RIGHT
+                toast.success("Cập nhật ảnh đại diện thành công", {
+                    position: toast.POSITION.TOP_CENTER
                 });
             })
             .catch(error => {
@@ -97,7 +97,7 @@ function UserInfo() {
             })
             .catch(error => {
                 toast.error("Cập nhật thông tin không thành công", {
-                    position: toast.POSITION.TOP_RIGHT
+                    position: toast.POSITION.TOP_CENTER
                 });
             });
     };

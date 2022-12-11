@@ -25,11 +25,12 @@ function UserComponent({ type }) {
         }
         setIsShowChat(!isShowChat);
     }
+    const [userChatId, setUserChatId] = useState();
 
     return (
         <>
             <Header handleClickChatList = {handleClickChatList} currentUser={currentUser} setCurrentUser={setCurrentUser} />
-            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
+            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} userChatId = {userChatId} setUserChatId = {setUserChatId}/>
             <div className='d-flex'>
                 <NavBar type={type} />
                 {type === 3 ? <OrderComponent currentUser={currentUser} setCurrentUser={setCurrentUser} />
