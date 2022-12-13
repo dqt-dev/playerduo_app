@@ -1,9 +1,9 @@
 import http from "./http-common";
-const getReportTypes = data => {
-    return http.post("Skills", data);
+const getReportTypes = () => {
+    return http.get("Reports/type");
   };
-  const createReport = skillId => {
-    return http.get(`Skills/${skillId}`);
+  const createReport = request => {
+    return http.post(`Reports`, request);
   };
 const ReportService = {
     getReportTypes,

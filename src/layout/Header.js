@@ -13,7 +13,7 @@ import { useState } from 'react';
 import UserService from '../services/UserSerice';
 import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
-import logo from '../logo.png';
+import logo from '../logo.gif';
 
 function Header({ handleClickChatList }) {
   const currentUser = useSelector(state => state.userInfoReducer.userInfo);
@@ -36,6 +36,10 @@ function Header({ handleClickChatList }) {
 
   const goToPage = (link) => {
     navigate(`/user/${link}`)
+  }
+
+  const goToHomePage = () => {
+    navigate(`/`);
   }
 
   const handleUpdateStatus = (status) => {
@@ -63,11 +67,14 @@ function Header({ handleClickChatList }) {
     <header className="p-2 border-bottom header">
       <Loading loaded={loaded} />
       <div className="">
-        <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-          <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-            <li><Link to={"/"} className="nav-link px-2 link-secondary pt-0 pb-0"><img src={logo} style={{ height: "40px", width: "60px" }} /></Link></li>
-            <li><Link to={"/"} className="nav-link px-2 link-dark">HOME</Link></li>
-          </ul>
+        <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-between">
+
+          <div className='d-flex'>
+          <Link to={"/"} className="nav-link px-2 link-secondary pt-0 pb-0"><img  loop src={logo} style={{ height: "50px", width: "50px", borderRadius: "12px" }} /></Link>
+          <div onClick={goToHomePage} className='fw-bold text-20px cursor-pointer' style= {{marginTop : "10px"}}><h1>YOYO</h1></div>
+          </div>
+
+          <div className='d-flex'>
           <div className="form-check form-switch me-3">
             <input disabled={!currentUser} onChange={() => handleUpdateStatus(!currentUser?.status)} className="form-check-input" type="checkbox" id="flexSwitchCheckChecked" style={{ height: "20px", width: "40px" }} checked={currentUser?.status} />
           </div>
@@ -76,10 +83,7 @@ function Header({ handleClickChatList }) {
             <div className="ps-1 pe-1 cursor-pointer ">{currentUser?.coin && formatNumberWithComma(currentUser.coin)}</div>
             <IoIosAddCircle color="#1890ff" size={25} />
           </div>
-          {/* <div onClick={handleClickChatList} className="d-flex border rounded me-2"> */}
-            <FaFacebookMessenger onClick={handleClickChatList} size={28} className="me-3" color='#1876f2' />
-            {/* <div className=''>Tin nhắn</div> */}
-          {/* </div> */}
+          <FaFacebookMessenger onClick={handleClickChatList} size={28} className="me-3" color='#1876f2' />
           {currentUser ?
             <div className="dropdown text-end me-4">
               <a className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -111,6 +115,7 @@ function Header({ handleClickChatList }) {
             <div>
               <button onClick={() => navigate('/login')} className='btn btn-primary me-3'> Đăng nhập</button>
             </div>}
+          </div>
         </div>
       </div>
     </header>

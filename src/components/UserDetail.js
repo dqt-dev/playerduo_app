@@ -4,7 +4,8 @@ import Header from '../layout/Header'
 import '../styles/userdetail.css';
 import { getAudioDurationInSeconds } from "@remotion/media-utils";
 import { AiOutlineInbox } from 'react-icons/ai';
-import {BsThreeDots} from 'react-icons/bs';
+import { BsThreeDots } from 'react-icons/bs';
+import { TbGenderFemale, TbGenderMale } from 'react-icons/tb';
 
 import star from '../star.png'
 import coin from '../coin.png'
@@ -29,6 +30,7 @@ import Loading from './Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import ChatList from './ChatListComponent';
 import { getMyInfo } from '../redux/UserInfo/action';
+import ReportModal from './ReportModal';
 
 function UserDetail() {
 
@@ -220,6 +222,7 @@ function UserDetail() {
             <Loading loading={loaded} />
             <Header handleClickChatList={handleClickChatList} />
             <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} userChatId={userChatId} setUserChatId={setUserChatId} />
+            <ReportModal reportedUserId={userId} />
             <div className='container mt-3' style={{ position: "relative" }}>
                 <div className='card main-info d-flex '>
                     <div className="mb-3 d-flex justify-content-between" style={{ height: "70px" }}>
@@ -227,15 +230,20 @@ function UserDetail() {
                             <img src={BASE_URL + user.avatarUrl} style={{ width: "72px", height: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
                             {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
                                 <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
-                                <div className="pt-2 ps-3">
-                            <div className="text-body">
-                                <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
-                                <p className="card-text text-start fw-bold ">ID: 2153860</p>
+                            <div className="pt-2 ps-3">
+                                <div className="text-body">
+                                    <div className='d-flex'>
+                                        <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
+                                        <div className='mt-1'>
+                                            {user?.gender ? <TbGenderMale color='blue' size={20}/> : <TbGenderFemale color='red' size={20}/>}
+                                        </div>
+                                    </div>
+                                    <p className="card-text text-start fw-bold ">ID: {user?.id}</p>
+                                </div>
                             </div>
                         </div>
-                        </div>
 
-                        <BsThreeDots size={20} className='mt-2 me-2'/>
+                        <BsThreeDots size={20} className='mt-2 me-2' data-bs-toggle="modal" data-bs-target="#exampleModalReport" />
                     </div>
                 </div>
                 <div className="d-flex bd-highlight mt-3">
@@ -297,7 +305,7 @@ function UserDetail() {
                                 <OrderForm user={user} currentSkill={currentSkill} quality={quality} setQuality={setQuality} handleOrder={handleOrder} />
                             </div>
                         </div>
-                        <div className="card skill-info mt-3">
+                        <div className="card skill-info mt-3 mb-2">
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-3">Thông tin game</p>
                                 <p className="align-items-center mb-1 card-text fs-5" >{currentSkill?.description}</p>

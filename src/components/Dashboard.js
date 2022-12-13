@@ -7,7 +7,6 @@ import Content from '../components/Content';
 import Footer from '../layout/Footer';
 
 import { useNavigate } from 'react-router-dom';
-import Chat from './ChatListComponent';
 import Loading from './Loading';
 import ChatList from './ChatListComponent';
 
