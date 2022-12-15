@@ -11,6 +11,7 @@ import Loading from './Loading';
 import { useSelector } from 'react-redux';
 import ReactPaginate from 'react-paginate';
 
+import { FcNext, FcPrevious } from 'react-icons/fc';
 
 
 function WalletPage() {
@@ -134,20 +135,26 @@ function WalletPage() {
                     <tbody>
 
                         {displayUsers}
-                        <ReactPaginate
-                            previousLabel={"Previous"}
-                            nextLabel={"Next"}
-                            pageCount={pageCount}
-                            onPageChange={changePage}
-                            containerClassName={"paginationBttns"}
-                            previousLinkClassName={"previousBttn"}
-                            nextLinkClassName={"nextBttn"}
-                            disabledClassName={"paginationDisabled"}
-                            activeClassName={"paginationActive"}
-                        />
+
                     </tbody>
                 </table>
-
+                <ReactPaginate
+                    activeClassName={'item active '}
+                    breakClassName={'item break-me '}
+                    breakLabel={'...'}
+                    containerClassName={'pagination'}
+                    disabledClassName={'disabled-page'}
+                    marginPagesDisplayed={2}
+                    nextClassName={"item next "}
+                    nextLabel={<FcNext className='btn-next' />}
+                    onPageChange={changePage}
+                    pageCount={pageCount}
+                    pageClassName={'item pagination-page '}
+                    pageRangeDisplayed={2}
+                    previousClassName={"item previous"}
+                    previousLabel={<FcPrevious className='btn-next' />}
+                    selectedPageRel={true}
+                />
             </div>
         </div>
     )

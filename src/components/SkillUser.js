@@ -109,7 +109,7 @@ function SkillUser() {
       <Loading loading={loaded} />
       <div className='pt-3 fw-bold'>
         <div className='text-20px mb-2 '>
-          Quản lý kĩ năng cá nhân
+          Quản lý kỹ năng cá nhân
         </div>
         <div>
           <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModalSkill" onClick={() => { setSkillDetail(); setType(true) }}>Tạo mới kỹ năng</button>
