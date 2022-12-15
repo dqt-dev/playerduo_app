@@ -10,12 +10,18 @@ function RatingModal({ orderId, handleGetMyOrder, isShow, setIsShow }) {
 
     const [comment, setComment] = useState("");
 
+    const handleClear = () => {
+        setComment("");
+        setRating(0);
+    }
+
     const handleRating = (orderId) => {
         if (rating !== 0) {
             OrderService.ratingOrder(orderId, { rating: rating, comment: comment })
                 .then(response => {
                     handleGetMyOrder();
                     setIsShow(false);
+                    handleClear();
                     toast.success(response.data, {
                         position: toast.POSITION.TOP_RIGHT
                     });
@@ -44,7 +50,7 @@ function RatingModal({ orderId, handleGetMyOrder, isShow, setIsShow }) {
                             <div class="text-right cross"> <i class="fa fa-times mr-2"></i> </div>
                             <div class="card-body text-center"> <img src=" https://i.imgur.com/d2dKtI7.png" height="100" width="100" />
                                 <div class="comment-box text-center">
-                                    <h4>Cảm ơn bạn đã đặt mình nhá!</h4>
+                                    <h4>Cảm ơn bạn đã đặt đơn cho mình nhá!</h4>
                                     <div class="rating">
                                         <input onClick={(e) => setRating(e.target.value)} type="radio" name="rating" value="5" id="5" /><label for="5">☆</label>
                                         <input onClick={(e) => setRating(e.target.value)} type="radio" name="rating" value="4" id="4" /><label for="4">☆</label>

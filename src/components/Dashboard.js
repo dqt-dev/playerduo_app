@@ -7,7 +7,6 @@ import Content from '../components/Content';
 import Footer from '../layout/Footer';
 
 import { useNavigate } from 'react-router-dom';
-import Chat from './ChatListComponent';
 import Loading from './Loading';
 import ChatList from './ChatListComponent';
 
@@ -61,14 +60,16 @@ function Dashboard() {
         console.log(e);
       });
   }
+  const [userChatId, setUserChatId] = useState();
+
   return (
     <>
      <Loading loading={loaded} />
       <Header handleClickChatList = {handleClickChatList} currentUser = {currentUser} setCurrentUser = {setCurrentUser}/>
-      <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} />
+      <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} userChatId = {userChatId} setUserChatId = {setUserChatId}/>
       <div className='main'>
         <SiderBar />
-        <Content categories={categories} skill={skill} />
+        <Content categories={categories} skill={skill} retrieveSkills= {retrieveSkills}/>
       </div>
       <Footer />
     </>

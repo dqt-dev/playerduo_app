@@ -9,7 +9,8 @@ import MessageService from '../services/MessageService';
 import { BASE_URL } from '../common/SystemConstant';
 import { handleConvertDate } from '../common/ultil';
 
-function ChatList({ isShowChat, setIsShowChat }) {
+function ChatList({ isShowChat, setIsShowChat, userChatId , setUserChatId }) {
+
   const userInfo = {
     avatarUrl: '',
     status: false,
@@ -19,8 +20,6 @@ function ChatList({ isShowChat, setIsShowChat }) {
   const [listUserChat, setListUserChat] = useState()
 
   const [userChatInfo, setUserChatInfo] = useState(userInfo);
-
-  const [userId, setUserId] = useState();
 
   const handleGetUserWithChat = (userId) => {
     const token = localStorage.getItem('user-token');
@@ -38,12 +37,14 @@ function ChatList({ isShowChat, setIsShowChat }) {
   };
 
   useEffect(() => {
-    if (userId) {
-      handleGetUserWithChat(userId);
+    console.log("setUserChatId", userChatId)
+    if (userChatId) {
+      handleGetUserWithChat(userChatId);
     }
     if(isShowChat) getListChat();
     
-  }, [isShowChat, userId]);
+  }, [isShowChat, userChatId]);
+
 
 
   const getListChat = () => {
@@ -75,7 +76,7 @@ function ChatList({ isShowChat, setIsShowChat }) {
               {
                 listUserChat && listUserChat.map((item, index) => {
                   return (
-                    <div onClick={() => setUserId(item.userId)} key={index} className="d-flex items-center justify-content-between pb-2 pt-1 chat-element " data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                    <div onClick={() => setUserChatId(item.userId)} key={index} className="d-flex items-center justify-content-between pb-2 pt-1 chat-element " data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                       <div className="text-18px font-bold text-#333333 ms-3">
                         <div className="d-flex position-relative">
                           <img className="w-44px h-44px rounded-50 mt-1" src={BASE_URL + item.avatarUrl} style={{ height: "44px", width: "44px" }} />

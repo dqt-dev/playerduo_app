@@ -4,6 +4,8 @@ import Header from '../layout/Header'
 import '../styles/userdetail.css';
 import { getAudioDurationInSeconds } from "@remotion/media-utils";
 import { AiOutlineInbox } from 'react-icons/ai';
+import { BsThreeDots } from 'react-icons/bs';
+import { TbGenderFemale, TbGenderMale } from 'react-icons/tb';
 
 import star from '../star.png'
 import coin from '../coin.png'
@@ -25,12 +27,14 @@ import OrderForm from './OrderForm';
 import { BASE_URL } from '../common/SystemConstant';
 import { handleConvertDate } from '../common/ultil';
 import Loading from './Loading';
-import MessageService from '../services/MessageService';
-import ChatBoxComponent from './ChatBoxComponent';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import ChatList from './ChatListComponent';
+import { getMyInfo } from '../redux/UserInfo/action';
+import ReportModal from './ReportModal';
 
 function UserDetail() {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const initSkill = {
@@ -59,6 +63,8 @@ function UserDetail() {
 
     const { userId } = useParams(); // get userId from Url
 
+    const [userChatId, setUserChatId] = useState(userId);
+
     const [searchParam] = useSearchParams(0);  // set skillId from Url
     const [skillId, setSkillId] = useState(searchParam.get('skillId'));
 
@@ -68,7 +74,7 @@ function UserDetail() {
 
     const [currentSkill, setCurrentSkill] = useState(initSkill); // current skill 
 
-    const [sound, setSound] = useState(null); 
+    const [sound, setSound] = useState(null);
 
     const [duration, setDuration] = useState(0);
 
@@ -78,13 +84,9 @@ function UserDetail() {
 
     const [quality, setQuality] = useState(1);
 
-    const [currentUser, setCurrentUser] = useState(initUserInfo);
-
     const [user, setUser] = useState(initUserInfo);
 
-    const [userChatInfo, setUserChatInfo] = useState(initUserInfo);
-
-    const userIdCurrent = useSelector(state => state.userInfoReducer.userInfo)?.id;
+    const currentUser = useSelector(state => state.userInfoReducer.userInfo);
 
     const [userVoice, setUserVoice] = useState(false);
 
@@ -103,7 +105,8 @@ function UserDetail() {
         if (!token) {
             navigate('/login');
         }
-        setIsShowChat(!isShowChat);
+        setUserChatId(userId)
+        !isShowChat && setIsShowChat(!isShowChat);
     }
 
     const soundPlay = (src, skillId, userVoice) => {
@@ -120,6 +123,12 @@ function UserDetail() {
     }
 
     const handleOrder = (skillId, quality) => {
+        if (quality < 1) {
+            toast.error("Số lượng ít nhất là 1!", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            return;
+        }
         const requestCreateOrder = {
             'skillId': skillId,
             'quality': quality
@@ -128,7 +137,8 @@ function UserDetail() {
         OrderService.createNewOrder(requestCreateOrder)
             .then(response => {
                 setLoaded(false);
-                toast.success(response.data, {
+                dispatch(getMyInfo(response.data));
+                toast.success("Đặt đơn hàng thành công, vui lòng chờ phản hồi!", {
                     position: toast.POSITION.TOP_RIGHT
                 });
             })
@@ -140,26 +150,12 @@ function UserDetail() {
             });
     }
 
-    const getCurrentUserInfo = userId => {
-        setLoaded(true);
-        UserService.get(userId)
-            .then(response => {
-                setLoaded(false);
-                setCurrentUser(response.data);
-            })
-            .catch(e => {
-                setLoaded(false);
-                console.log(e);
-            });
-    };
-
     const getUserInfo = userId => {
         setLoaded(true);
         UserService.get(userId)
             .then(response => {
                 setLoaded(false);
                 setUser(response.data);
-                setUserChatInfo(response.data);
             })
             .catch(e => {
                 setLoaded(false);
@@ -181,7 +177,7 @@ function UserDetail() {
         )
             .then(response => {
                 setSkills(response.data);
-                let temp = response.data.filter(skill => skill.skillId == skillId);
+                let temp = response.data.filter(skill => skill?.skillId == skillId);
 
                 setCurrentSkill(...temp);
                 myFunction(...temp)
@@ -203,54 +199,51 @@ function UserDetail() {
 
     useEffect(() => {
         if (userId, skillId) {
-        const setup = async () => {
-            await 
-            getUserInfo(userId);
-            getCurrentUserInfo(userIdCurrent);
-            getSkills(userId);
-            getReviewBySkillId(skillId);
-          };
-          setup();
+            const setup = async () => {
+                await
+                    getUserInfo(userId);
+                getSkills(userId);
+                getReviewBySkillId(skillId);
+            };
+            setup();
         }
     }, [skillId, userId]);
 
-    const [listUserChat, setListUserChat] = useState();
-    const getListChat = () => {
-        MessageService.getMyChats()
-            .then(response => {
-                setListUserChat(response.data);
-                console.log(response.data);
-            })
-            .catch(error => {
-                // console.log(error.response.data)
-                toast.error(error.response.data, {
-                    position: toast.POSITION.TOP_RIGHT
-                });
-            });
-    };
+    const handleClickChatList = () => {
+        const token = localStorage.getItem('user-token');
+        if (!token) {
+            navigate('/login');
+        }
+        setIsShowChat(!isShowChat);
+    }
 
     return (
-        <>
+        <div>
             <Loading loading={loaded} />
-            <Header handleChat={handleChat} currentUser={currentUser} setCurrentUser={setCurrentUser} />
-            <ChatBoxComponent userChatInfo={userChatInfo} getListChat={getListChat} />
+            <Header handleClickChatList={handleClickChatList} />
+            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} userChatId={userChatId} setUserChatId={setUserChatId} />
+            <ReportModal reportedUserId={userId} />
             <div className='container mt-3' style={{ position: "relative" }}>
-                <div className='card main-info'>
-                    <div className="mb-3 d-flex" style={{ height: "70px" }}>
-
-                        <div className="ps-4">
+                <div className='card main-info d-flex '>
+                    <div className="mb-3 d-flex justify-content-between" style={{ height: "70px" }}>
+                        <div className="d-flex ps-4">
                             <img src={BASE_URL + user.avatarUrl} style={{ width: "72px", height: "72px", borderRadius: "50%" }} className="mt-2" alt="..." />
                             {user.status ? <div className="div-online-2" style={{ background: "#31a24c", width: "13px", height: "13px", borderRadius: "50%" }}></div> :
                                 <div className="div-online-2" style={{ background: "red", width: "13px", height: "13px", borderRadius: "50%" }}></div>}
-                        </div>
-
-                        <div className="pt-2 ps-3">
-                            <div className="text-body">
-                                <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
-                                <p className="card-text text-start fw-bold ">ID: 2153860</p>
+                            <div className="pt-2 ps-3">
+                                <div className="text-body">
+                                    <div className='d-flex'>
+                                        <p className="card-text text-start mt-2 mb-1 fw-bold">{user?.nickName}</p>
+                                        <div className='mt-1'>
+                                            {user?.gender ? <TbGenderMale color='blue' size={20}/> : <TbGenderFemale color='red' size={20}/>}
+                                        </div>
+                                    </div>
+                                    <p className="card-text text-start fw-bold ">ID: {user?.id}</p>
+                                </div>
                             </div>
                         </div>
 
+                        <BsThreeDots size={20} className='mt-2 me-2' data-bs-toggle="modal" data-bs-target="#exampleModalReport" />
                     </div>
                 </div>
                 <div className="d-flex bd-highlight mt-3">
@@ -274,7 +267,7 @@ function UserDetail() {
                         <div>
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">Lý lịch</p>
-                                <p className="card-text text-start fw-bold">{user?.description}</p>
+                                <p className="card-text text-start fw-bold">{user?.description !== null ? user?.description : "Chưa có thông tin mô tả..."}</p>
                             </div>
                         </div>
 
@@ -282,45 +275,47 @@ function UserDetail() {
                     <div className='detail-skill-info ms-3'>
                         <div className="d-flex flex-wrap">
                             {skills.map((skill) => {
-                                if (skill.skillId == skillId)
+                                if (skill?.skillId == skillId)
                                     return (
-                                        <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 skill-index mb-3" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
+                                        <div onClick={() => { changeSkill(skill?.skillId); myFunction(currentSkill?.audioUrl) }} className="text-center me-4 skill-index mb-3" key={skill?.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
                                             <div style={{ border: "solid #1890ff", width: "130px", borderRadius: "10px" }}>
-                                                <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
-                                                <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
+                                                <img src={BASE_URL + skill?.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
+                                                <div className='category-name-div fw-bold fs-10px ms-1'>{skill?.categoryName}</div>
                                             </div>
                                         </div>
                                     )
                                 return (
-                                    <div onClick={() => { changeSkill(skill.skillId); myFunction(currentSkill.audioUrl) }} className="text-center me-4 mt-1 skill-index mb-3" key={skill.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
-                                        <img src={BASE_URL + skill.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
-                                        <div className='category-name-div fw-bold fs-10px'>{skill.categoryName}</div>
+                                    <div onClick={() => { changeSkill(skill?.skillId); myFunction(currentSkill?.audioUrl) }} className="text-center me-4 mt-1 skill-index mb-3" key={skill?.skillId} style={{ position: "relative", height: "48px", width: "124px" }}>
+                                        <img src={BASE_URL + skill?.imageSmallUrl} style={{ height: "48px", width: "124px" }} />
+                                        <div className='category-name-div fw-bold fs-10px'>{skill?.categoryName}</div>
                                     </div>
                                 )
                             })}
                         </div>
                         <div className="card skill-info-of-user mt-3">
                             <div className="text-body ms-2">
-                                <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">{currentSkill.categoryName}</p>
-                                <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
-                                <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill.rating}  |  Đã phục vụ: {currentSkill.total}</p>
-                                <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled = {userId == userIdCurrent}>Đặt đơn</button>
-                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled = {userId == userIdCurrent}><img src={icon} />Chat</button>
+                                <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">{currentSkill?.categoryName}</p>
+                                <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill?.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
+                                <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill?.rating}  |  Đã phục vụ: {currentSkill?.total}</p>
+                                <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={userId == currentUser?.id} >
+                                    Đặt đơn
+                                </button>
+                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled={userId == currentUser?.id}><img src={icon} />Chat</button>
 
                                 <OrderForm user={user} currentSkill={currentSkill} quality={quality} setQuality={setQuality} handleOrder={handleOrder} />
                             </div>
                         </div>
-                        <div className="card skill-info mt-3">
+                        <div className="card skill-info mt-3 mb-2">
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-3">Thông tin game</p>
-                                <p className="align-items-center mb-1 card-text fs-5" >{currentSkill.description}</p>
+                                <p className="align-items-center mb-1 card-text fs-5" >{currentSkill?.description}</p>
                                 <div className="d-flex flex-row items-center px-4px border rounded-2" style={{ height: "24px", width: "60px" }}>
-                                    {isPlay === currentSkill.skillId ? <img src={stop} alt="stop" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => stopSound()} /> :
-                                        <img src={play} alt="play" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => soundPlay(BASE_URL + currentSkill.audioUrl, currentSkill.skillId)} />}
+                                    {isPlay === currentSkill?.skillId ? <img src={stop} alt="stop" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => stopSound()} /> :
+                                        <img src={play} alt="play" className="w-16px h-16px mt-1 ms-1 me-2" onClick={() => soundPlay(BASE_URL + currentSkill?.audioUrl, currentSkill?.skillId)} />}
                                     <div>{Math.ceil(duration)}'</div>
                                 </div>
                                 <div>
-                                    <img className="mt-3" src={BASE_URL + currentSkill.imageDetailUrl} style={{ height: "190px", width: "338px" }} />
+                                    <img className="mt-3" src={BASE_URL + currentSkill?.imageDetailUrl} style={{ height: "190px", width: "338px" }} />
                                 </div>
                             </div>
                             <div className='pb-3'>
@@ -328,7 +323,7 @@ function UserDetail() {
                                     <div className="text-20px font-bold text-#333333 ms-3">Đánh Giá Của Người Dùng ({reviews.length})</div>
                                     <div className="d-flex me-3">
                                         <img src={star} alt="rating" className="mt-1 w-24px h-24px" />
-                                        <div className=" text-20px font-bold text-#333333 ms-1">{currentSkill.rating}/5</div>
+                                        <div className=" text-20px font-bold text-#333333 ms-1">{currentSkill?.rating}/5</div>
                                     </div>
                                 </div>
                                 {reviews.length > 0 ? reviews.map((review, index) => {
@@ -345,7 +340,7 @@ function UserDetail() {
                                                                 {starArray.map(i => <img key={i} src={star} alt="eva" className=""></img>)}
                                                             </div>
                                                         </div>
-                                                        <div className="mt-5px text-16px text-#999999">{review.createdAt && handleConvertDate(review.createdAt)}</div>
+                                                        <div className="mt-5px text-16px text-#999999">{review.updatedAt && handleConvertDate(review.updatedAt)}</div>
                                                         <div className="text-16px text-#333333">{review.comment}</div>
                                                     </div>
                                                 </div>
@@ -368,7 +363,7 @@ function UserDetail() {
                 </div>
             </div>
             <Footer />
-        </>
+        </div>
     )
 }
 

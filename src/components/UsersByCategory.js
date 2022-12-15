@@ -9,6 +9,10 @@ import CategoryService from '../services/CategoryService';
 import { Howl, Howler } from 'howler';
 import { AiOutlineInbox } from 'react-icons/ai';
 import Loading from './Loading';
+import ChatList from './ChatListComponent';
+import ReactPaginate from 'react-paginate';
+
+import { FcNext, FcPrevious } from 'react-icons/fc';
 
 function UsersByCategory() {
 
@@ -34,8 +38,6 @@ function UsersByCategory() {
     const [sound, setSound] = useState(null);
 
     const [loaded, setLoaded] = useState(false);
-
-    const [ currentUser, setCurrentUser] = useState("");
 
     const stopSound = () => {
         setIsPlay(0);
@@ -99,49 +101,31 @@ function UsersByCategory() {
         navigate(`/user/${userId}?skillId=${skillId}`);
     }
 
-    return (
-        <>
-        <Loading loading={loaded} />
-            <Header currentUser = {currentUser} setCurrentUser = {setCurrentUser}/>
-            <div>
-                <div className='gameName'>
-                    <div >
-                        <img style={{ width: "44px", height: "44px" }} src={BASE_URL + skill?.imageUrl}></img>
-                    </div>
-                    <div className='text-24'>
-                        {skill?.categoryName}
-                    </div>
-                </div>
-                <div className='userFill'>
-                    <div style={{ color: "#999999" }}>
-                        Lọc:
-                    </div>
-                    <div className='ms-3 me-3'>
-                        <select value={cond1} onChange={(e) => setCond1(e.target.value)} className={cond1 === "null" ? "form-select form-select-sm " : "form-select form-select-sm selected"} style={{ maxWidth: "150px" }} >
-                            <option selected value="null">Đề cử</option>
-                            <option value="1">Mới nhất</option>
-                            <option value="2">Đánh giá cao nhất</option>
-                            <option value="3">Giá cao nhất</option>
-                            <option value="4">Giá thấp nhất</option>
-                        </select>
-                    </div>
-                    <div style={{ width: "3px", height: "24px", backgroundColor: "#E5E5E5", borderRadius: "2px" }}>
+    const [isShowChat, setIsShowChat] = useState(false);
 
-                    </div>
-                    <div className='ms-3 me-3'>
-                        <select value={cond2} onChange={(e) => setCond2(e.target.value)} className={cond2 === "null" ? "form-select form-select-sm " : "form-select form-select-sm selected"} >
-                            <option value= "null">Giới tính</option>
-                            <option value="true">Nam</option>
-                            <option value="false">Nữ</option>
-                        </select>
-                    </div>
+    const handleClickChatList = () => {
+      const token = localStorage.getItem('user-token');
+      if (!token) {
+        navigate('/login');
+      }
+      setIsShowChat(!isShowChat);
+    }
 
-                    <div onClick={handleReset} className='ms-4 cursor-pointer btn-reset ' style={{ fontSize: "20px", color: "#6B39FF" }}>Reset</div>
-                </div>
-                <div className = "pb-4" style={{ display: "flex", flexWrap: "wrap", marginTop: "18px", paddingLeft: "40px", paddingRight: "40px" }}>
-                    {listUser.length > 0 ? listUser.map((skill, index) => {
-                        return (
-                            <div key={index} className='towUser-inline' style={{}}>
+    const [userChatId, setUserChatId] = useState();
+    const [pageNumber, setPageNumber] = useState(0);
+    const usersPerPage = 6;
+    const pagesVisited = pageNumber * usersPerPage;
+    const pageCount = Math.ceil(listUser?.length / usersPerPage);
+
+    const changePage = ({ selected }) => {
+        setPageNumber(selected);
+    };
+
+    const displayUsers = listUser
+        ?.slice(pagesVisited, pagesVisited + usersPerPage)
+        ?.map((skill, index) => {
+            return (
+                <div key={index} className='towUser-inline' style={{}}>
                                 <a style={{ display: "flex" }}>
                                     <div className='img-stateIcon-voiceIcon' style={{ width: "200px", height: "200px" }}>
                                         <div onClick={() => goToUserPage(skill?.userId, skill?.skillId)}  >
@@ -181,8 +165,12 @@ function UsersByCategory() {
                                                 Level Rank
                                             </div>
                                         </div>
-                                        <div style={{ marginTop: "16px" }}>
+                                        <div className = 'text-truncate' style={{ marginTop: "16px" }}>
                                             {skill?.description}
+                                        </div>
+
+                                        <div style={{ marginTop: "10px" }}>
+                                            Đã phục vụ: {skill?.total}
                                         </div>
 
                                         <div style={{ display: "flex", position: "absolute", bottom: "10px" }}>
@@ -199,8 +187,55 @@ function UsersByCategory() {
                                     </div>
                                 </a>
                             </div>
-                        )
-                    }) :
+            )
+        }
+        );
+
+    return (
+        <>
+        <div>
+        <Loading loading={loaded} />
+            <Header  handleClickChatList = {handleClickChatList}/>
+            <ChatList isShowChat={isShowChat} setIsShowChat={setIsShowChat} userChatId = {userChatId} setUserChatId = {setUserChatId}/>
+            <div>
+                <div className='gameName'>
+                    <div >
+                        <img style={{ width: "44px", height: "44px" }} src={BASE_URL + skill?.imageUrl}></img>
+                    </div>
+                    <div className='text-24'>
+                        {skill?.categoryName}
+                    </div>
+                </div>
+                <div className='userFill'>
+                    <div style={{ color: "#999999" }}>
+                        Lọc:
+                    </div>
+                    <div className='ms-3 me-3'>
+                        <select value={cond1} onChange={(e) => setCond1(e.target.value)} className={cond1 === "null" ? "form-select form-select-sm " : "form-select form-select-sm selected"} style={{ maxWidth: "150px" }} >
+                            <option selected value="null">Đề cử</option>
+                            <option value="1">Mới nhất</option>
+                            <option value="2">Đánh giá cao nhất</option>
+                            <option value="3">Giá cao nhất</option>
+                            <option value="4">Giá thấp nhất</option>
+                        </select>
+                    </div>
+                    <div style={{ width: "3px", height: "24px", backgroundColor: "#E5E5E5", borderRadius: "2px" }}>
+
+                    </div>
+                    <div className='ms-3 me-3'>
+                        <select value={cond2} onChange={(e) => setCond2(e.target.value)} className={cond2 === "null" ? "form-select form-select-sm " : "form-select form-select-sm selected"} >
+                            <option value= "null">Giới tính</option>
+                            <option value="true">Nam</option>
+                            <option value="false">Nữ</option>
+                        </select>
+                    </div>
+
+                    <div onClick={handleReset} className='ms-4 cursor-pointer btn-reset ' style={{ fontSize: "20px", color: "#6B39FF" }}>Reset</div>
+                </div>
+                <div className = "pb-4" style={{ display: "flex", flexWrap: "wrap", marginTop: "18px", paddingLeft: "40px", paddingRight: "40px" }}>
+                    {listUser.length > 0 ?
+                    displayUsers
+                    :
                         <div style={{marginLeft: "45%"}}>
                             <div className='d-flex justify-content-center'>
                                 <AiOutlineInbox size={70} />
@@ -208,9 +243,30 @@ function UsersByCategory() {
                             <p className='text-center fw-bold align-items-center'>Không có dữ liệu</p>
                         </div>}
                 </div>
+                
             </div>
-
+            
+        </div>
+        <ReactPaginate
+                    activeClassName={'item active '}
+                    breakClassName={'item break-me '}
+                    breakLabel={'...'}
+                    containerClassName={'pagination pagination pagination-listuser'}
+                    disabledClassName={'disabled-page'}
+                    marginPagesDisplayed={2}
+                    nextClassName={"item next "}
+                    nextLabel={<FcNext className='btn-next' />}
+                    onPageChange={changePage}
+                    pageCount={pageCount}
+                    pageClassName={'item pagination-page '}
+                    pageRangeDisplayed={2}
+                    previousClassName={"item previous"}
+                    previousLabel={<FcPrevious className='btn-next' />}
+                    selectedPageRel={true}
+                    
+                />
         </>
+        
     )
 }
 

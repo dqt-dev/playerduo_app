@@ -32,6 +32,8 @@ function SkillUser() {
 
   const [skills, setSkills] = useState([]);
 
+  const [skillTemps, setSkillTemps] = useState([]);
+
   const [skillDetail, setSkillDetail] = useState();
 
   const [loaded, setLoaded] = useState(false);
@@ -70,6 +72,24 @@ function SkillUser() {
     )
       .then(response => {
         setSkills(response.data);
+        console.log(response.data);
+        setLoaded(false);
+      })
+      .catch(e => {
+        console.log(e);
+        setLoaded(false);
+      });
+  };
+
+
+  const getSkillTemps = () => {
+
+    setLoaded(true);
+    SkillService.getSkillTemp(
+    )
+      .then(response => {
+        console.log(response.data);
+        setSkillTemps(response.data);
         setLoaded(false);
       })
       .catch(e => {
@@ -81,7 +101,7 @@ function SkillUser() {
 
   useEffect(() => {
     getSkills(userId);
-
+    getSkillTemps();
   }, []);
 
   return (
@@ -89,17 +109,17 @@ function SkillUser() {
       <Loading loading={loaded} />
       <div className='pt-3 fw-bold'>
         <div className='text-20px mb-2 '>
-          Quản lý kĩ năng cá nhân
+          Quản lý kỹ năng cá nhân
         </div>
         <div>
           <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModalSkill" onClick={() => { setSkillDetail(); setType(true) }}>Tạo mới kỹ năng</button>
         </div>
         {/* <hr className='mt-1 mb-0' /> */}
-        <div className='d-flex overflow-auto flex-wrap mt-3' style={{ height: "800px" }}>
-          {skills && skills.length > 0 ? skills.map((skill, index) => {
+        <div className='d-flex overflow-auto flex-wrap mt-3' style={{ height: "790px" }}>
+          {skills && skills.length > 0 ? [...skills, ...skillTemps].map((skill, index) => {
             return (
               <div >
-                <div key={index} className={skill?.isEnabled === true ? "card me-5 mb-4 position-relative" : "disable card me-5 mb-4 position-relative"}   >
+                <div key={index} className={skill?.isEnabled === true && skill?.isUpdated === false ? "card me-5 mb-4 position-relative" : "disable card me-5 mb-4 position-relative"}   >
                   <div className="text-body ps-2 pe-2 pb-3" data-bs-toggle="modal" data-bs-target="#exampleModalSkill" onClick={() => { setSkillDetail(skill); setType(false) }}>
                     <p className="card-text text-start mt-2 mb-1 fw-bold fs-4">{skill?.categoryName}</p>
                     <p className="d-flex align-items-center mb-1 card-text fw-bold fs-5" >{skill?.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
@@ -120,6 +140,10 @@ function SkillUser() {
                     <div className="position-absolute text-20px" style={{ color: "red", top: '10px', right: '9px', zIndex: 1, background: "white" }}>
                       Chờ kiểm duyệt...
                     </div>}
+                  {skill?.isUpdated && skill?.isEnabled &&
+                    <div className="position-absolute text-20px" style={{ color: "red", top: '10px', right: '9px', zIndex: 1, background: "white" }}>
+                      Chờ cập nhập...
+                    </div>}
                 </div>
               </div>
             )
@@ -132,7 +156,7 @@ function SkillUser() {
             </div>
           }
         </div>
-        < ModalSkill skillBeforeUpdate={skills?.filter(skill => skill.skillId === skillDetail?.skillId)} skills={skills} skillDetail={skillDetail} setSkillDetail={setSkillDetail} type={type} getSkills={getSkills} />
+        < ModalSkill skillBeforeUpdate={skills?.filter(skill => skill.skillId === skillDetail?.skillId)} skills={skills} skillDetail={skillDetail} setSkillDetail={setSkillDetail} type={type} getSkills={getSkills} getSkillTemps = {getSkillTemps}/>
       </div>
     </div>
   )
