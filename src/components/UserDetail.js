@@ -129,6 +129,13 @@ function UserDetail() {
             });
             return;
         }
+        if(currentUser?.isEnabled === false)
+        {
+            toast.error("Bạn đã bị vô hiệu hóa tài khoản, vui lòng liên hệ Quản trị viên để giải quyết!", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            return;
+        }
         const requestCreateOrder = {
             'skillId': skillId,
             'quality': quality
@@ -217,6 +224,13 @@ function UserDetail() {
         setIsShowChat(!isShowChat);
     }
 
+    // const handleCheck = () => { 
+    //     const token = localStorage.getItem('user-token');
+    //     if (!token) {
+    //         navigate('/login');
+    //     }
+    // }
+
     return (
         <div>
             <Loading loading={loaded} />
@@ -267,7 +281,7 @@ function UserDetail() {
                         <div>
                             <div className="text-body ms-2">
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">Lý lịch</p>
-                                <p className="card-text text-start fw-bold">{user?.description !== null ? user?.description : "Chưa có thông tin mô tả..."}</p>
+                                <p className="card-text text-start fw-bold" style= {{width: "300px"}}>{user?.description !== null ? user?.description : "Chưa có thông tin mô tả..."}</p>
                             </div>
                         </div>
 
@@ -297,10 +311,10 @@ function UserDetail() {
                                 <p className="card-text text-start mt-2 mb-1 fw-bold fs-2">{currentSkill?.categoryName}</p>
                                 <p className="d-flex align-items-center mb-1 card-text fw-bold fs-4" >{currentSkill?.price}<img style={{ height: "24px", width: "24px" }} src={coin} />/ Trận</p>
                                 <p className="d-flex align-items-center mb-2 card-text fw-bold fs-4" >Đánh giá:<img style={{ height: "20px", width: "20px" }} src={star} className="ms-2 me-2" /> {currentSkill?.rating}  |  Đã phục vụ: {currentSkill?.total}</p>
-                                <button type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={userId == currentUser?.id} >
+                                <button  type="button" className="btn btn-lg btn-order ms-2" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled={userId == currentUser?.id  || currentUser === null} >
                                     Đặt đơn
                                 </button>
-                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled={userId == currentUser?.id}><img src={icon} />Chat</button>
+                                <button type="button" onClick={handleChat} className="btn btn-lg btn-chat ms-3" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" disabled={userId == currentUser?.id  || currentUser === null} ><img src={icon} />Chat</button>
 
                                 <OrderForm user={user} currentSkill={currentSkill} quality={quality} setQuality={setQuality} handleOrder={handleOrder} />
                             </div>

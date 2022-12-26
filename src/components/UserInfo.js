@@ -136,7 +136,7 @@ function UserInfo() {
                         <div>
                             <input name= 'nickName' id = 'nickName' value={currentUser?.nickName} onChange={(e) => setCurrentUser({ ...currentUser, nickName : e.target.value})} className='mb-2'></input>
                             <div className='d-flex'>
-                                <button onClick={() => {setEditNickName(false); setCurrentUser({ ...currentUser, nickName : currentUser?.nickName})}} type="button" className="btn btn-light">Hủy</button>
+                                <button onClick={() => {setEditNickName(false); setCurrentUser(userInfo)}} type="button" className="btn btn-light">Hủy</button>
                                 <button onClick={() => {setEditNickName(false); handleUpdateProfile('nickName', currentUser?.nickName);}} type="button" className="btn btn-info">Lưu</button>
                             </div>
                         </div>
@@ -161,14 +161,14 @@ function UserInfo() {
                         <div>
                             <textarea value={currentUser?.description} onChange={(e) => setCurrentUser({ ...currentUser, description : e.target.value})} />
                             <div className='d-flex'>
-                                <button onClick={() => {setEditDescription(false); setCurrentUser({ ...currentUser, description : currentUser?.description})}} type="button" className="btn btn-light">Hủy</button>
+                                <button onClick={() => {setEditDescription(false); setCurrentUser(userInfo)}} type="button" className="btn btn-light">Hủy</button>
                                 <button onClick={() => {setEditDescription(false); handleUpdateProfile('description', currentUser?.description);}} type="button" className="btn btn-info">Lưu</button>
                             </div>
                         </div>
                     }
                 </div>
             </div>
-            <RecordModel />
+            <RecordModel handleUpdateProfile = {handleUpdateProfile}/>
 
         </div>
     )

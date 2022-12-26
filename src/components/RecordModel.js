@@ -1,7 +1,7 @@
 import { useReactMediaRecorder } from "react-media-recorder";
 
-import stop from '../stop.png';
-import play from '../play.png';
+import stop from "../stop.png";
+import play from "../play.png";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -18,7 +18,7 @@ function Timer(props) {
   );
 }
 
-const RecordModel = () => {
+const RecordModel = ({ handleUpdateProfile }) => {
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ audio: true });
 
@@ -41,6 +41,18 @@ const RecordModel = () => {
     setTime(0);
   };
 
+  async function getFileFromUrl(url, name, defaultType = "audio/mp3") {
+    const response = await fetch(url);
+    const data = await response.blob();
+    return new File([data], name, {
+      type: data.type || defaultType,
+    });
+  }
+  const handleUpdateVoice = async () => {
+    const file = await getFileFromUrl(mediaBlobUrl, "demo.mp3");
+    handleUpdateProfile("voice", file);
+  };
+
   useEffect(() => {
     let interval = null;
 
@@ -57,26 +69,53 @@ const RecordModel = () => {
   }, [isActive, isPaused]);
 
   return (
-
-    <div className="modal " id="exampleRecordModal" tabIndex="-1" aria-labelledby="exampleRecordModal" aria-hidden="true">
+    <div
+      className="modal"
+      id="exampleRecordModal"
+      tabIndex="-1"
+      aria-labelledby="exampleRecordModal"
+      aria-hidden="true"
+    >
       <div className="modal-dialog">
         <div className="modal-content d-flex flex-column justify-content-center">
-          <div className="d-flex justify-content-center">
-            <p>Ghi âm giọng nói</p>
+          <div className="d-flex justify-content-center mt-2">
+            <p style= {{fontSize: '24px'}}>Ghi âm giọng nói</p>
           </div>
           <div>
             <div className="d-flex justify-content-center">
               <Timer time={time} className="justify-item-center" />
             </div>
             <div div className="d-flex justify-content-center">
-              {status !== 'recording' ? <img src={play} style={{ width: '30px' }} onClick={() => { startRecording(); handleReset(); handleStart(); }} /> :
-                <img src={stop} style={{ width: '30px' }} onClick={() => { stopRecording(); handlePauseResume() }} />}
+              {status !== "recording" ? (
+                <img
+                  src={play}
+                  style={{ width: "30px" }}
+                  onClick={() => {
+                    startRecording();
+                    handleReset();
+                    handleStart();
+                  }}
+                />
+              ) : (
+                <img
+                  src={stop}
+                  style={{ width: "30px" }}
+                  onClick={() => {
+                    stopRecording();
+                    handlePauseResume();
+                  }}
+                />
+              )}
+            </div>
+            <div  div className="d-flex justify-content-center">
+              <audio src={mediaBlobUrl} controls autoPlay />
             </div>
             <div div className="d-flex justify-content-center">
-            <audio src={mediaBlobUrl} controls autoPlay />
+              <button className="btn btn-primary mt-2 mb-2" onClick={handleUpdateVoice}>
+                Xác nhận
+              </button>
             </div>
           </div>
-          
         </div>
       </div>
     </div>

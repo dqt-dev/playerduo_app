@@ -40,18 +40,15 @@ function SamplePrevArrow(props) {
 function SkillCard(props) {
     const navigate = useNavigate();
 
-    const retrieveSkills = {props}
+    const { data, categoryName, isPlay, setIsPlay, categoryId, retrieveSkills } = props
 
     const goToUserPage = (userId, skillId) => {
-        let check = true;
         UserService.get(userId)
             .then(response => {
                 if (!response?.data?.isEnabled) {
-                    check = false;
                     toast.error("Người dùng này đã bị vô hiệu hóa!", {
                         position: toast.POSITION.TOP_RIGHT
                     });
-                    retrieveSkills();
                     return;
                 }
             })
@@ -61,21 +58,18 @@ function SkillCard(props) {
         SkillService.getSkillById(skillId)
             .then(response => {
                 if (!response?.data?.isEnabled) {
-                    check = false;
                     toast.error("Kỹ năng này đã bị vô hiệu hóa!", {
                         position: toast.POSITION.TOP_RIGHT
                     });
-                    retrieveSkills();
+                    navigate("/");
                     return;
                 }
             })
             .catch(e => {
                 console.log(e);
             });
-        check && navigate("user/" + userId + "?skillId=" + skillId)
+        navigate("user/" + userId + "?skillId=" + skillId)
     }
-
-    const { data, categoryName, isPlay, setIsPlay, categoryId } = props
 
     const settings = {
         dots: true,

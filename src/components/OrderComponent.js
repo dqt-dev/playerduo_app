@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import Loading from './Loading';
 import { handleConvertDate } from '../common/ultil';
 import { getMyInfo } from '../redux/UserInfo/action';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function OrderComponent() {
 
@@ -25,6 +25,8 @@ function OrderComponent() {
     const [manageOrder, setManageOrder] = useState([]);
 
     const [isShow, setIsShow] = useState(false);
+
+    const currentUser = useSelector(state => state.userInfoReducer.userInfo);
 
     const handleGetMyOrder = () => {
         setLoaded(true);
@@ -62,6 +64,13 @@ function OrderComponent() {
 
 
     const handleFinish = (orderId) => {
+        if(currentUser?.isEnabled === false)
+        {
+            toast.error("Bạn đã bị vô hiệu hóa tài khoản, vui lòng liên hệ Quản trị viên để giải quyết!", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            return;
+        }
         OrderService.FinishOrder(orderId)
             .then(response => {
                 handleManageMyOrder();
@@ -87,6 +96,13 @@ function OrderComponent() {
     }
 
     const handleConfirmOrder = (orderId) => {
+        if(currentUser?.isEnabled === false)
+        {
+            toast.error("Bạn đã bị vô hiệu hóa tài khoản, vui lòng liên hệ Quản trị viên để giải quyết!", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            return;
+        }
         OrderService.ConfirmOrder(orderId)
             .then(response => {
                 handleManageMyOrder();
@@ -104,6 +120,13 @@ function OrderComponent() {
     }
 
     const handleCancelOrder = (orderId) => {
+        if(currentUser?.isEnabled === false)
+        {
+            toast.error("Bạn đã bị vô hiệu hóa tài khoản, vui lòng liên hệ Quản trị viên để giải quyết!", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            return;
+        }
         OrderService.CancelOrder(orderId)
             .then(response => {
                 handleManageMyOrder();

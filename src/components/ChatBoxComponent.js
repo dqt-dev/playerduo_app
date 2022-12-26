@@ -122,7 +122,7 @@ function ChatBoxComponent({ userChatInfo, getListChat }) {
 
 
     useEffect(() => {
-        getListChat()
+        currentCurrent && getListChat()
     }, [messages]);
 
     return (
